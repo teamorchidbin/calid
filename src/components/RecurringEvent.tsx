@@ -1,13 +1,9 @@
-
 import React, { useState } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import { Switch } from './ui/switch';
-
 export const RecurringEvent = () => {
   const [isRecurringEnabled, setIsRecurringEnabled] = useState(false);
-
-  return (
-    <div className="p-8 max-w-4xl mx-auto">
+  return <div className="p-8 max-w-4xl mx-0">
       <div className="space-y-8">
         <div>
           <h2 className="text-xl font-semibold text-foreground mb-2">Recurring Event</h2>
@@ -28,16 +24,11 @@ export const RecurringEvent = () => {
         <div className="border border-border rounded-lg p-6 bg-card">
           <div className="space-y-6">
             <div className="flex items-center space-x-3">
-              <Switch 
-                id="enable-recurring" 
-                checked={isRecurringEnabled}
-                onCheckedChange={setIsRecurringEnabled}
-              />
+              <Switch id="enable-recurring" checked={isRecurringEnabled} onCheckedChange={setIsRecurringEnabled} />
               <label htmlFor="enable-recurring" className="text-sm font-medium">Enable recurring events</label>
             </div>
             
-            {isRecurringEnabled && (
-              <div className="space-y-6 pl-6 border-l-2 border-muted animate-fade-in">
+            {isRecurringEnabled && <div className="space-y-6 pl-6 border-l-2 border-muted animate-fade-in">
                 <div>
                   <label className="block text-sm font-medium mb-3">Frequency</label>
                   <select className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring bg-background">
@@ -69,11 +60,9 @@ export const RecurringEvent = () => {
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              </div>}
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
