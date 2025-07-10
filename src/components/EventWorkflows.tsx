@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { Plus, Mail, MessageSquare, Clock } from 'lucide-react';
-import { Switch } from '../ui/switch';
+import { Switch } from './ui/switch';
 
 const workflowTemplates = [
   {
