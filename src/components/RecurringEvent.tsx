@@ -63,5 +63,4 @@ export const RecurringEvent = () => {
         </div>
       </div>
     </div>;
-  };
-}
+};

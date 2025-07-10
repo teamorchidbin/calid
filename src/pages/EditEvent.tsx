@@ -129,6 +129,5 @@ export const EditEvent = () => {
         </div>
       </div>
     </div>;
-  )
-  };
+};
 }
