@@ -10,12 +10,12 @@ export const Header = ({ showEventTypesHeader = false }: HeaderProps) => {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   return (
-    <header className="h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+    <header className="h-20 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       <div className="h-full px-6 flex items-center justify-between">
         {showEventTypesHeader && (
           <div className="flex-1">
             <h1 className="text-xl font-semibold text-foreground">Event Types</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Create events to share for people to book on your calendar.</p>
+            <p className="text-sm text-muted-foreground mt-1">Create events to share for people to book on your calendar.</p>
           </div>
         )}
         

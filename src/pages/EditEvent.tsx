@@ -8,6 +8,7 @@ import { EventLimits } from '../components/EventLimits';
 import { EventAdvanced } from '../components/EventAdvanced';
 import { EventApps } from '../components/EventApps';
 import { EventWorkflows } from '../components/EventWorkflows';
+import { EventWebhooks } from '../components/EventWebhooks';
 
 const tabs = [
   { id: 'setup', name: 'Event Setup', icon: Settings },
@@ -31,14 +32,13 @@ export const EditEvent = () => {
   };
 
   const handleSave = () => {
-    // Implement save logic
     setHasChanges(false);
   };
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'setup':
-        return <EventSetup onFormChange={() => setHasChanges(true)} />;
+        return <EventSetup onChange={() => setHasChanges(true)} />;
       case 'availability':
         return <EventAvailability />;
       case 'limits':
@@ -46,11 +46,11 @@ export const EditEvent = () => {
       case 'advanced':
         return <EventAdvanced />;
       case 'recurring':
-        return <div className="p-8 max-w-4xl">
+        return <div className="p-6 max-w-4xl">
           <div className="space-y-6">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Recurring Event</h2>
-              <p className="text-gray-600 mb-6">Configure recurring patterns for this event type.</p>
+              <h2 className="text-lg font-semibold text-gray-900 mb-2">Recurring Event</h2>
+              <p className="text-gray-600 mb-6">Set up a recurring event that repeats at regular intervals.</p>
             </div>
             
             <div className="space-y-4">
@@ -61,17 +61,35 @@ export const EditEvent = () => {
               
               <div className="pl-6 space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Repeat frequency</label>
+                  <label className="block text-sm font-medium mb-2">Frequency</label>
                   <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <option>Does not repeat</option>
                     <option>Daily</option>
                     <option>Weekly</option>
                     <option>Monthly</option>
+                    <option>Yearly</option>
                   </select>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Maximum number of events</label>
-                  <input type="number" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="10" />
+                  <label className="block text-sm font-medium mb-2">End date</label>
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
+                      <input type="radio" id="never" name="endType" className="rounded" />
+                      <label htmlFor="never" className="text-sm">Never</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input type="radio" id="date" name="endType" className="rounded" />
+                      <label htmlFor="date" className="text-sm">On date</label>
+                      <input type="date" className="px-3 py-1 border border-gray-300 rounded text-sm" />
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input type="radio" id="occurrences" name="endType" className="rounded" />
+                      <label htmlFor="occurrences" className="text-sm">After</label>
+                      <input type="number" className="w-16 px-2 py-1 border border-gray-300 rounded text-sm" placeholder="1" />
+                      <span className="text-sm">occurrences</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -82,23 +100,9 @@ export const EditEvent = () => {
       case 'workflows':
         return <EventWorkflows />;
       case 'webhooks':
-        return <div className="p-8 max-w-4xl">
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Webhooks</h2>
-              <p className="text-gray-600 mb-6">Send HTTP requests to external services when events occur.</p>
-            </div>
-            
-            <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-              <p className="text-gray-500 mb-4">No webhooks configured</p>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                Create Webhook
-              </button>
-            </div>
-          </div>
-        </div>;
+        return <EventWebhooks />;
       default:
-        return <EventSetup onFormChange={() => setHasChanges(true)} />;
+        return <EventSetup onChange={() => setHasChanges(true)} />;
     }
   };
 

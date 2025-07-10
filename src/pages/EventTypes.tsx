@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Plus, MoreHorizontal, ExternalLink, Copy, ArrowUp, ArrowDown, ChevronLeft, ChevronRight, Search, Eye, Edit, Copy as CopyIcon, Code, Trash2, Check } from 'lucide-react';
+import { Plus, MoreHorizontal, Eye, Edit, Copy as CopyIcon, Code, Trash2, ArrowUp, ArrowDown, ChevronLeft, ChevronRight, Search, Copy } from 'lucide-react';
 import { CreateEventModal } from '../components/CreateEventModal';
 import { useNavigate } from 'react-router-dom';
 import { mockTeams } from '../data/mockData';
@@ -79,7 +79,7 @@ export const EventTypes = () => {
   return (
     <div className="p-4 space-y-4">
       {/* Team Selector with Horizontal Scroll */}
-      <div className="flex items-center space-x-3 relative bg-background/95 backdrop-blur-sm sticky top-16 z-10 py-3 -mx-4 px-4 border-b border-border/40">
+      <div className="flex items-center space-x-3 relative bg-background/95 backdrop-blur-sm sticky top-16 z-10 py-2 -mx-4 px-4 border-b border-border/40">
         <div className="flex items-center bg-muted/50 rounded-lg p-1">
           <button
             onClick={() => setSelectedTeam('personal')}
@@ -148,8 +148,8 @@ export const EventTypes = () => {
 
       {/* Search Bar and New Button */}
       <div className="flex items-center justify-between space-x-3">
-        <div className="flex items-center space-x-3">
-          <div className="relative w-64">
+        <div className="flex items-center space-x-3 flex-1">
+          <div className="relative w-52">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
@@ -163,7 +163,7 @@ export const EventTypes = () => {
           <div className="relative">
             <button
               onClick={handleCopyPublicLink}
-              className="flex items-center space-x-2 px-2.5 py-2 bg-muted/70 text-muted-foreground text-xs rounded-md hover:bg-muted transition-colors"
+              className="flex items-center space-x-2 px-2 py-1.5 bg-muted/70 text-muted-foreground text-xs rounded-md hover:bg-muted transition-colors"
             >
               <span className="text-xs">
                 {selectedTeam === 'personal' ? 'cal.id/sanskar' : `cal.id/${currentTeam.url}`}
@@ -190,15 +190,22 @@ export const EventTypes = () => {
           {showNewDropdown && (
             <div className="absolute right-0 top-full mt-1 w-48 bg-popover border border-border rounded-lg shadow-lg animate-scale-in z-10">
               <div className="py-1">
-                <button
-                  onClick={() => {
-                    setIsCreateModalOpen(true);
-                    setShowNewDropdown(false);
-                  }}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors"
-                >
-                  Create new event
-                </button>
+                {mockTeams.map((team) => (
+                  <button
+                    key={team.id}
+                    onClick={() => {
+                      setSelectedTeam(team.id);
+                      setIsCreateModalOpen(true);
+                      setShowNewDropdown(false);
+                    }}
+                    className="w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors flex items-center"
+                  >
+                    <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium mr-2">
+                      {team.avatar}
+                    </div>
+                    {team.name}
+                  </button>
+                ))}
               </div>
             </div>
           )}
@@ -220,7 +227,7 @@ export const EventTypes = () => {
           >
             {/* Move buttons - positioned to stick to tile */}
             {(hoveredEvent === event.id || draggedItem === event.id) && (
-              <div className="absolute -left-8 top-1/2 transform -translate-y-1/2 flex flex-col space-y-0.5 z-10">
+              <div className="absolute -left-6 top-1/2 transform -translate-y-1/2 flex flex-col space-y-0.5 z-10">
                 <button 
                   onClick={() => handleArrowClick(event.id, 'up')}
                   className="p-1 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all"
@@ -236,26 +243,29 @@ export const EventTypes = () => {
               </div>
             )}
 
-            <div className="bg-card border border-border rounded-lg p-3 hover:border-border/60 transition-all hover:shadow-sm">
+            <div 
+              onClick={() => handleEventClick(event.id)}
+              className="bg-card border border-border rounded-lg p-3 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer"
+            >
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center mb-2 space-x-2">
-                    <h3
-                      onClick={() => handleEventClick(event.id)}
-                      className="text-base font-medium cursor-pointer hover:text-primary transition-colors"
-                    >
+                    <h3 className="text-base font-medium text-foreground">
                       {event.title}
                     </h3>
                     <div className="relative">
                       <button
-                        onClick={() => handleCopyLink(event.id, event.url)}
-                        className="flex items-center space-x-1 px-2 py-0.5 bg-muted/70 text-muted-foreground text-xs rounded hover:bg-muted transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCopyLink(event.id, event.url);
+                        }}
+                        className="flex items-center space-x-1 px-1.5 py-0.5 bg-muted/70 text-muted-foreground text-xs rounded hover:bg-muted transition-colors"
                       >
                         <Copy className="h-2.5 w-2.5" />
-                        <span className="text-xs">Copy link</span>
+                        <span className="text-xs">Copy</span>
                       </button>
                       {copiedLink === event.id && (
-                        <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-foreground text-background text-xs rounded animate-fade-in whitespace-nowrap">
+                        <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-1.5 py-0.5 bg-foreground text-background text-xs rounded animate-fade-in whitespace-nowrap">
                           Copied
                         </div>
                       )}
@@ -276,7 +286,7 @@ export const EventTypes = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-2 ml-3">
+                <div className="flex items-center space-x-2 ml-3" onClick={(e) => e.stopPropagation()}>
                   <Switch checked={event.isActive} />
                   <button className="p-1.5 hover:bg-muted rounded-md transition-colors">
                     <Eye className="h-4 w-4 text-muted-foreground" />
