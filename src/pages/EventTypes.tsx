@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+
+import React, { useState, useRef, useEffect } from 'react';
 import { Plus, MoreHorizontal, ExternalLink, Copy, ArrowUp, ArrowDown, ChevronLeft, ChevronRight, Search, Eye, Edit, Copy as CopyIcon, Code, Trash2, Check } from 'lucide-react';
 import { CreateEventModal } from '../components/CreateEventModal';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +16,8 @@ export const EventTypes = () => {
   const [copiedPublicLink, setCopiedPublicLink] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -24,6 +27,23 @@ export const EventTypes = () => {
     event.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  useEffect(() => {
+    const checkScrollButtons = () => {
+      if (scrollRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+        setCanScrollLeft(scrollLeft > 0);
+        setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
+      }
+    };
+
+    checkScrollButtons();
+    const scrollElement = scrollRef.current;
+    if (scrollElement) {
+      scrollElement.addEventListener('scroll', checkScrollButtons);
+      return () => scrollElement.removeEventListener('scroll', checkScrollButtons);
+    }
+  }, []);
+
   const handleEventClick = (eventId: string) => {
     navigate(`/event/${eventId}/setup`);
   };
@@ -31,14 +51,14 @@ export const EventTypes = () => {
   const handleCopyLink = (eventId: string, url: string) => {
     navigator.clipboard.writeText(`https://cal.id${url}`);
     setCopiedLink(eventId);
-    setTimeout(() => setCopiedLink(null), 2000);
+    setTimeout(() => setCopiedLink(null), 1500);
   };
 
   const handleCopyPublicLink = () => {
     const publicUrl = selectedTeam === 'personal' ? 'https://cal.id/sanskar' : `https://cal.id/${currentTeam.url}`;
     navigator.clipboard.writeText(publicUrl);
     setCopiedPublicLink(true);
-    setTimeout(() => setCopiedPublicLink(false), 2000);
+    setTimeout(() => setCopiedPublicLink(false), 1500);
   };
 
   const scrollTeams = (direction: 'left' | 'right') => {
@@ -53,24 +73,23 @@ export const EventTypes = () => {
 
   const handleArrowClick = (eventId: string, direction: 'up' | 'down') => {
     setDraggedItem(eventId);
-    // Keep the arrows visible when clicked
-    setTimeout(() => setDraggedItem(null), 1000);
+    setTimeout(() => setDraggedItem(null), 2000);
   };
 
   return (
-    <div className="p-6 space-y-4">
+    <div className="p-4 space-y-4">
       {/* Team Selector with Horizontal Scroll */}
-      <div className="flex items-center space-x-4 relative bg-background/80 backdrop-blur-sm sticky top-0 z-10 py-4 -mx-6 px-6">
-        <div className="flex items-center bg-muted rounded-lg p-1">
+      <div className="flex items-center space-x-3 relative bg-background/95 backdrop-blur-sm sticky top-16 z-10 py-3 -mx-4 px-4 border-b border-border/40">
+        <div className="flex items-center bg-muted/50 rounded-lg p-1">
           <button
             onClick={() => setSelectedTeam('personal')}
-            className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all ${
+            className={`flex items-center px-2.5 py-1.5 text-sm font-medium rounded-md transition-all ${
               selectedTeam === 'personal'
                 ? 'bg-background text-foreground shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
+            <div className={`h-5 w-5 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
               selectedTeam === 'personal' ? 'bg-primary text-primary-foreground' : 'bg-muted-foreground/20'
             }`}>
               SY
@@ -79,31 +98,34 @@ export const EventTypes = () => {
           </button>
         </div>
         
-        <div className="w-px h-8 bg-border"></div>
+        <div className="w-px h-6 bg-border"></div>
         
         <div className="flex items-center space-x-2">
-          <button
-            onClick={() => scrollTeams('left')}
-            className="p-1 hover:bg-muted rounded-md transition-colors"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
+          {canScrollLeft && (
+            <button
+              onClick={() => scrollTeams('left')}
+              className="p-1 hover:bg-muted rounded-md transition-colors opacity-70 hover:opacity-100"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+          )}
           
           <div
             ref={scrollRef}
-            className="flex space-x-1 overflow-x-auto scrollbar-minimal max-w-2xl"
+            className="flex space-x-1 overflow-x-auto scrollbar-none max-w-2xl"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {mockTeams.slice(1).map((team) => (
               <button
                 key={team.id}
                 onClick={() => setSelectedTeam(team.id)}
-                className={`flex items-center px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-all ${
+                className={`flex items-center px-2.5 py-1.5 text-sm font-medium rounded-md whitespace-nowrap transition-all flex-shrink-0 ${
                   selectedTeam === team.id
                     ? 'bg-primary text-primary-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                 }`}
               >
-                <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
+                <div className={`h-5 w-5 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
                   selectedTeam === team.id ? 'bg-primary-foreground text-primary' : 'bg-muted-foreground/20'
                 }`}>
                   {team.avatar}
@@ -113,63 +135,55 @@ export const EventTypes = () => {
             ))}
           </div>
           
-          <button
-            onClick={() => scrollTeams('right')}
-            className="p-1 hover:bg-muted rounded-md transition-colors"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Event Types</h1>
-          <p className="text-muted-foreground mt-1">Create events to share for people to book on your calendar.</p>
+          {canScrollRight && (
+            <button
+              onClick={() => scrollTeams('right')}
+              className="p-1 hover:bg-muted rounded-md transition-colors opacity-70 hover:opacity-100"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </div>
 
       {/* Search Bar and New Button */}
-      <div className="flex items-center justify-between space-x-4">
+      <div className="flex items-center justify-between space-x-3">
         <div className="flex items-center space-x-3">
-          <div className="relative max-w-xs">
+          <div className="relative w-64">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
               placeholder="Search events..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-background"
+              className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-sm"
             />
           </div>
           
-          <div className="flex items-center space-x-2">
-            <div className="relative">
-              <button
-                onClick={handleCopyPublicLink}
-                className="flex items-center space-x-2 px-3 py-2 bg-muted text-muted-foreground text-sm rounded-lg hover:bg-muted/80 transition-colors"
-              >
-                <span>
-                  {selectedTeam === 'personal' ? 'cal.id/sanskar' : `cal.id/${currentTeam.url}`}
-                </span>
-                <Copy className="h-3 w-3" />
-              </button>
-              {copiedPublicLink && (
-                <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-foreground text-background text-xs rounded animate-fade-in whitespace-nowrap">
-                  Copied!
-                </div>
-              )}
-            </div>
+          <div className="relative">
+            <button
+              onClick={handleCopyPublicLink}
+              className="flex items-center space-x-2 px-2.5 py-2 bg-muted/70 text-muted-foreground text-xs rounded-md hover:bg-muted transition-colors"
+            >
+              <span className="text-xs">
+                {selectedTeam === 'personal' ? 'cal.id/sanskar' : `cal.id/${currentTeam.url}`}
+              </span>
+              <Copy className="h-3 w-3" />
+            </button>
+            {copiedPublicLink && (
+              <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-foreground text-background text-xs rounded animate-fade-in whitespace-nowrap">
+                Copied
+              </div>
+            )}
           </div>
         </div>
         
         <div className="relative">
           <button
             onClick={() => setShowNewDropdown(!showNewDropdown)}
-            className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center px-3 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
           >
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 mr-1.5" />
             New
           </button>
           
@@ -192,7 +206,7 @@ export const EventTypes = () => {
       </div>
 
       {/* Event Types List */}
-      <div className="space-y-3">
+      <div className="space-y-2">
         {filteredEvents.map((event) => (
           <div
             key={event.id}
@@ -204,9 +218,9 @@ export const EventTypes = () => {
               }
             }}
           >
-            {/* Move buttons */}
+            {/* Move buttons - positioned to stick to tile */}
             {(hoveredEvent === event.id || draggedItem === event.id) && (
-              <div className="absolute -left-6 top-1/2 transform -translate-y-1/2 flex flex-col space-y-1 z-10">
+              <div className="absolute -left-8 top-1/2 transform -translate-y-1/2 flex flex-col space-y-0.5 z-10">
                 <button 
                   onClick={() => handleArrowClick(event.id, 'up')}
                   className="p-1 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all"
@@ -222,32 +236,32 @@ export const EventTypes = () => {
               </div>
             )}
 
-            <div className="bg-card border border-border rounded-lg p-4 hover:border-border/60 transition-all hover:shadow-sm">
+            <div className="bg-card border border-border rounded-lg p-3 hover:border-border/60 transition-all hover:shadow-sm">
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center mb-2 space-x-2">
                     <h3
                       onClick={() => handleEventClick(event.id)}
-                      className="text-lg font-medium cursor-pointer hover:text-primary transition-colors"
+                      className="text-base font-medium cursor-pointer hover:text-primary transition-colors"
                     >
                       {event.title}
                     </h3>
                     <div className="relative">
                       <button
                         onClick={() => handleCopyLink(event.id, event.url)}
-                        className="flex items-center space-x-1 px-2 py-1 bg-muted text-muted-foreground text-xs rounded hover:bg-muted/80 transition-colors"
+                        className="flex items-center space-x-1 px-2 py-0.5 bg-muted/70 text-muted-foreground text-xs rounded hover:bg-muted transition-colors"
                       >
-                        <Copy className="h-3 w-3" />
-                        <span>Copy link</span>
+                        <Copy className="h-2.5 w-2.5" />
+                        <span className="text-xs">Copy link</span>
                       </button>
                       {copiedLink === event.id && (
                         <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-foreground text-background text-xs rounded animate-fade-in whitespace-nowrap">
-                          Copied!
+                          Copied
                         </div>
                       )}
                     </div>
                   </div>
-                  <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{event.description}</p>
+                  <p className="text-muted-foreground text-sm mb-2 line-clamp-2">{event.description}</p>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       {event.durations?.map((duration) => (
@@ -262,7 +276,7 @@ export const EventTypes = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-2 ml-4">
+                <div className="flex items-center space-x-2 ml-3">
                   <Switch checked={event.isActive} />
                   <button className="p-1.5 hover:bg-muted rounded-md transition-colors">
                     <Eye className="h-4 w-4 text-muted-foreground" />

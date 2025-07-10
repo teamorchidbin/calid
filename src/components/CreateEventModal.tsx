@@ -80,8 +80,8 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
   };
 
   const handleCreate = () => {
-    // Create a new event with a temporary ID
-    const newEventId = `new-${Date.now()}`;
+    // Create a new event with a temporary ID that includes timestamp for uniqueness
+    const newEventId = `event-${Date.now()}`;
     navigate(`/event/${newEventId}/setup`);
     onClose();
   };
@@ -174,7 +174,7 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
                   <label className="block text-sm font-medium mb-2">URL</label>
                   <div className="flex">
                     <span className="inline-flex items-center px-3 py-2 border border-r-0 border-border bg-muted text-muted-foreground text-sm rounded-l-lg">
-                      cal.id/{mockTeams.find(t => t.id === selectedTeam)?.url || 'sanskar'}/
+                      cal.id/{teams.find(t => t.id === selectedTeam)?.url || 'sanskar'}/
                     </span>
                     <input
                       type="text"
