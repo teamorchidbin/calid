@@ -22,7 +22,7 @@ export const RecurringEvent = () => {
           <div className="space-y-6">
             <div className="flex items-center space-x-3">
               <Switch id="enable-recurring" checked={isRecurringEnabled} onCheckedChange={setIsRecurringEnabled} />
-              <label htmlFor="enable-recurring" className="text-sm font-medium">Enable recurring events</label>
+              <label htmlFor="enable-recurring" className="text-sm font-medium">Enable Recurring Events</label>
             </div>
             
             {isRecurringEnabled && <div className="space-y-6 pl-6 border-l-2 border-muted animate-fade-in">
