@@ -240,12 +240,14 @@ export const EventTypes = () => {
           
           {showNewDropdown && (
             <div className="absolute right-0 top-full mt-1 w-48 bg-popover border border-border rounded-lg shadow-lg animate-scale-in z-10">
+              <div className="p-2 border-b border-border">
+                <p className="text-xs text-muted-foreground font-medium">Create new event for:</p>
+              </div>
               <div className="py-1">
                 {teamEvents.map((team) => (
                   <button
                     key={team.id}
                     onClick={() => {
-                      console.log('Selected team for new event:', team.id);
                       setSelectedTeam(team.id);
                       setIsCreateModalOpen(true);
                       setShowNewDropdown(false);

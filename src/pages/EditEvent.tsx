@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Copy, Eye, Settings, Clock, Zap, Shield, Smartphone, Workflow, Webhook, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Copy, Eye, Settings, Clock, Zap, Shield, Smartphone, Workflow, Webhook, RotateCcw, Moon, Sun } from 'lucide-react';
 import { EventSetup } from '../components/EventSetup';
 import { EventAvailability } from '../components/EventAvailability';
 import { EventLimits } from '../components/EventLimits';
@@ -10,6 +10,8 @@ import { EventWorkflows } from '../components/EventWorkflows';
 import { EventWebhooks } from '../components/EventWebhooks';
 import { RecurringEvent } from '../components/RecurringEvent';
 import { Switch } from '../components/ui/switch';
+import { Header } from '../components/Header';
+
 const tabs = [{
   id: 'setup',
   name: 'Event Setup',
@@ -50,10 +52,16 @@ export const EditEvent = () => {
   } = useParams();
   const [activeTab, setActiveTab] = useState(tab || 'setup');
   const [eventEnabled, setEventEnabled] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
   const navigate = useNavigate();
   const handleBack = () => {
     navigate('/');
   };
+  
+  const handleDarkModeToggle = () => {
+    setDarkMode(!darkMode);
+  };
+  
   const renderTabContent = () => {
     switch (activeTab) {
       case 'setup':
@@ -76,9 +84,10 @@ export const EditEvent = () => {
         return <EventSetup />;
     }
   };
-  return <div className="min-h-screen bg-background">
-      {/* Header */}
-      
+  
+  return <div className={darkMode ? 'dark' : ''}>
+    <div className="min-h-screen bg-background">
+      <Header />
 
       {/* Event Header */}
       <div className="bg-card border-b border-border px-8 py-6">
@@ -113,12 +122,33 @@ export const EditEvent = () => {
 
       <div className="flex w-full">
         {/* Sidebar */}
-        <div className="w-64 bg-card border-r border-border min-h-screen sticky top-0">
-          <nav className="p-6 space-y-1">
+        <div className="w-64 bg-card border-r border-border min-h-screen sticky top-20">
+          <nav className="p-6 space-y-1 flex flex-col h-full">
+            <div className="flex-1 space-y-1">
             {tabs.map(tabItem => <button key={tabItem.id} onClick={() => setActiveTab(tabItem.id)} className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${activeTab === tabItem.id ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
                 <tabItem.icon className="mr-3 h-4 w-4" />
                 {tabItem.name}
               </button>)}
+            </div>
+            
+            {/* Settings and Dark Mode at bottom */}
+            <div className="pt-4 border-t border-border space-y-2">
+              <div className="flex items-center justify-center space-x-2">
+                <button
+                  onClick={handleDarkModeToggle}
+                  className="p-2.5 bg-muted/50 hover:bg-muted rounded-lg transition-all duration-200"
+                >
+                  {darkMode ? (
+                    <Sun className="h-5 w-5 text-muted-foreground" />
+                  ) : (
+                    <Moon className="h-5 w-5 text-muted-foreground" />
+                  )}
+                </button>
+                <button className="p-2.5 bg-muted/50 hover:bg-muted rounded-lg transition-all duration-200">
+                  <Settings className="h-5 w-5 text-muted-foreground" />
+                </button>
+              </div>
+            </div>
           </nav>
         </div>
 
@@ -127,5 +157,6 @@ export const EditEvent = () => {
           {renderTabContent()}
         </div>
       </div>
-    </div>;
+    </div>
+  </div>;
 };
