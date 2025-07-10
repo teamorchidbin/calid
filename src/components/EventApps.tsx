@@ -1,5 +1,7 @@
+
 import React from 'react';
 import { Plus } from 'lucide-react';
+
 const availableApps = [{
   id: 'basecamp',
   name: 'Basecamp3',
@@ -31,51 +33,56 @@ const availableApps = [{
   description: 'Add a GIF to your confirmation page',
   logo: '🎬'
 }];
+
 export const EventApps = () => {
-  return <div className="flex justify-center min-h-screen bg-background">
-      <div className="w-full max-w-4xl p-8 space-y-8 px-0">
-        <div className="text-center py-12">
-          <div className="w-20 h-20 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-6">
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="w-full max-w-5xl p-6 space-y-6">
+        <div className="py-8">
+          <div className="w-20 h-20 bg-muted/50 rounded-full flex items-center justify-center mb-6">
             <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
               <span className="text-muted-foreground text-lg">📱</span>
             </div>
           </div>
-          <h3 className="text-xl font-semibold text-foreground mb-3">No apps installed</h3>
-          <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+          <h3 className="text-lg font-medium text-foreground mb-3">No apps installed</h3>
+          <p className="text-sm text-muted-foreground mb-6 max-w-md">
             Apps enable you to enhance your workflow and improve your scheduling life significantly.
           </p>
-          <button className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium">
+          <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium">
             Browse App Store
           </button>
         </div>
 
         <div>
-          <h3 className="text-xl font-semibold text-foreground mb-3">Available apps</h3>
-          <p className="text-muted-foreground mb-8">View popular apps below and explore more in our App Store</p>
+          <h3 className="text-lg font-medium text-foreground mb-3">Available apps</h3>
+          <p className="text-sm text-muted-foreground mb-6">View popular apps below and explore more in our App Store</p>
           
           <div className="space-y-4">
-            {availableApps.map(app => <div key={app.id} className="flex items-center justify-between p-6 border border-border rounded-lg hover:border-border/60 transition-colors bg-card">
+            {availableApps.map(app => (
+              <div key={app.id} className="flex items-center justify-between p-4 border border-border rounded-lg hover:border-border/60 transition-colors bg-card">
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-muted/50 rounded-lg flex items-center justify-center border border-border">
-                    <span className="text-xl">{app.logo}</span>
+                  <div className="w-10 h-10 bg-muted/50 rounded-lg flex items-center justify-center border border-border">
+                    <span className="text-lg">{app.logo}</span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-3 mb-2">
-                      <h4 className="font-semibold text-foreground">{app.name}</h4>
+                      <h4 className="font-medium text-foreground text-sm">{app.name}</h4>
                       <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full font-medium">
                         {app.category}
                       </span>
                     </div>
-                    <p className="text-muted-foreground line-clamp-2">{app.description}</p>
+                    <p className="text-sm text-muted-foreground line-clamp-2">{app.description}</p>
                   </div>
                 </div>
-                <button className="flex items-center px-4 py-2 text-sm text-foreground border border-border rounded-lg hover:bg-muted transition-colors font-medium ml-4">
+                <button className="flex items-center px-3 py-2 text-sm text-foreground border border-border rounded-lg hover:bg-muted transition-colors font-medium ml-4">
                   <Plus className="h-4 w-4 mr-2" />
                   Add
                 </button>
-              </div>)}
+              </div>
+            ))}
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
