@@ -129,18 +129,15 @@ export const EventTypes = () => {
   };
 
   const handleCreateEvent = (eventData: any) => {
-    // Generate new event ID
     const newEventId = `event-${Date.now()}`;
     console.log('Creating new event:', eventData);
-    
-    // Navigate to the new event's setup page
     navigate(`/event/${newEventId}/setup`);
   };
 
   return (
-    <div className="p-4 sm:p-6 space-y-3 w-full max-w-full overflow-hidden">
+    <div className="p-6 space-y-6 w-full max-w-full overflow-hidden">
       {/* Team Selector */}
-      <div className="flex items-center justify-between bg-background/95 backdrop-blur-sm sticky top-16 z-10 py-2 -mx-4 sm:-mx-6 px-4 sm:px-6 border-b border-border/40 w-full">
+      <div className="flex items-center justify-between bg-background/95 backdrop-blur-sm sticky top-16 z-10 py-4 -mx-6 px-6 border-b border-border/40 w-full">
         <div className="flex items-center space-x-4 w-full min-w-0">
           {/* Personal Profile - Fixed */}
           <div className="flex items-center bg-muted/50 rounded-lg p-1">
@@ -278,7 +275,7 @@ export const EventTypes = () => {
       </div>
 
       {/* Event Types List */}
-      <div className="space-y-2">
+      <div className="space-y-3">
         {filteredEvents.map((event) => {
           const isEventActive = eventStates[event.id] ?? event.isActive;
           return (
@@ -318,13 +315,13 @@ export const EventTypes = () => {
 
               <div 
                 onClick={() => handleEventClick(event.id)}
-                className={`bg-card border border-border rounded-lg p-3 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer ${
+                className={`bg-card border border-border rounded-lg p-4 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer ${
                   !isEventActive ? 'opacity-50' : ''
                 }`}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
-                    <div className="flex flex-col sm:flex-row sm:items-center mb-2 sm:mb-3 space-y-2 sm:space-y-0 sm:space-x-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center mb-3 space-y-2 sm:space-y-0 sm:space-x-3">
                       <h3 className="text-base font-medium text-foreground">
                         {event.title}
                       </h3>
@@ -336,7 +333,7 @@ export const EventTypes = () => {
                           }}
                           className="flex items-center space-x-1 px-2 py-1 bg-muted/70 text-muted-foreground text-xs rounded hover:bg-muted transition-colors"
                         >
-                          <Copy className="h-2.5 w-2.5" />
+                          <Copy className="h-3 w-3" />
                           <span className="text-xs">Copy</span>
                         </button>
                         {copiedLink === event.id && (
@@ -346,7 +343,7 @@ export const EventTypes = () => {
                         )}
                       </div>
                     </div>
-                    <p className="text-muted-foreground text-sm mb-2 line-clamp-2">{event.description}</p>
+                    <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{event.description}</p>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
                       <div className="flex items-center space-x-2">
                         {event.durations?.map((duration) => (

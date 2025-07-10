@@ -46,10 +46,7 @@ const tabs = [{
 }];
 
 export const EditEvent = () => {
-  const {
-    eventId,
-    tab
-  } = useParams();
+  const { eventId, tab } = useParams();
   const [activeTab, setActiveTab] = useState(tab || 'setup');
   const [eventEnabled, setEventEnabled] = useState(true);
   const [recurringEnabled, setRecurringEnabled] = useState(false);
@@ -70,10 +67,11 @@ export const EditEvent = () => {
       case 'advanced':
         return <EventAdvanced />;
       case 'recurring':
-        return <div className="p-6 w-full">
+        return (
+          <div className="p-6 w-full">
             <div className="space-y-4">
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-                <p className="text-sm text-yellow-800">
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-4">
+                <p className="text-sm text-yellow-800 dark:text-yellow-200">
                   <span className="font-medium">Experimental:</span> Recurring Events are currently experimental and causes some issues sometimes when checking for availability. We are working on fixing this.
                 </p>
               </div>
@@ -86,13 +84,13 @@ export const EditEvent = () => {
                       checked={recurringEnabled}
                       onCheckedChange={setRecurringEnabled}
                     />
-                    <label htmlFor="enable-recurring" className="text-sm">Enable recurring events</label>
+                    <label htmlFor="enable-recurring" className="text-sm font-medium">Enable recurring events</label>
                   </div>
                   
                   {recurringEnabled && (
                     <div className="pl-6 space-y-4 animate-fade-in">
                       <div>
-                        <label className="block text-sm mb-2">Frequency</label>
+                        <label className="block text-sm font-medium mb-2">Frequency</label>
                         <select className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring bg-background text-sm">
                           <option>Does not repeat</option>
                           <option>Daily</option>
@@ -103,7 +101,7 @@ export const EditEvent = () => {
                       </div>
                       
                       <div>
-                        <label className="block text-sm mb-2">End date</label>
+                        <label className="block text-sm font-medium mb-2">End date</label>
                         <div className="space-y-2">
                           <div className="flex items-center space-x-2">
                             <input type="radio" id="never" name="endType" className="rounded" />
@@ -127,7 +125,8 @@ export const EditEvent = () => {
                 </div>
               </div>
             </div>
-          </div>;
+          </div>
+        );
       case 'apps':
         return <EventApps />;
       case 'workflows':
@@ -139,7 +138,8 @@ export const EditEvent = () => {
     }
   };
 
-  return <div className="min-h-screen bg-background">
+  return (
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-card border-b border-border px-6 py-4">
         <div className="flex items-center justify-between w-full">
@@ -149,7 +149,7 @@ export const EditEvent = () => {
             </button>
             <div>
               <div className="flex items-center space-x-4 mb-1">
-                <h1 className="text-lg text-foreground">Product Hunt Chats</h1>
+                <h1 className="text-lg font-semibold text-foreground">Product Hunt Chats</h1>
                 <div className="flex items-center space-x-2 px-3 py-1 bg-muted/70 text-muted-foreground text-sm rounded-md">
                   <span>cal.id/sanskar/product-hunt-chats</span>
                   <Copy className="h-3 w-3 cursor-pointer hover:text-foreground" />
@@ -173,10 +173,20 @@ export const EditEvent = () => {
         {/* Sidebar */}
         <div className="w-56 bg-card border-r border-border min-h-screen">
           <nav className="p-4 space-y-1">
-            {tabs.map(tabItem => <button key={tabItem.id} onClick={() => setActiveTab(tabItem.id)} className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeTab === tabItem.id ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+            {tabs.map(tabItem => (
+              <button
+                key={tabItem.id}
+                onClick={() => setActiveTab(tabItem.id)}
+                className={`w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                  activeTab === tabItem.id
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                }`}
+              >
                 <tabItem.icon className="mr-3 h-4 w-4" />
                 {tabItem.name}
-              </button>)}
+              </button>
+            ))}
           </nav>
         </div>
 
@@ -185,5 +195,6 @@ export const EditEvent = () => {
           {renderTabContent()}
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
