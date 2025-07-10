@@ -42,7 +42,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { CreateEvent } from '../components/CreateEvent';
+import { CreateEventModal } from '../components/CreateEventModal';
 import { useNavigate } from 'react-router-dom';
 
 interface Team {
@@ -283,20 +283,16 @@ export const EventTypes = () => {
         </TableBody>
       </Table>
 
-      <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Create Event Type</DialogTitle>
-            <DialogDescription>
-              Create a new event type to share for people to book on your calendar.
-            </DialogDescription>
-          </DialogHeader>
-          <CreateEvent onCreate={handleCreateEvent} />
-          <DialogFooter>
-            <Button type="button" variant="secondary" onClick={() => setIsCreateModalOpen(false)}>Cancel</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <CreateEventModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        teams={[
+          { id: 'personal', name: 'Personal', avatar: 'S', url: 'sanskar' },
+          ...teams.map(team => ({ ...team, avatar: team.name.charAt(0), url: team.name.toLowerCase().replace(/\s+/g, '-') }))
+        ]}
+        selectedTeam={selectedTeamId}
+        onCreateEvent={handleCreateEvent}
+      />
     </div>
   );
 };
