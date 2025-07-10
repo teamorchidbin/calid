@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Calendar, Users, Settings, BarChart3, Workflow, FileText, Clock, Moon, Sun } from 'lucide-react';
@@ -20,9 +21,8 @@ export const Sidebar = ({ darkMode, setDarkMode }: SidebarProps) => {
   ];
 
   return (
-    <div className="fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border flex flex-col">
-      {/* Logo Section - Made bigger to match header */}
-      <div className="h-24 flex items-center px-6 border-b border-border">
+    <div className="fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border">
+      <div className="flex h-16 items-center px-6 border-b border-border">
         <img 
           src="https://cdn.prod.website-files.com/5e53d34464688e6f5960a338/682f1bb36cedcb0cd39a7027_Onehash-CalId-logo%20icon.svg" 
           alt="Cal ID" 
@@ -31,7 +31,6 @@ export const Sidebar = ({ darkMode, setDarkMode }: SidebarProps) => {
         <span className="ml-3 text-xl font-semibold">Cal ID</span>
       </div>
       
-      {/* Navigation */}
       <nav className="flex-1 px-4 py-6 space-y-1">
         {navigation.map((item) => (
           <NavLink
@@ -51,31 +50,30 @@ export const Sidebar = ({ darkMode, setDarkMode }: SidebarProps) => {
         ))}
       </nav>
       
-      {/* Bottom Section with Dark Mode and Settings */}
-      <div className="p-4 border-t border-border">
-        <div className="space-y-2">
+      <div className="border-t border-border p-4">
+        <div className="flex items-center justify-between mb-4">
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className="flex items-center justify-between w-full px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-muted/50 hover:bg-muted transform hover:scale-105 active:scale-95"
+            className="p-2 hover:bg-muted rounded-lg transition-colors"
           >
-            <div className="flex items-center space-x-3">
-              {darkMode ? (
-                <Sun className="h-4 w-4 text-muted-foreground" />
-              ) : (
-                <Moon className="h-4 w-4 text-muted-foreground" />
-              )}
-              <span className="text-muted-foreground">
-                {darkMode ? 'Light Mode' : 'Dark Mode'}
-              </span>
-            </div>
+            {darkMode ? (
+              <Sun className="h-5 w-5 text-muted-foreground" />
+            ) : (
+              <Moon className="h-5 w-5 text-muted-foreground" />
+            )}
           </button>
-          
-          <div className="w-full h-px bg-border my-2"></div>
-          
-          <button className="flex items-center space-x-3 w-full px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-muted/50 hover:bg-muted transform hover:scale-105 active:scale-95">
-            <Settings className="h-4 w-4 text-muted-foreground" />
-            <span className="text-muted-foreground">Settings</span>
+          <button className="p-2 hover:bg-muted rounded-lg transition-colors">
+            <Settings className="h-5 w-5 text-muted-foreground" />
           </button>
+        </div>
+        
+        <div className="flex items-center">
+          <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
+            <span className="text-sm font-medium text-primary-foreground">SY</span>
+          </div>
+          <div className="ml-3">
+            <p className="text-sm font-medium">Sanskar Yadav</p>
+          </div>
         </div>
       </div>
     </div>

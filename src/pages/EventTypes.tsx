@@ -1,370 +1,343 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Copy, Eye, MoreHorizontal, Clock, ChevronUp, ChevronDown, Edit, Share, Trash2, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
+
+import React, { useState, useRef, useEffect } from 'react';
+import { Plus, MoreHorizontal, Eye, Edit, Copy as CopyIcon, Code, Trash2, ArrowUp, ArrowDown, ChevronLeft, ChevronRight, Search, Copy } from 'lucide-react';
 import { CreateEventModal } from '../components/CreateEventModal';
+import { useNavigate } from 'react-router-dom';
 import { mockTeams } from '../data/mockData';
+import { Switch } from '../components/ui/switch';
 
 export const EventTypes = () => {
   const [selectedTeam, setSelectedTeam] = useState('personal');
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showTeamDropdown, setShowTeamDropdown] = useState(false);
-  const [teamData, setTeamData] = useState(mockTeams);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [showNewDropdown, setShowNewDropdown] = useState(false);
+  const [hoveredEvent, setHoveredEvent] = useState<string | null>(null);
+  const [showMoreOptions, setShowMoreOptions] = useState<string | null>(null);
   const [copiedLink, setCopiedLink] = useState<string | null>(null);
-  const [eventMenuOpen, setEventMenuOpen] = useState<string | null>(null);
+  const [copiedPublicLink, setCopiedPublicLink] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const navigate = useNavigate();
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const scrollTeamsContainer = (direction: 'left' | 'right') => {
-    const container = document.getElementById('teams-container');
-    if (container) {
-      const scrollAmount = direction === 'left' ? -200 : 200;
-      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-      
-      setTimeout(() => {
-        const { scrollLeft, scrollWidth, clientWidth } = container;
+  const currentTeam = mockTeams.find(t => t.id === selectedTeam) || mockTeams[0];
+  const filteredEvents = currentTeam.eventTypes.filter(event =>
+    event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    event.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  useEffect(() => {
+    const checkScrollButtons = () => {
+      if (scrollRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
         setCanScrollLeft(scrollLeft > 0);
-        setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
-      }, 100);
+        setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
+      }
+    };
+
+    checkScrollButtons();
+    const scrollElement = scrollRef.current;
+    if (scrollElement) {
+      scrollElement.addEventListener('scroll', checkScrollButtons);
+      return () => scrollElement.removeEventListener('scroll', checkScrollButtons);
+    }
+  }, []);
+
+  const handleEventClick = (eventId: string) => {
+    navigate(`/event/${eventId}/setup`);
+  };
+
+  const handleCopyLink = (eventId: string, url: string) => {
+    navigator.clipboard.writeText(`https://cal.id${url}`);
+    setCopiedLink(eventId);
+    setTimeout(() => setCopiedLink(null), 1500);
+  };
+
+  const handleCopyPublicLink = () => {
+    const publicUrl = selectedTeam === 'personal' ? 'https://cal.id/sanskar' : `https://cal.id/${currentTeam.url}`;
+    navigator.clipboard.writeText(publicUrl);
+    setCopiedPublicLink(true);
+    setTimeout(() => setCopiedPublicLink(false), 1500);
+  };
+
+  const scrollTeams = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const scrollAmount = 200;
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
     }
   };
 
-  const handleTeamSelect = (teamId: string) => {
-    setSelectedTeam(teamId);
-    setShowTeamDropdown(false);
-    setShowCreateModal(true);
+  const handleArrowClick = (eventId: string, direction: 'up' | 'down') => {
+    setDraggedItem(eventId);
+    setTimeout(() => setDraggedItem(null), 2000);
   };
-
-  const copyToClipboard = async (link: string, eventId: string) => {
-    try {
-      await navigator.clipboard.writeText(link);
-      setCopiedLink(eventId);
-      setTimeout(() => setCopiedLink(null), 2000);
-    } catch (err) {
-      console.error('Failed to copy: ', err);
-    }
-  };
-
-  const toggleEventStatus = (eventId: string, teamId: string) => {
-    setTeamData(prev => prev.map(team => 
-      team.id === teamId 
-        ? {
-            ...team,
-            eventTypes: team.eventTypes.map(event =>
-              event.id === eventId 
-                ? { ...event, isActive: !event.isActive }
-                : event
-            )
-          }
-        : team
-    ));
-  };
-
-  const handleEventAction = (action: string, eventId: string, teamId: string) => {
-    switch (action) {
-      case 'edit':
-        navigate(`/event/${eventId}/setup`);
-        break;
-      case 'duplicate':
-        console.log('Duplicate event:', eventId);
-        break;
-      case 'embed':
-        console.log('Embed event:', eventId);
-        break;
-      case 'delete':
-        setTeamData(prev => prev.map(team =>
-          team.id === teamId
-            ? { ...team, eventTypes: team.eventTypes.filter(event => event.id !== eventId) }
-            : team
-        ));
-        break;
-    }
-    setEventMenuOpen(null);
-  };
-
-  const moveEvent = (eventId: string, direction: 'up' | 'down', teamId: string) => {
-    setTeamData(prev => prev.map(team =>
-      team.id === teamId
-        ? {
-            ...team,
-            eventTypes: (() => {
-              const events = [...team.eventTypes];
-              const currentIndex = events.findIndex(event => event.id === eventId);
-              if (currentIndex === -1) return events;
-              
-              const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
-              if (newIndex < 0 || newIndex >= events.length) return events;
-              
-              [events[currentIndex], events[newIndex]] = [events[newIndex], events[currentIndex]];
-              return events;
-            })()
-          }
-        : team
-    ));
-  };
-
-  const EventTile = ({ event, teamId }: { event: any; teamId: string }) => {
-    const [isHovered, setIsHovered] = useState(false);
-    
-    return (
-      <div 
-        className={`relative bg-card border border-border rounded-lg p-4 transition-all duration-200 cursor-pointer group ${
-          !event.isActive ? 'opacity-50' : ''
-        } hover:shadow-md hover:border-primary/20`}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onClick={() => navigate(`/event/${event.id}/setup`)}
-      >
-        {/* Move arrows */}
-        {isHovered && (
-          <div className="absolute -left-4 top-1/2 transform -translate-y-1/2 flex flex-col space-y-1 z-10">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                moveEvent(event.id, 'up', teamId);
-              }}
-              className="w-8 h-8 bg-background border border-border rounded-full flex items-center justify-center hover:bg-muted transition-colors shadow-sm"
-            >
-              <ChevronUp className="h-4 w-4" />
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                moveEvent(event.id, 'down', teamId);
-              }}
-              className="w-8 h-8 bg-background border border-border rounded-full flex items-center justify-center hover:bg-muted transition-colors shadow-sm"
-            >
-              <ChevronDown className="h-4 w-4" />
-            </button>
-          </div>
-        )}
-
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center space-x-2">
-            <h3 className="font-medium text-foreground">{event.title}</h3>
-            
-            {/* Copy link button */}
-            <div className="relative">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  copyToClipboard(event.url, event.id);
-                }}
-                className="flex items-center space-x-1 px-2 py-1 bg-muted rounded text-xs text-muted-foreground hover:bg-muted/80 transition-colors"
-              >
-                <Copy className="h-3 w-3" />
-                <span>Copy link</span>
-              </button>
-              
-              {copiedLink === event.id && (
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 px-2 py-1 bg-foreground text-background text-xs rounded whitespace-nowrap animate-scale-in">
-                  Copied!
-                </div>
-              )}
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-2">
-            {/* Toggle */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleEventStatus(event.id, teamId);
-              }}
-              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                event.isActive ? 'bg-primary' : 'bg-muted'
-              }`}
-            >
-              <span
-                className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
-                  event.isActive ? 'translate-x-5' : 'translate-x-1'
-                }`}
-              />
-            </button>
-            
-            {/* Preview button */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                window.open(event.url, '_blank');
-              }}
-              className="p-1 hover:bg-muted rounded transition-colors"
-            >
-              <Eye className="h-4 w-4 text-muted-foreground" />
-            </button>
-            
-            {/* More options */}
-            <div className="relative">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setEventMenuOpen(eventMenuOpen === event.id ? null : event.id);
-                }}
-                className="p-1 hover:bg-muted rounded transition-colors"
-              >
-                <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-              </button>
-              
-              {eventMenuOpen === event.id && (
-                <div className="absolute right-0 top-full mt-1 w-40 bg-popover border border-border rounded-lg shadow-lg z-20 animate-scale-in">
-                  <div className="py-1">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEventAction('edit', event.id, teamId);
-                      }}
-                      className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors"
-                    >
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEventAction('duplicate', event.id, teamId);
-                      }}
-                      className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors"
-                    >
-                      <Copy className="h-4 w-4 mr-2" />
-                      Duplicate
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEventAction('embed', event.id, teamId);
-                      }}
-                      className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors"
-                    >
-                      <Share className="h-4 w-4 mr-2" />
-                      Embed
-                    </button>
-                    <div className="border-t border-border my-1"></div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEventAction('delete', event.id, teamId);
-                      }}
-                      className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-        
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <div className="flex items-center space-x-1">
-            <Clock className="h-4 w-4" />
-            <span>{event.durations?.[0] || 30} min</span>
-          </div>
-          <span>{event.bookingsToday} bookings today</span>
-        </div>
-      </div>
-    );
-  };
-
-  const currentTeam = teamData.find(team => team.id === selectedTeam);
 
   return (
-    <div className="p-4">
-      {/* Teams tabs with scroll */}
-      <div className="relative mb-4">
-        <div className="flex items-center">
+    <div className="p-4 space-y-4">
+      {/* Team Selector with Horizontal Scroll */}
+      <div className="flex items-center space-x-3 relative bg-background/95 backdrop-blur-sm sticky top-16 z-10 py-2 -mx-4 px-4 border-b border-border/40">
+        <div className="flex items-center bg-muted/50 rounded-lg p-1">
+          <button
+            onClick={() => setSelectedTeam('personal')}
+            className={`flex items-center px-2.5 py-1.5 text-sm font-medium rounded-md transition-all ${
+              selectedTeam === 'personal'
+                ? 'bg-background text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <div className={`h-5 w-5 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
+              selectedTeam === 'personal' ? 'bg-primary text-primary-foreground' : 'bg-muted-foreground/20'
+            }`}>
+              SY
+            </div>
+            Sanskar Yadav
+          </button>
+        </div>
+        
+        <div className="w-px h-6 bg-border"></div>
+        
+        <div className="flex items-center space-x-2">
           {canScrollLeft && (
             <button
-              onClick={() => scrollTeamsContainer('left')}
-              className="absolute left-0 z-10 p-2 bg-background border border-border rounded-full shadow-sm hover:bg-muted transition-colors"
+              onClick={() => scrollTeams('left')}
+              className="p-1 hover:bg-muted rounded-md transition-colors opacity-70 hover:opacity-100"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
           )}
           
           <div
-            id="teams-container"
-            className="flex space-x-4 overflow-x-hidden scrollbar-none w-full px-8"
-            onScroll={(e) => {
-              const { scrollLeft, scrollWidth, clientWidth } = e.currentTarget;
-              setCanScrollLeft(scrollLeft > 0);
-              setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
-            }}
+            ref={scrollRef}
+            className="flex space-x-1 overflow-x-auto scrollbar-none max-w-2xl"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
-            {teamData.map((team, index) => (
-              <React.Fragment key={team.id}>
-                {index === 1 && <div className="w-px h-8 bg-border flex-shrink-0"></div>}
-                <button
-                  onClick={() => setSelectedTeam(team.id)}
-                  className={`flex-shrink-0 flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-                    selectedTeam === team.id
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                  }`}
-                >
-                  {team.logo && <span className="text-lg">{team.logo}</span>}
-                  <span>{team.id === 'personal' ? 'Personal' : team.name}</span>
-                </button>
-              </React.Fragment>
+            {mockTeams.slice(1).map((team) => (
+              <button
+                key={team.id}
+                onClick={() => setSelectedTeam(team.id)}
+                className={`flex items-center px-2.5 py-1.5 text-sm font-medium rounded-md whitespace-nowrap transition-all flex-shrink-0 ${
+                  selectedTeam === team.id
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                }`}
+              >
+                <div className={`h-5 w-5 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
+                  selectedTeam === team.id ? 'bg-primary-foreground text-primary' : 'bg-muted-foreground/20'
+                }`}>
+                  {team.avatar}
+                </div>
+                {team.name}
+              </button>
             ))}
           </div>
           
           {canScrollRight && (
             <button
-              onClick={() => scrollTeamsContainer('right')}
-              className="absolute right-0 z-10 p-2 bg-background border border-border rounded-full shadow-sm hover:bg-muted transition-colors"
+              onClick={() => scrollTeams('right')}
+              className="p-1 hover:bg-muted rounded-md transition-colors opacity-70 hover:opacity-100"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
           )}
         </div>
       </div>
-      
-      {/* Create Event Button */}
-      <div className="mb-4 relative">
-        <button
-          onClick={() => setShowTeamDropdown(!showTeamDropdown)}
-          className="flex items-center space-x-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
-        >
-          <Plus className="h-4 w-4" />
-          <span>New</span>
-        </button>
+
+      {/* Search Bar and New Button */}
+      <div className="flex items-center justify-between space-x-3">
+        <div className="flex items-center space-x-3 flex-1">
+          <div className="relative w-52">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search events..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-sm"
+            />
+          </div>
+          
+          <div className="relative">
+            <button
+              onClick={handleCopyPublicLink}
+              className="flex items-center space-x-2 px-2 py-1.5 bg-muted/70 text-muted-foreground text-xs rounded-md hover:bg-muted transition-colors"
+            >
+              <span className="text-xs">
+                {selectedTeam === 'personal' ? 'cal.id/sanskar' : `cal.id/${currentTeam.url}`}
+              </span>
+              <Copy className="h-3 w-3" />
+            </button>
+            {copiedPublicLink && (
+              <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-foreground text-background text-xs rounded animate-fade-in whitespace-nowrap">
+                Copied
+              </div>
+            )}
+          </div>
+        </div>
         
-        {showTeamDropdown && (
-          <div className="absolute top-full left-0 mt-1 w-48 bg-popover border border-border rounded-lg shadow-lg z-20 animate-scale-in">
-            <div className="py-1">
-              {teamData.map((team) => (
-                <button
-                  key={team.id}
-                  onClick={() => handleTeamSelect(team.id)}
-                  className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors"
+        <div className="relative">
+          <button
+            onClick={() => setShowNewDropdown(!showNewDropdown)}
+            className="inline-flex items-center px-3 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            <Plus className="h-4 w-4 mr-1.5" />
+            New
+          </button>
+          
+          {showNewDropdown && (
+            <div className="absolute right-0 top-full mt-1 w-48 bg-popover border border-border rounded-lg shadow-lg animate-scale-in z-10">
+              <div className="py-1">
+                {mockTeams.map((team) => (
+                  <button
+                    key={team.id}
+                    onClick={() => {
+                      setSelectedTeam(team.id);
+                      setIsCreateModalOpen(true);
+                      setShowNewDropdown(false);
+                    }}
+                    className="w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors flex items-center"
+                  >
+                    <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium mr-2">
+                      {team.avatar}
+                    </div>
+                    {team.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Event Types List */}
+      <div className="space-y-2">
+        {filteredEvents.map((event) => (
+          <div
+            key={event.id}
+            className="relative group animate-fade-in"
+            onMouseEnter={() => setHoveredEvent(event.id)}
+            onMouseLeave={() => {
+              if (draggedItem !== event.id) {
+                setHoveredEvent(null);
+              }
+            }}
+          >
+            {/* Move buttons - positioned to stick to tile */}
+            {(hoveredEvent === event.id || draggedItem === event.id) && (
+              <div className="absolute -left-6 top-1/2 transform -translate-y-1/2 flex flex-col space-y-0.5 z-10">
+                <button 
+                  onClick={() => handleArrowClick(event.id, 'up')}
+                  className="p-1 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all"
                 >
-                  {team.logo && <span className="mr-2">{team.logo}</span>}
-                  {team.id === 'personal' ? 'Personal' : team.name}
+                  <ArrowUp className="h-3 w-3 text-muted-foreground" />
                 </button>
-              ))}
+                <button 
+                  onClick={() => handleArrowClick(event.id, 'down')}
+                  className="p-1 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all"
+                >
+                  <ArrowDown className="h-3 w-3 text-muted-foreground" />
+                </button>
+              </div>
+            )}
+
+            <div 
+              onClick={() => handleEventClick(event.id)}
+              className="bg-card border border-border rounded-lg p-3 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer"
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center mb-2 space-x-2">
+                    <h3 className="text-base font-medium text-foreground">
+                      {event.title}
+                    </h3>
+                    <div className="relative">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCopyLink(event.id, event.url);
+                        }}
+                        className="flex items-center space-x-1 px-1.5 py-0.5 bg-muted/70 text-muted-foreground text-xs rounded hover:bg-muted transition-colors"
+                      >
+                        <Copy className="h-2.5 w-2.5" />
+                        <span className="text-xs">Copy</span>
+                      </button>
+                      {copiedLink === event.id && (
+                        <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-1.5 py-0.5 bg-foreground text-background text-xs rounded animate-fade-in whitespace-nowrap">
+                          Copied
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <p className="text-muted-foreground text-sm mb-2 line-clamp-2">{event.description}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      {event.durations?.map((duration) => (
+                        <span key={duration} className="inline-flex items-center px-2 py-1 bg-muted text-foreground text-xs rounded">
+                          {duration}m
+                        </span>
+                      ))}
+                    </div>
+                    <span className="text-xs text-muted-foreground">
+                      {event.bookingsToday} bookings today
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-2 ml-3" onClick={(e) => e.stopPropagation()}>
+                  <Switch checked={event.isActive} />
+                  <button className="p-1.5 hover:bg-muted rounded-md transition-colors">
+                    <Eye className="h-4 w-4 text-muted-foreground" />
+                  </button>
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowMoreOptions(showMoreOptions === event.id ? null : event.id)}
+                      className="p-1.5 hover:bg-muted rounded-md transition-colors"
+                    >
+                      <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                    </button>
+                    
+                    {showMoreOptions === event.id && (
+                      <div className="absolute right-0 top-full mt-1 w-40 bg-popover border border-border rounded-lg shadow-lg animate-scale-in z-10">
+                        <div className="py-1">
+                          <button 
+                            onClick={() => handleEventClick(event.id)}
+                            className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors"
+                          >
+                            <Edit className="h-4 w-4 mr-2" />
+                            Edit
+                          </button>
+                          <button className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors">
+                            <CopyIcon className="h-4 w-4 mr-2" />
+                            Duplicate
+                          </button>
+                          <button className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors">
+                            <Code className="h-4 w-4 mr-2" />
+                            Embed
+                          </button>
+                          <button className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors text-destructive">
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        )}
-      </div>
-      
-      {/* Event Types Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {currentTeam?.eventTypes.map((event) => (
-          <EventTile key={event.id} event={event} teamId={selectedTeam} />
         ))}
       </div>
-      
-      {/* Create Event Modal */}
-      {showCreateModal && (
-        <CreateEventModal
-          isOpen={showCreateModal}
-          onClose={() => setShowCreateModal(false)}
-          selectedTeam={selectedTeam}
-          teams={teamData}
-        />
-      )}
+
+      <CreateEventModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        teams={mockTeams}
+        selectedTeam={selectedTeam}
+      />
     </div>
   );
 };

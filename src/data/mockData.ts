@@ -5,71 +5,41 @@ export const mockTeams = [
     name: 'Sanskar Yadav',
     avatar: 'SY',
     url: 'sanskar',
-    logo: '👤',
-    eventTypes: Array.from({ length: 15 }, (_, i) => ({
-      id: `personal-${i + 1}`,
-      title: `Personal ${['Meeting', 'Call', 'Session', 'Chat', 'Discussion'][i % 5]} ${i + 1}`,
-      description: 'Personal meeting description',
-      url: `/sanskar/event-${i + 1}`,
-      durations: [15, 30, 45, 60][i % 4] ? [[15, 30, 45, 60][i % 4]] : [30],
-      isActive: i % 4 !== 0,
-      bookingsToday: Math.floor(Math.random() * 8)
-    }))
+    eventTypes: [
+      {
+        id: '1',
+        title: 'Product Hunt Chats',
+        description: 'The essence of Product Hunt reflects in communities- Select a time suitable for you, and let\'s talk products!',
+        url: '/sanskar/product-hunt-chats',
+        durations: [15, 30, 45, 60],
+        isActive: true,
+        bookingsToday: 3
+      },
+      {
+        id: '2',
+        title: 'Quick Meeting',
+        description: 'A quick 15-minute meeting to discuss urgent matters.',
+        url: '/sanskar/quick-meeting',
+        durations: [15],
+        isActive: true,
+        bookingsToday: 1
+      },
+      {
+        id: '3',
+        title: 'Strategy Session',
+        description: 'Deep dive into strategic planning and execution.',
+        url: '/sanskar/strategy-session',
+        durations: [60, 90],
+        isActive: false,
+        bookingsToday: 0
+      }
+    ]
   },
   {
     id: 'design-team',
     name: 'Design Team',
     avatar: 'DT',
     url: 'design-team',
-    logo: '🎨',
-    eventTypes: Array.from({ length: 15 }, (_, i) => ({
-      id: `dt-${i + 1}`,
-      title: `Design ${['Review', 'Critique', 'Workshop', 'Brainstorm', 'Sync'][i % 5]} ${i + 1}`,
-      description: 'Design team meeting description',
-      url: `/design-team/event-${i + 1}`,
-      durations: [[15, 30, 45, 60][i % 4]],
-      isActive: i % 3 !== 0,
-      bookingsToday: Math.floor(Math.random() * 6)
-    }))
-  },
-  {
-    id: 'dev-team',
-    name: 'Development Team',
-    avatar: 'DV',
-    url: 'dev-team',
-    logo: '💻',
-    eventTypes: Array.from({ length: 15 }, (_, i) => ({
-      id: `dv-${i + 1}`,
-      title: `Dev ${['Standup', 'Review', 'Planning', 'Demo', 'Retro'][i % 5]} ${i + 1}`,
-      description: 'Development team meeting description',
-      url: `/dev-team/event-${i + 1}`,
-      durations: [[15, 30, 45, 60, 90][i % 5]],
-      isActive: i % 4 !== 0,
-      bookingsToday: Math.floor(Math.random() * 8)
-    }))
-  },
-  {
-    id: 'marketing-team',
-    name: 'Marketing Team',
-    avatar: 'MT',
-    url: 'marketing-team',
-    logo: '📈',
-    eventTypes: Array.from({ length: 15 }, (_, i) => ({
-      id: `mt-${i + 1}`,
-      title: `Marketing ${['Campaign', 'Strategy', 'Analysis', 'Creative', 'Social'][i % 5]} ${i + 1}`,
-      description: 'Marketing team meeting description',
-      url: `/marketing-team/event-${i + 1}`,
-      durations: [[30, 45, 60][i % 3]],
-      isActive: i % 5 !== 0,
-      bookingsToday: Math.floor(Math.random() * 5)
-    }))
-  },
-  {
-    id: 'sales-team',
-    name: 'Sales Team',
-    avatar: 'ST',
-    url: 'sales-team',
-    logo: '💼',
     eventTypes: [
       {
         id: 'dt-1',
