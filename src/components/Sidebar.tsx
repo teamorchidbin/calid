@@ -54,7 +54,7 @@ export const Sidebar = ({ darkMode, setDarkMode }: SidebarProps) => {
         ))}
       </nav>
       
-      <div className="p-4">
+      <div className="p-4 mt-auto">
         <div className="flex items-center justify-center space-x-2">
           <button
             onClick={handleDarkModeToggle}

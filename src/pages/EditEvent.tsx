@@ -10,7 +10,6 @@ import { EventWorkflows } from '../components/EventWorkflows';
 import { EventWebhooks } from '../components/EventWebhooks';
 import { RecurringEvent } from '../components/RecurringEvent';
 import { Switch } from '../components/ui/switch';
-import { Header } from '../components/Header';
 
 const tabs = [{
   id: 'setup',
@@ -52,14 +51,9 @@ export const EditEvent = () => {
   } = useParams();
   const [activeTab, setActiveTab] = useState(tab || 'setup');
   const [eventEnabled, setEventEnabled] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
   const navigate = useNavigate();
   const handleBack = () => {
     navigate('/');
-  };
-  
-  const handleDarkModeToggle = () => {
-    setDarkMode(!darkMode);
   };
   
   const renderTabContent = () => {
@@ -85,9 +79,42 @@ export const EditEvent = () => {
     }
   };
   
-  return <div className={darkMode ? 'dark' : ''}>
-    <div className="min-h-screen bg-background">
-      <Header />
+  return <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="h-20 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="h-full px-8 flex items-center justify-between w-full">
+          <div className="flex-1">
+            <h1 className="text-xl font-semibold text-foreground">Event Types</h1>
+            <p className="text-sm text-muted-foreground mt-1">Create events to share for people to book on your calendar.</p>
+          </div>
+          
+          <div className="flex items-center space-x-4 ml-auto">
+            {/* Notifications */}
+            <div className="relative">
+              <button className="p-2 hover:bg-muted rounded-lg transition-colors relative">
+                <svg className="h-5 w-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19c-5 0-8-3-8-6s3-6 8-6 8 3 8 6-3 6-8 6z" />
+                </svg>
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+              </button>
+            </div>
+
+            {/* Profile */}
+            <div className="relative">
+              <button className="flex items-center space-x-3 px-4 py-2 hover:bg-muted rounded-lg transition-colors w-full">
+                <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
+                  <span className="text-sm font-medium text-primary-foreground">SY</span>
+                </div>
+                <span className="text-sm font-medium text-foreground">Sanskar Yadav</span>
+                <svg className="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
 
       {/* Event Header */}
       <div className="bg-card border-b border-border px-8 py-6">
@@ -122,33 +149,12 @@ export const EditEvent = () => {
 
       <div className="flex w-full">
         {/* Sidebar */}
-        <div className="w-64 bg-card border-r border-border min-h-screen sticky top-20">
-          <nav className="p-6 space-y-1 flex flex-col h-full">
-            <div className="flex-1 space-y-1">
+        <div className="w-64 bg-card border-r border-border min-h-screen sticky top-0">
+          <nav className="p-6 space-y-1">
             {tabs.map(tabItem => <button key={tabItem.id} onClick={() => setActiveTab(tabItem.id)} className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${activeTab === tabItem.id ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
                 <tabItem.icon className="mr-3 h-4 w-4" />
                 {tabItem.name}
               </button>)}
-            </div>
-            
-            {/* Settings and Dark Mode at bottom */}
-            <div className="pt-4 border-t border-border space-y-2">
-              <div className="flex items-center justify-center space-x-2">
-                <button
-                  onClick={handleDarkModeToggle}
-                  className="p-2.5 bg-muted/50 hover:bg-muted rounded-lg transition-all duration-200"
-                >
-                  {darkMode ? (
-                    <Sun className="h-5 w-5 text-muted-foreground" />
-                  ) : (
-                    <Moon className="h-5 w-5 text-muted-foreground" />
-                  )}
-                </button>
-                <button className="p-2.5 bg-muted/50 hover:bg-muted rounded-lg transition-all duration-200">
-                  <Settings className="h-5 w-5 text-muted-foreground" />
-                </button>
-              </div>
-            </div>
           </nav>
         </div>
 
@@ -157,6 +163,5 @@ export const EditEvent = () => {
           {renderTabContent()}
         </div>
       </div>
-    </div>
-  </div>;
+    </div>;
 };
