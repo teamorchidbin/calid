@@ -175,7 +175,7 @@ export const EventSetup = ({ onChange }: EventSetupProps) => {
   };
 
   return (
-    <div className="p-6 max-w-5xl space-y-6">
+    <div className="p-6 w-full space-y-6">
       <div>
         <label className="block text-sm text-gray-700 mb-2">Title</label>
         <input

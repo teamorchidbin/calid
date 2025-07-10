@@ -35,7 +35,7 @@ export const EventWorkflows = () => {
     setActiveWorkflows(prev => prev.includes(workflowId) ? prev.filter(id => id !== workflowId) : [...prev, workflowId]);
   };
 
-  return <div className="p-8 max-w-4xl mx-auto space-y-8">
+  return <div className="p-8 w-full space-y-8">
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-foreground">Available Workflows</h3>

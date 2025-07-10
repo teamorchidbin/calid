@@ -7,7 +7,7 @@ export const EventWebhooks = () => {
   const [webhooks, setWebhooks] = useState<any[]>([]);
 
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-8">
+    <div className="p-8 w-full space-y-8">
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-foreground">Webhooks</h3>
