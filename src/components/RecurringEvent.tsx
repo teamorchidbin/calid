@@ -5,10 +5,7 @@ export const RecurringEvent = () => {
   const [isRecurringEnabled, setIsRecurringEnabled] = useState(false);
   return <div className="p-8 max-w-4xl mx-0">
       <div className="space-y-8">
-        <div>
-          <h2 className="text-xl font-semibold text-foreground mb-2">Recurring Event</h2>
-          <p className="text-muted-foreground mb-8">Set up a recurring event that repeats at regular intervals.</p>
-        </div>
+        
 
         {/* Warning */}
         <div className="flex items-start space-x-3 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
