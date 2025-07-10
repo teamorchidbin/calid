@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -102,4 +103,30 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Custom toggle switch styles */
+.toggle-checkbox {
+  transition: all 0.3s ease;
+}
+
+.toggle-checkbox:checked {
+  transform: translateX(100%);
+  border-color: #3B82F6;
+}
+
+.toggle-label {
+  transition: background-color 0.3s ease;
+}
+
+.toggle-checkbox:checked + .toggle-label {
+  background-color: #3B82F6;
+}
+
+/* Text truncation utilities */
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
