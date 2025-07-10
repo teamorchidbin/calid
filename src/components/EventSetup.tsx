@@ -179,7 +179,6 @@ export const EventSetup = ({
     }
     return null;
   };
-  return <div className="p-8 max-w-4xl space-y-6 mx-0">
   return <div className="p-6 max-w-4xl space-y-4 mx-0">
       <div>
         <label className="block text-sm font-medium text-foreground mb-2">Title</label>
@@ -213,9 +212,6 @@ export const EventSetup = ({
                 </div>}
             </div>
           </div>
-          <div contentEditable className="w-full p-4 min-h-[100px] focus:outline-none" dangerouslySetInnerHTML={{
-          __html: formData.description
-        }} onInput={e => handleFormChange('description', e.currentTarget.innerHTML)} />
           <div contentEditable className="w-full p-3 min-h-[80px] focus:outline-none" dangerouslySetInnerHTML={{
           __html: formData.description
         }} onInput={e => handleFormChange('description', e.currentTarget.innerHTML)} />
@@ -240,7 +236,6 @@ export const EventSetup = ({
 
       <div>
         <label className="block text-sm font-medium text-foreground mb-3">Available durations</label>
-        <div className="flex flex-wrap gap-2 mb-4">
         <div className="flex flex-wrap gap-2 mb-3">
           {availableDurations.map(duration => <button key={duration} onClick={() => handleDurationToggle(duration)} className={`px-4 py-2 text-sm rounded border transition-colors ${formData.durations.includes(duration) ? 'bg-primary/10 border-primary text-primary' : 'bg-background border-border text-foreground hover:bg-muted'}`}>
               {duration} mins
