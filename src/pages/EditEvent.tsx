@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ExternalLink, Copy, Settings, Clock, Zap, Shield, Smartphone, Workflow, Webhook, RotateCcw, Eye } from 'lucide-react';
+import { ArrowLeft, Copy, Eye, Clock, Zap, Shield, Smartphone, Workflow, Webhook, RotateCcw, Settings } from 'lucide-react';
 import { EventSetup } from '../components/EventSetup';
 import { EventAvailability } from '../components/EventAvailability';
 import { EventLimits } from '../components/EventLimits';
@@ -60,7 +60,7 @@ export const EditEvent = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-card border-b border-border px-8 py-6">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
+        <div className="flex items-center justify-between w-full">
           <div className="flex items-center">
             <button 
               onClick={handleBack}
@@ -77,7 +77,6 @@ export const EditEvent = () => {
                 </div>
                 <button className="text-sm text-primary hover:text-primary/80 flex items-center transition-colors">
                   <Eye className="h-4 w-4 mr-1" />
-                  Preview
                 </button>
               </div>
             </div>
@@ -96,9 +95,9 @@ export const EditEvent = () => {
         </div>
       </div>
 
-      <div className="flex max-w-7xl mx-auto">
+      <div className="flex w-full">
         {/* Sidebar */}
-        <div className="w-64 bg-card border-r border-border min-h-screen">
+        <div className="w-64 bg-card border-r border-border min-h-screen sticky top-0">
           <nav className="p-6 space-y-1">
             {tabs.map((tabItem) => (
               <button

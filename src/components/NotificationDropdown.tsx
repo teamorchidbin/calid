@@ -8,7 +8,7 @@ interface NotificationDropdownProps {
 
 export const NotificationDropdown = ({ onClose }: NotificationDropdownProps) => {
   return (
-    <div className="absolute right-0 top-full mt-1 w-80 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border border-border rounded-lg shadow-lg animate-scale-in z-10">
+    <div className="absolute right-0 top-full mt-1 w-80 bg-background border border-border rounded-lg shadow-lg animate-scale-in z-10">
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-medium text-foreground">Notifications</h3>

@@ -138,9 +138,9 @@ export const EventTypes = () => {
   };
 
   return (
-    <div className="p-8 space-y-6 max-w-7xl mx-auto w-full">
+    <div className="px-8 pt-6 pb-8 space-y-4 w-full">
       {/* Team Selector */}
-      <div className="flex items-center justify-between space-x-4 bg-background/95 backdrop-blur-sm sticky top-20 z-10 py-4 -mx-8 px-8 border-b border-border/40">
+      <div className="flex items-center justify-between space-x-4">
         <div className="flex items-center space-x-4 flex-1 min-w-0">
           <div className="flex items-center bg-muted/50 rounded-lg p-1 flex-shrink-0">
             <button
@@ -154,7 +154,7 @@ export const EventTypes = () => {
               <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
                 selectedTeam === 'personal' ? 'bg-primary text-primary-foreground' : 'bg-muted-foreground/20'
               }`}>
-                {teamEvents[0].logo}
+                {teamEvents[0].avatar}
               </div>
               <span className="truncate">Sanskar Yadav</span>
             </button>
@@ -176,7 +176,7 @@ export const EventTypes = () => {
                 <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
                   selectedTeam === team.id ? 'bg-primary-foreground text-primary' : 'bg-muted-foreground/20'
                 }`}>
-                  {team.logo}
+                  {team.avatar}
                 </div>
                 <span className="truncate">{team.name}</span>
               </button>
@@ -240,7 +240,7 @@ export const EventTypes = () => {
                     className="w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors flex items-center"
                   >
                     <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium mr-2">
-                      {team.logo}
+                      {team.avatar}
                     </div>
                     {team.name}
                   </button>
@@ -252,7 +252,7 @@ export const EventTypes = () => {
       </div>
 
       {/* Event Types List */}
-      <div className="space-y-4">
+      <div className="space-y-3">
         {filteredEvents.map((event) => {
           const isEventActive = eventStates[event.id] ?? event.isActive;
           return (
@@ -264,7 +264,7 @@ export const EventTypes = () => {
             >
               {/* Move buttons */}
               {hoveredEvent === event.id && (
-                <div className="absolute -left-4 top-1/2 transform -translate-y-1/2 flex flex-col space-y-1 z-10 animate-scale-in">
+                <div className="absolute -left-12 top-1/2 transform -translate-y-1/2 flex flex-col space-y-1 z-10 animate-scale-in">
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
@@ -288,13 +288,13 @@ export const EventTypes = () => {
 
               <div 
                 onClick={() => handleEventClick(event.id)}
-                className={`bg-card border border-border rounded-lg p-6 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer ${
+                className={`bg-card border border-border rounded-lg p-4 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer ${
                   !isEventActive ? 'opacity-50' : ''
                 }`}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center mb-4 space-x-3">
+                    <div className="flex items-center mb-3 space-x-3">
                       <h3 className="text-lg font-semibold text-foreground">
                         {event.title}
                       </h3>
@@ -316,18 +316,13 @@ export const EventTypes = () => {
                         )}
                       </div>
                     </div>
-                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{event.description}</p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        {event.durations?.map((duration) => (
-                          <span key={duration} className="inline-flex items-center px-3 py-1 bg-muted text-foreground text-sm rounded">
-                            {duration}m
-                          </span>
-                        ))}
-                      </div>
-                      <span className="text-sm text-muted-foreground">
-                        {event.bookingsToday} bookings today
-                      </span>
+                    <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{event.description}</p>
+                    <div className="flex items-center">
+                      {event.durations?.map((duration) => (
+                        <span key={duration} className="inline-flex items-center px-3 py-1 bg-muted text-foreground text-sm rounded mr-2">
+                          {duration}m
+                        </span>
+                      ))}
                     </div>
                   </div>
                   

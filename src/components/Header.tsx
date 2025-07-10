@@ -13,7 +13,7 @@ export const Header = ({ showEventTypesHeader = false }: HeaderProps) => {
 
   return (
     <header className="h-20 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-      <div className="h-full px-8 flex items-center justify-between max-w-7xl mx-auto">
+      <div className="h-full px-8 flex items-center justify-between w-full">
         {showEventTypesHeader && (
           <div className="flex-1">
             <h1 className="text-xl font-semibold text-foreground">Event Types</h1>
@@ -41,7 +41,7 @@ export const Header = ({ showEventTypesHeader = false }: HeaderProps) => {
           <div className="relative">
             <button
               onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-              className="flex items-center space-x-3 px-4 py-2 hover:bg-muted rounded-lg transition-colors"
+              className="flex items-center space-x-3 px-4 py-2 hover:bg-muted rounded-lg transition-colors w-full"
             >
               <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
                 <span className="text-sm font-medium text-primary-foreground">SY</span>
