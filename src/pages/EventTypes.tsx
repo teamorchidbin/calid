@@ -124,17 +124,10 @@ export const EventTypes = () => {
     setIsCreateModalOpen(true);
   };
 
-  const handleCreateEvent = () => {
-    // Create a new event and redirect to edit
-    const newEventId = `event-${Date.now()}`;
-    setIsCreateModalOpen(false);
-    navigate(`/event/${newEventId}/setup`);
-  };
-
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 w-full">
       {/* Team Selector - Full Width with Scrolling */}
-      <div className="flex items-center justify-between space-x-4 bg-background/95 backdrop-blur-sm sticky top-20 z-10 py-3 -mx-6 px-6 border-b border-border/40">
+      <div className="flex items-center justify-between space-x-4 bg-background/95 backdrop-blur-sm sticky top-20 z-10 py-3 -mx-6 px-6 border-b border-border/40 w-full">
         <div className="flex items-center space-x-4 w-full">
           <div className="flex items-center bg-muted/50 rounded-lg p-1">
             <button
@@ -204,7 +197,7 @@ export const EventTypes = () => {
       </div>
 
       {/* Search Bar and New Button */}
-      <div className="flex items-center justify-between space-x-4">
+      <div className="flex items-center justify-between space-x-4 w-full">
         <div className="flex items-center space-x-4 flex-1">
           <div className="relative w-64">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -413,7 +406,7 @@ export const EventTypes = () => {
       <CreateEventModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
-        onCreateEvent={handleCreateEvent}
+        teams={mockTeams}
         selectedTeam={selectedTeamForCreate}
       />
     </div>
