@@ -35,7 +35,8 @@ export const Sidebar = ({ darkMode, setDarkMode }: SidebarProps) => {
         <span className="ml-3 text-xl font-semibold">Cal ID</span>
       </div>
       
-      <nav className="flex-1 px-4 py-6 space-y-1">
+      <div className="flex-1 flex flex-col">
+        <nav className="px-4 py-6 space-y-1 flex-1">
         {navigation.map((item) => (
           <NavLink
             key={item.name}
@@ -52,13 +53,13 @@ export const Sidebar = ({ darkMode, setDarkMode }: SidebarProps) => {
             {item.name}
           </NavLink>
         ))}
-      </nav>
+        </nav>
       
-      <div className="p-4 mt-auto">
-        <div className="flex items-center justify-center space-x-2">
+        <div className="p-4 border-t border-border">
+          <div className="flex items-center justify-center space-x-2">
           <button
             onClick={handleDarkModeToggle}
-            className="p-2.5 bg-muted/50 hover:bg-muted rounded-lg transition-all duration-200 animate-button-press"
+            className="p-2.5 bg-muted/50 hover:bg-muted rounded-lg transition-all duration-200"
           >
             {darkMode ? (
               <Sun className="h-5 w-5 text-muted-foreground" />
@@ -69,6 +70,7 @@ export const Sidebar = ({ darkMode, setDarkMode }: SidebarProps) => {
           <button className="p-2.5 bg-muted/50 hover:bg-muted rounded-lg transition-all duration-200 animate-button-press">
             <Settings className="h-5 w-5 text-muted-foreground" />
           </button>
+          </div>
         </div>
       </div>
     </div>

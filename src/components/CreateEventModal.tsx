@@ -49,11 +49,19 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
     const eventData = {
       ...formData,
       duration: formData.duration,
-      team: selectedTeam
+      team: selectedTeam || initialTeam
     };
 
     console.log('Calling onCreateEvent with:', eventData);
     onCreateEvent(eventData);
+    
+    // Reset form
+    setFormData({
+      title: '',
+      url: 'new-event',
+      description: '',
+      duration: '30'
+    });
   };
 
   const handleDurationSelect = (suggestion: typeof durationSuggestions[0]) => {

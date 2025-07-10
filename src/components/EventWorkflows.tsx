@@ -51,7 +51,7 @@ export const EventWorkflows = () => {
                     <workflow.icon className={`h-6 w-6 ${activeWorkflows.includes(workflow.id) ? 'text-[#008c44]' : 'text-muted-foreground'}`} />
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-semibold text-foreground mb-1">{workflow.name}</h4>
+                    <h4 className="text-base font-semibold text-foreground mb-1">{workflow.name}</h4>
                     <p className="text-muted-foreground mb-3">{workflow.description}</p>
                     <div className="flex items-center space-x-4 text-xs text-muted-foreground">
                       <span className="flex items-center">
@@ -80,7 +80,7 @@ export const EventWorkflows = () => {
             <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
               <MessageSquare className="h-8 w-8 text-muted-foreground" />
             </div>
-            <p className="text-muted-foreground font-medium">No workflows are currently active</p>
+            <p className="text-base text-muted-foreground font-medium">No workflows are currently active</p>
             <p className="text-muted-foreground/70 text-sm mt-1">Enable workflows above to automate your event processes</p>
           </div>}
       </div>

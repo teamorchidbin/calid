@@ -67,11 +67,11 @@ export const EventLimits = () => {
     <div className="p-6 max-w-4xl space-y-6">
       {/* Before Event */}
       <div className="border-b border-gray-200 pb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Before event</h3>
+        <h3 className="text-xl font-semibold text-gray-900 mb-4">Before event</h3>
         
         <div className="grid grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Buffer time</label>
+            <label className="block text-base font-medium text-gray-700 mb-2">Buffer time</label>
             <select 
               value={settings.beforeEvent.bufferTime}
               onChange={(e) => updateSetting('beforeEvent', 'bufferTime', e.target.value)}
@@ -84,7 +84,7 @@ export const EventLimits = () => {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Notice</label>
+            <label className="block text-base font-medium text-gray-700 mb-2">Minimum Notice</label>
             <div className="flex space-x-2">
               <input
                 type="number"
@@ -107,11 +107,11 @@ export const EventLimits = () => {
 
       {/* After Event */}
       <div className="border-b border-gray-200 pb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">After event</h3>
+        <h3 className="text-xl font-semibold text-gray-900 mb-4">After event</h3>
         
         <div className="grid grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Buffer time</label>
+            <label className="block text-base font-medium text-gray-700 mb-2">Buffer time</label>
             <select 
               value={settings.afterEvent.bufferTime}
               onChange={(e) => updateSetting('afterEvent', 'bufferTime', e.target.value)}
@@ -124,7 +124,7 @@ export const EventLimits = () => {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Time-slot intervals</label>
+            <label className="block text-base font-medium text-gray-700 mb-2">Time-slot intervals</label>
             <select 
               value={settings.afterEvent.timeSlotIntervals}
               onChange={(e) => updateSetting('afterEvent', 'timeSlotIntervals', e.target.value)}
@@ -142,7 +142,7 @@ export const EventLimits = () => {
       <div className="border-b border-gray-200 pb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Limit booking frequency</h3>
+            <h3 className="text-xl font-semibold text-gray-900">Limit booking frequency</h3>
             <p className="text-sm text-gray-600">Limit how many times this event can be booked</p>
           </div>
           <Switch 
@@ -195,7 +195,7 @@ export const EventLimits = () => {
       <div className="border-b border-gray-200 pb-6">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Only show the first slot of each day as available</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Only show the first slot of each day as available</h3>
             <p className="text-sm text-gray-600 max-w-3xl">
               This will limit your availability for this event type to one slot per day, scheduled at the earliest available time.
             </p>
@@ -211,7 +211,7 @@ export const EventLimits = () => {
       <div className="border-b border-gray-200 pb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Limit total booking duration</h3>
+            <h3 className="text-xl font-semibold text-gray-900">Limit total booking duration</h3>
             <p className="text-sm text-gray-600">Limit total amount of time that this event can be booked</p>
           </div>
           <Switch 
@@ -275,7 +275,7 @@ export const EventLimits = () => {
       <div className="border-b border-gray-200 pb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Limit future bookings</h3>
+            <h3 className="text-xl font-semibold text-gray-900">Limit future bookings</h3>
             <p className="text-sm text-gray-600">Limit how far in the future this event can be booked</p>
           </div>
           <Switch 
@@ -334,7 +334,7 @@ export const EventLimits = () => {
       <div>
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Offset start times</h3>
+            <h3 className="text-xl font-semibold text-gray-900">Offset start times</h3>
             <p className="text-sm text-gray-600">Offset timeslots shown to bookers by a specified number of minutes</p>
           </div>
           <Switch 

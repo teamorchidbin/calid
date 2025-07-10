@@ -56,13 +56,15 @@ export const EventTypes = () => {
     console.log('New event object:', newEvent);
 
     // Update team events state
-    setTeamEvents(prevTeams => 
-      prevTeams.map(team => 
+    setTeamEvents(prevTeams => {
+      const updatedTeams = prevTeams.map(team => 
         team.id === selectedTeam 
           ? { ...team, eventTypes: [...team.eventTypes, newEvent] }
           : team
-      )
-    );
+      );
+      console.log('Updated teams:', updatedTeams);
+      return updatedTeams;
+    });
 
     // Initialize event state
     setEventStates(prev => ({
@@ -73,7 +75,10 @@ export const EventTypes = () => {
     // Close modal and navigate to the NEW event
     setIsCreateModalOpen(false);
     console.log('Navigating to new event:', newEventId);
-    navigate(`/event/${newEventId}/setup`);
+    // Use setTimeout to ensure state update completes first
+    setTimeout(() => {
+      navigate(`/event/${newEventId}/setup`);
+    }, 100);
   };
 
   const handleCopyLink = (eventId: string, url: string) => {
@@ -277,24 +282,24 @@ export const EventTypes = () => {
             >
               {/* Move buttons */}
               {hoveredEvent === event.id && (
-                <div className="absolute -left-12 top-1/2 transform -translate-y-1/2 flex flex-col space-y-1 z-10 animate-scale-in">
+                <div className="absolute -left-6 top-1/2 transform -translate-y-1/2 flex flex-col space-y-1 z-10 animate-scale-in">
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
                       handleArrowClick(event.id, 'up');
                     }}
-                    className="p-2 bg-background border border-border rounded-lg hover:bg-muted shadow-md transition-all transform hover:scale-105"
+                    className="p-1.5 bg-background border border-border rounded-md hover:bg-muted shadow-md transition-all transform hover:scale-105"
                   >
-                    <ArrowUp className="h-4 w-4 text-muted-foreground" />
+                    <ArrowUp className="h-3 w-3 text-muted-foreground" />
                   </button>
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
                       handleArrowClick(event.id, 'down');
                     }}
-                    className="p-2 bg-background border border-border rounded-lg hover:bg-muted shadow-md transition-all transform hover:scale-105"
+                    className="p-1.5 bg-background border border-border rounded-md hover:bg-muted shadow-md transition-all transform hover:scale-105"
                   >
-                    <ArrowDown className="h-4 w-4 text-muted-foreground" />
+                    <ArrowDown className="h-3 w-3 text-muted-foreground" />
                   </button>
                 </div>
               )}

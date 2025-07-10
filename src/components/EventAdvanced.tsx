@@ -29,12 +29,12 @@ export const EventAdvanced = () => {
 
       {/* Booking Settings */}
       <div className="border-b border-gray-200 pb-6">
-        <h3 className="text-base font-semibold text-gray-900 mb-4">Booking Settings</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Booking Settings</h3>
         
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h4 className="text-sm font-medium text-gray-900">Requires confirmation</h4>
+              <h4 className="text-base font-medium text-gray-900">Requires confirmation</h4>
               <p className="text-sm text-gray-600">Bookings will require your confirmation before they are scheduled</p>
             </div>
             <input type="checkbox" checked={settings.requiresConfirmation} onChange={e => setSettings(prev => ({
@@ -45,7 +45,7 @@ export const EventAdvanced = () => {
 
           <div className="flex items-center justify-between">
             <div>
-              <h4 className="text-sm font-medium text-gray-900">Hide event type details</h4>
+              <h4 className="text-base font-medium text-gray-900">Hide event type details</h4>
               <p className="text-sm text-gray-600">Hide the event type name and description from the booking page</p>
             </div>
             <input type="checkbox" checked={settings.hideEventTypeDetails} onChange={e => setSettings(prev => ({
@@ -56,7 +56,7 @@ export const EventAdvanced = () => {
 
           <div className="flex items-center justify-between">
             <div>
-              <h4 className="text-sm font-medium text-gray-900">Pass through hidden fields</h4>
+              <h4 className="text-base font-medium text-gray-900">Pass through hidden fields</h4>
               <p className="text-sm text-gray-600">Pass through UTM parameters and other hidden fields to the booking confirmation</p>
             </div>
             <input type="checkbox" checked={settings.passThroughHiddenFields} onChange={e => setSettings(prev => ({
@@ -69,7 +69,7 @@ export const EventAdvanced = () => {
 
       {/* Redirect Settings */}
       <div className="border-b border-gray-200 pb-6">
-        <h3 className="text-base font-semibold text-gray-900 mb-4">Redirect Settings</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Redirect Settings</h3>
         
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Redirect on booking</label>
@@ -83,7 +83,7 @@ export const EventAdvanced = () => {
 
       {/* Layout Settings */}
       <div>
-        <h3 className="text-base font-semibold text-gray-900 mb-4">Event Layout</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Event Layout</h3>
         <p className="text-sm text-gray-600 mb-4">Choose how your booking page will be displayed to bookers</p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
