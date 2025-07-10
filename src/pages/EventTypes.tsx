@@ -15,11 +15,11 @@ export const EventTypes = () => {
   const [copiedLink, setCopiedLink] = useState<string | null>(null);
   const [copiedPublicLink, setCopiedPublicLink] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const [eventStates, setEventStates] = useState<{[key: string]: boolean}>({});
+  const [teamEvents, setTeamEvents] = useState(mockTeams);
   const navigate = useNavigate();
 
-  const currentTeam = mockTeams.find(t => t.id === selectedTeam) || mockTeams[0];
+  const currentTeam = teamEvents.find(t => t.id === selectedTeam) || teamEvents[0];
   const filteredEvents = currentTeam.eventTypes.filter(event =>
     event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     event.description.toLowerCase().includes(searchQuery.toLowerCase())
@@ -28,16 +28,42 @@ export const EventTypes = () => {
   // Initialize event states
   useEffect(() => {
     const initialStates: {[key: string]: boolean} = {};
-    mockTeams.forEach(team => {
+    teamEvents.forEach(team => {
       team.eventTypes.forEach(event => {
         initialStates[event.id] = event.isActive;
       });
     });
     setEventStates(initialStates);
-  }, []);
+  }, [teamEvents]);
 
   const handleEventClick = (eventId: string) => {
     navigate(`/event/${eventId}/setup`);
+  };
+
+  const handleCreateEvent = (eventData: any) => {
+    const newEventId = `event-${Date.now()}`;
+    const newEvent = {
+      id: newEventId,
+      title: eventData.title || 'New Event',
+      description: eventData.description || 'A new event',
+      url: `/${currentTeam.url}/${eventData.url || 'new-event'}`,
+      durations: [eventData.duration || '30'],
+      isActive: true,
+      bookingsToday: 0
+    };
+
+    // Update team events
+    setTeamEvents(prevTeams => 
+      prevTeams.map(team => 
+        team.id === selectedTeam 
+          ? { ...team, eventTypes: [...team.eventTypes, newEvent] }
+          : team
+      )
+    );
+
+    // Navigate to edit page
+    navigate(`/event/${newEventId}/setup`);
+    setIsCreateModalOpen(false);
   };
 
   const handleCopyLink = (eventId: string, url: string) => {
@@ -61,9 +87,30 @@ export const EventTypes = () => {
   };
 
   const handleArrowClick = (eventId: string, direction: 'up' | 'down') => {
-    setDraggedItem(eventId);
-    // Here you would implement the actual reordering logic
-    setTimeout(() => setDraggedItem(null), 1000);
+    const eventIndex = filteredEvents.findIndex(e => e.id === eventId);
+    if (direction === 'up' && eventIndex > 0) {
+      const newEvents = [...filteredEvents];
+      [newEvents[eventIndex], newEvents[eventIndex - 1]] = [newEvents[eventIndex - 1], newEvents[eventIndex]];
+      
+      setTeamEvents(prevTeams => 
+        prevTeams.map(team => 
+          team.id === selectedTeam 
+            ? { ...team, eventTypes: newEvents }
+            : team
+        )
+      );
+    } else if (direction === 'down' && eventIndex < filteredEvents.length - 1) {
+      const newEvents = [...filteredEvents];
+      [newEvents[eventIndex], newEvents[eventIndex + 1]] = [newEvents[eventIndex + 1], newEvents[eventIndex]];
+      
+      setTeamEvents(prevTeams => 
+        prevTeams.map(team => 
+          team.id === selectedTeam 
+            ? { ...team, eventTypes: newEvents }
+            : team
+        )
+      );
+    }
   };
 
   const handleMenuAction = (action: string, eventId: string) => {
@@ -73,29 +120,32 @@ export const EventTypes = () => {
         handleEventClick(eventId);
         break;
       case 'duplicate':
-        // Implement duplicate logic
         console.log('Duplicating event', eventId);
         break;
       case 'embed':
-        // Implement embed logic
         console.log('Embed event', eventId);
         break;
       case 'delete':
-        // Implement delete logic
-        console.log('Deleting event', eventId);
+        setTeamEvents(prevTeams => 
+          prevTeams.map(team => 
+            team.id === selectedTeam 
+              ? { ...team, eventTypes: team.eventTypes.filter(e => e.id !== eventId) }
+              : team
+          )
+        );
         break;
     }
   };
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Team Selector - Full Width */}
-      <div className="flex items-center justify-between space-x-4 bg-background/95 backdrop-blur-sm sticky top-20 z-10 py-3 -mx-6 px-6 border-b border-border/40">
-        <div className="flex items-center space-x-4 flex-1">
-          <div className="flex items-center bg-muted/50 rounded-lg p-1">
+    <div className="p-8 space-y-6 max-w-7xl mx-auto w-full">
+      {/* Team Selector */}
+      <div className="flex items-center justify-between space-x-4 bg-background/95 backdrop-blur-sm sticky top-20 z-10 py-4 -mx-8 px-8 border-b border-border/40">
+        <div className="flex items-center space-x-4 flex-1 min-w-0">
+          <div className="flex items-center bg-muted/50 rounded-lg p-1 flex-shrink-0">
             <button
               onClick={() => setSelectedTeam('personal')}
-              className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all ${
+              className={`flex items-center px-4 py-2 text-sm font-medium rounded-md transition-all whitespace-nowrap ${
                 selectedTeam === 'personal'
                   ? 'bg-background text-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground'
@@ -104,20 +154,20 @@ export const EventTypes = () => {
               <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
                 selectedTeam === 'personal' ? 'bg-primary text-primary-foreground' : 'bg-muted-foreground/20'
               }`}>
-                {mockTeams[0].logo}
+                {teamEvents[0].logo}
               </div>
-              Sanskar Yadav
+              <span className="truncate">Sanskar Yadav</span>
             </button>
           </div>
           
-          <div className="w-px h-6 bg-border"></div>
+          <div className="w-px h-6 bg-border flex-shrink-0"></div>
           
           <div className="flex space-x-2 flex-1 overflow-x-auto scrollbar-none">
-            {mockTeams.slice(1).map((team) => (
+            {teamEvents.slice(1).map((team) => (
               <button
                 key={team.id}
                 onClick={() => setSelectedTeam(team.id)}
-                className={`flex items-center px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-all flex-shrink-0 ${
+                className={`flex items-center px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-all flex-shrink-0 min-w-fit ${
                   selectedTeam === team.id
                     ? 'bg-primary text-primary-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
@@ -128,7 +178,7 @@ export const EventTypes = () => {
                 }`}>
                   {team.logo}
                 </div>
-                {team.name}
+                <span className="truncate">{team.name}</span>
               </button>
             ))}
           </div>
@@ -138,26 +188,26 @@ export const EventTypes = () => {
       {/* Search Bar and New Button */}
       <div className="flex items-center justify-between space-x-4">
         <div className="flex items-center space-x-4 flex-1">
-          <div className="relative w-64">
+          <div className="relative w-80">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
               placeholder="Search events..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-sm"
+              className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-sm"
             />
           </div>
           
           <div className="relative">
             <button
               onClick={handleCopyPublicLink}
-              className="flex items-center space-x-2 px-3 py-2 bg-muted/70 text-muted-foreground text-xs rounded-md hover:bg-muted transition-colors"
+              className="flex items-center space-x-2 px-4 py-2 bg-muted/70 text-muted-foreground text-sm rounded-md hover:bg-muted transition-colors"
             >
-              <span className="text-xs">
+              <span className="text-sm">
                 {selectedTeam === 'personal' ? 'cal.id/sanskar' : `cal.id/${currentTeam.url}`}
               </span>
-              <Copy className="h-3 w-3" />
+              <Copy className="h-4 w-4" />
             </button>
             {copiedPublicLink && (
               <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-foreground text-background text-xs rounded animate-fade-in whitespace-nowrap">
@@ -170,7 +220,7 @@ export const EventTypes = () => {
         <div className="relative">
           <button
             onClick={() => setShowNewDropdown(!showNewDropdown)}
-            className="inline-flex items-center px-4 py-2.5 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
           >
             <Plus className="h-4 w-4 mr-2" />
             New
@@ -179,7 +229,7 @@ export const EventTypes = () => {
           {showNewDropdown && (
             <div className="absolute right-0 top-full mt-1 w-48 bg-popover border border-border rounded-lg shadow-lg animate-scale-in z-10">
               <div className="py-1">
-                {mockTeams.map((team) => (
+                {teamEvents.map((team) => (
                   <button
                     key={team.id}
                     onClick={() => {
@@ -202,7 +252,7 @@ export const EventTypes = () => {
       </div>
 
       {/* Event Types List */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         {filteredEvents.map((event) => {
           const isEventActive = eventStates[event.id] ?? event.isActive;
           return (
@@ -210,46 +260,42 @@ export const EventTypes = () => {
               key={event.id}
               className="relative group animate-fade-in"
               onMouseEnter={() => setHoveredEvent(event.id)}
-              onMouseLeave={() => {
-                if (draggedItem !== event.id) {
-                  setHoveredEvent(null);
-                }
-              }}
+              onMouseLeave={() => setHoveredEvent(null)}
             >
-              {/* Move buttons - halfway on tile */}
-              {(hoveredEvent === event.id || draggedItem === event.id) && (
-                <div className="absolute -left-3 top-1/2 transform -translate-y-1/2 flex flex-col space-y-1 z-10">
+              {/* Move buttons */}
+              {hoveredEvent === event.id && (
+                <div className="absolute -left-4 top-1/2 transform -translate-y-1/2 flex flex-col space-y-1 z-10 animate-scale-in">
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
                       handleArrowClick(event.id, 'up');
                     }}
-                    className="p-1.5 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all"
+                    className="p-2 bg-background border border-border rounded-lg hover:bg-muted shadow-md transition-all transform hover:scale-105"
                   >
-                    <ArrowUp className="h-3 w-3 text-muted-foreground" />
+                    <ArrowUp className="h-4 w-4 text-muted-foreground" />
                   </button>
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
                       handleArrowClick(event.id, 'down');
                     }}
-                    className="p-1.5 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all"
+                    className="p-2 bg-background border border-border rounded-lg hover:bg-muted shadow-md transition-all transform hover:scale-105"
                   >
-                    <ArrowDown className="h-3 w-3 text-muted-foreground" />
+                    <ArrowDown className="h-4 w-4 text-muted-foreground" />
                   </button>
                 </div>
               )}
 
               <div 
                 onClick={() => handleEventClick(event.id)}
-                className={`bg-card border border-border rounded-lg p-4 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer ${
+                className={`bg-card border border-border rounded-lg p-6 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer ${
                   !isEventActive ? 'opacity-50' : ''
                 }`}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center mb-3 space-x-3">
-                      <h3 className="text-base font-medium text-foreground">
+                    <div className="flex items-center mb-4 space-x-3">
+                      <h3 className="text-lg font-semibold text-foreground">
                         {event.title}
                       </h3>
                       <div className="relative">
@@ -258,34 +304,34 @@ export const EventTypes = () => {
                             e.stopPropagation();
                             handleCopyLink(event.id, event.url);
                           }}
-                          className="flex items-center space-x-1 px-2 py-1 bg-muted/70 text-muted-foreground text-xs rounded hover:bg-muted transition-colors"
+                          className="flex items-center space-x-2 px-3 py-1 bg-muted/70 text-muted-foreground text-sm rounded hover:bg-muted transition-colors"
                         >
-                          <Copy className="h-2.5 w-2.5" />
-                          <span className="text-xs">Copy</span>
+                          <Copy className="h-3 w-3" />
+                          <span className="text-sm">Copy</span>
                         </button>
                         {copiedLink === event.id && (
-                          <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-1.5 py-0.5 bg-foreground text-background text-xs rounded animate-fade-in whitespace-nowrap">
+                          <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-foreground text-background text-xs rounded animate-fade-in whitespace-nowrap">
                             Copied
                           </div>
                         )}
                       </div>
                     </div>
-                    <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{event.description}</p>
+                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{event.description}</p>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         {event.durations?.map((duration) => (
-                          <span key={duration} className="inline-flex items-center px-2 py-1 bg-muted text-foreground text-xs rounded">
+                          <span key={duration} className="inline-flex items-center px-3 py-1 bg-muted text-foreground text-sm rounded">
                             {duration}m
                           </span>
                         ))}
                       </div>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-sm text-muted-foreground">
                         {event.bookingsToday} bookings today
                       </span>
                     </div>
                   </div>
                   
-                  <div className="flex items-center space-x-2 ml-4" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex items-center space-x-3 ml-6" onClick={(e) => e.stopPropagation()}>
                     <Switch 
                       checked={isEventActive} 
                       onCheckedChange={(checked) => handleToggleEvent(event.id, checked)}
@@ -347,8 +393,9 @@ export const EventTypes = () => {
       <CreateEventModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
-        teams={mockTeams}
+        teams={teamEvents}
         selectedTeam={selectedTeam}
+        onCreateEvent={handleCreateEvent}
       />
     </div>
   );

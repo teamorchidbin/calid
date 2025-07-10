@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { X, ChevronDown, Users, RotateCcw, Settings } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { mockTeams } from '../data/mockData';
 
 interface Team {
@@ -16,9 +15,10 @@ interface Props {
   onClose: () => void;
   teams: Team[];
   selectedTeam?: string;
+  onCreateEvent: (eventData: any) => void;
 }
 
-export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initialTeam }: Props) => {
+export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initialTeam, onCreateEvent }: Props) => {
   const [selectedTeam, setSelectedTeam] = useState<string>(initialTeam || '');
   const [showTeamSelector, setShowTeamSelector] = useState(!initialTeam);
   const [eventType, setEventType] = useState<string>('');
@@ -30,7 +30,6 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
     description: '',
     duration: '30'
   });
-  const navigate = useNavigate();
 
   const eventTypeOptions = [
     {
@@ -54,6 +53,7 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
   ];
 
   const durationSuggestions = [
+    { value: '15', label: '15 mins', unit: 'minutes' as const },
     { value: '30', label: '30 mins', unit: 'minutes' as const },
     { value: '45', label: '45 mins', unit: 'minutes' as const },
     { value: '60', label: '60 mins', unit: 'minutes' as const },
@@ -80,10 +80,12 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
   };
 
   const handleCreate = () => {
-    // Create a new event with a temporary ID that includes timestamp for uniqueness
-    const newEventId = `event-${Date.now()}`;
-    navigate(`/event/${newEventId}/setup`);
-    onClose();
+    const eventData = {
+      ...formData,
+      duration: durationUnit === 'hours' ? (parseFloat(formData.duration) * 60).toString() : formData.duration,
+      team: selectedTeam
+    };
+    onCreateEvent(eventData);
   };
 
   const handleBack = () => {
@@ -127,7 +129,7 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
                     className="w-full flex items-center p-3 border border-border rounded-lg hover:border-border/60 hover:bg-muted/50 transition-all"
                   >
                     <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-sm font-medium mr-3">
-                      {team.avatar}
+                      {team.logo || team.avatar}
                     </div>
                     <span className="font-medium">{team.name}</span>
                   </button>
@@ -207,9 +209,14 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
                         onFocus={() => setShowDurationDropdown(true)}
                         className="flex-1 px-3 py-2 border border-r-0 border-border rounded-l-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-background"
                       />
-                      <span className="inline-flex items-center px-3 py-2 border border-border bg-muted text-sm rounded-r-lg">
-                        {durationUnit === 'minutes' ? 'Minutes' : 'Hours'}
-                      </span>
+                      <select
+                        value={durationUnit}
+                        onChange={(e) => setDurationUnit(e.target.value as 'minutes' | 'hours')}
+                        className="px-3 py-2 border border-border bg-muted text-sm rounded-r-lg focus:ring-2 focus:ring-ring"
+                      >
+                        <option value="minutes">Minutes</option>
+                        <option value="hours">Hours</option>
+                      </select>
                     </div>
                     
                     {showDurationDropdown && (
@@ -251,7 +258,7 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
             </button>
             <button
               onClick={handleCreate}
-              disabled={showTeamSelector || (selectedTeam !== 'personal' && !eventType)}
+              disabled={showTeamSelector || (selectedTeam !== 'personal' && !eventType) || !formData.title}
               className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed transition-colors"
             >
               Create

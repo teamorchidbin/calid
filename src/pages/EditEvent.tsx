@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ExternalLink, Copy, Settings, Clock, Zap, Shield, Smartphone, Workflow, Webhook, RotateCcw } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Copy, Settings, Clock, Zap, Shield, Smartphone, Workflow, Webhook, RotateCcw, Eye } from 'lucide-react';
 import { EventSetup } from '../components/EventSetup';
 import { EventAvailability } from '../components/EventAvailability';
 import { EventLimits } from '../components/EventLimits';
@@ -9,6 +9,7 @@ import { EventAdvanced } from '../components/EventAdvanced';
 import { EventApps } from '../components/EventApps';
 import { EventWorkflows } from '../components/EventWorkflows';
 import { EventWebhooks } from '../components/EventWebhooks';
+import { RecurringEvent } from '../components/RecurringEvent';
 import { Switch } from '../components/ui/switch';
 
 const tabs = [
@@ -25,7 +26,6 @@ const tabs = [
 export const EditEvent = () => {
   const { eventId, tab } = useParams();
   const [activeTab, setActiveTab] = useState(tab || 'setup');
-  const [hasChanges, setHasChanges] = useState(false);
   const [eventEnabled, setEventEnabled] = useState(true);
   const navigate = useNavigate();
 
@@ -33,15 +33,10 @@ export const EditEvent = () => {
     navigate('/');
   };
 
-  const handleSave = () => {
-    setHasChanges(false);
-    // Implement save logic here
-  };
-
   const renderTabContent = () => {
     switch (activeTab) {
       case 'setup':
-        return <EventSetup onChange={() => setHasChanges(true)} />;
+        return <EventSetup />;
       case 'availability':
         return <EventAvailability />;
       case 'limits':
@@ -49,57 +44,7 @@ export const EditEvent = () => {
       case 'advanced':
         return <EventAdvanced />;
       case 'recurring':
-        return (
-          <div className="p-8 max-w-4xl">
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-xl font-semibold text-foreground mb-2">Recurring Event</h2>
-                <p className="text-muted-foreground mb-8">Set up a recurring event that repeats at regular intervals.</p>
-              </div>
-              
-              <div className="space-y-6">
-                <div className="flex items-center space-x-3">
-                  <Switch id="enable-recurring" />
-                  <label htmlFor="enable-recurring" className="text-sm font-medium">Enable recurring events</label>
-                </div>
-                
-                <div className="pl-6 space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium mb-3">Frequency</label>
-                    <select className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring bg-background">
-                      <option>Does not repeat</option>
-                      <option>Daily</option>
-                      <option>Weekly</option>
-                      <option>Monthly</option>
-                      <option>Yearly</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium mb-3">End date</label>
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-2">
-                        <input type="radio" id="never" name="endType" className="rounded" />
-                        <label htmlFor="never" className="text-sm">Never</label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <input type="radio" id="date" name="endType" className="rounded" />
-                        <label htmlFor="date" className="text-sm">On date</label>
-                        <input type="date" className="ml-2 px-3 py-2 border border-border rounded text-sm bg-background" />
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <input type="radio" id="occurrences" name="endType" className="rounded" />
-                        <label htmlFor="occurrences" className="text-sm">After</label>
-                        <input type="number" className="w-20 ml-2 px-3 py-2 border border-border rounded text-sm bg-background" placeholder="1" />
-                        <span className="text-sm">occurrences</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
+        return <RecurringEvent />;
       case 'apps':
         return <EventApps />;
       case 'workflows':
@@ -107,7 +52,7 @@ export const EditEvent = () => {
       case 'webhooks':
         return <EventWebhooks />;
       default:
-        return <EventSetup onChange={() => setHasChanges(true)} />;
+        return <EventSetup />;
     }
   };
 
@@ -115,7 +60,7 @@ export const EditEvent = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-card border-b border-border px-8 py-6">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center">
             <button 
               onClick={handleBack}
@@ -130,45 +75,28 @@ export const EditEvent = () => {
                   <span>cal.id/sanskar/product-hunt-chats</span>
                   <Copy className="h-3 w-3" />
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Switch 
-                    checked={eventEnabled} 
-                    onCheckedChange={setEventEnabled}
-                  />
-                  <span className="text-sm text-muted-foreground">
-                    {eventEnabled ? 'Enabled' : 'Disabled'}
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
                 <button className="text-sm text-primary hover:text-primary/80 flex items-center transition-colors">
-                  <ExternalLink className="h-3 w-3 mr-1" />
+                  <Eye className="h-4 w-4 mr-1" />
                   Preview
                 </button>
               </div>
             </div>
           </div>
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={handleSave}
-              disabled={!hasChanges}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                hasChanges 
-                  ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
-                  : 'bg-muted text-muted-foreground cursor-not-allowed'
-              }`}
-            >
-              Save Changes
-            </button>
+          <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-              <span className="text-sm text-muted-foreground">Published</span>
+              <Switch 
+                checked={eventEnabled} 
+                onCheckedChange={setEventEnabled}
+              />
+              <span className="text-sm text-muted-foreground">
+                {eventEnabled ? 'Enabled' : 'Disabled'}
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="flex">
+      <div className="flex max-w-7xl mx-auto">
         {/* Sidebar */}
         <div className="w-64 bg-card border-r border-border min-h-screen">
           <nav className="p-6 space-y-1">

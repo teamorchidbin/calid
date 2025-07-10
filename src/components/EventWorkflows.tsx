@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Plus, Mail, MessageSquare, Clock } from 'lucide-react';
 import { Switch } from './ui/switch';
@@ -44,7 +45,7 @@ export const EventWorkflows = () => {
   };
 
   return (
-    <div className="p-8 max-w-6xl space-y-8">
+    <div className="p-8 max-w-6xl mx-auto space-y-8">
       <div>
         <h2 className="text-xl font-semibold text-foreground mb-2">Workflows</h2>
         <p className="text-muted-foreground mb-8">Automate actions when events are scheduled, cancelled, or rescheduled.</p>
@@ -65,17 +66,17 @@ export const EventWorkflows = () => {
               key={workflow.id}
               className={`w-full p-6 border rounded-lg transition-all ${
                 activeWorkflows.includes(workflow.id)
-                  ? 'border-primary/30 bg-primary/5'
+                  ? 'border-[#008c44]/30 bg-[#008c44]/5'
                   : 'border-border bg-card hover:border-border/60'
               }`}
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center space-x-4">
                   <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                    activeWorkflows.includes(workflow.id) ? 'bg-primary/10' : 'bg-muted'
+                    activeWorkflows.includes(workflow.id) ? 'bg-[#008c44]/10' : 'bg-muted'
                   }`}>
                     <workflow.icon className={`h-6 w-6 ${
-                      activeWorkflows.includes(workflow.id) ? 'text-primary' : 'text-muted-foreground'
+                      activeWorkflows.includes(workflow.id) ? 'text-[#008c44]' : 'text-muted-foreground'
                     }`} />
                   </div>
                   <div className="flex-1">
