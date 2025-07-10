@@ -54,7 +54,12 @@ export const EventTypes = () => {
     const container = scrollContainerRef.current;
     if (container) {
       container.addEventListener('scroll', checkScroll);
-      return () => container.removeEventListener('scroll', checkScroll);
+      const resizeObserver = new ResizeObserver(checkScroll);
+      resizeObserver.observe(container);
+      return () => {
+        container.removeEventListener('scroll', checkScroll);
+        resizeObserver.disconnect();
+      };
     }
   }, []);
 
@@ -94,7 +99,6 @@ export const EventTypes = () => {
 
   const handleArrowClick = (eventId: string, direction: 'up' | 'down') => {
     setDraggedItem(eventId);
-    // Simulate reordering logic
     console.log(`Moving event ${eventId} ${direction}`);
     setTimeout(() => setDraggedItem(null), 1000);
   };
@@ -124,15 +128,25 @@ export const EventTypes = () => {
     setIsCreateModalOpen(true);
   };
 
+  const handleCreateEvent = (eventData: any) => {
+    // Generate new event ID
+    const newEventId = `event-${Date.now()}`;
+    console.log('Creating new event:', eventData);
+    
+    // Navigate to the new event's setup page
+    navigate(`/event/${newEventId}/setup`);
+  };
+
   return (
-    <div className="p-6 space-y-6 w-full">
-      {/* Team Selector - Full Width with Scrolling */}
-      <div className="flex items-center justify-between space-x-4 bg-background/95 backdrop-blur-sm sticky top-20 z-10 py-3 -mx-6 px-6 border-b border-border/40 w-full">
-        <div className="flex items-center space-x-4 w-full">
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 w-full max-w-full overflow-hidden">
+      {/* Team Selector */}
+      <div className="flex items-center justify-between bg-background/95 backdrop-blur-sm sticky top-20 z-10 py-3 -mx-4 sm:-mx-6 px-4 sm:px-6 border-b border-border/40 w-full">
+        <div className="flex items-center space-x-4 w-full min-w-0">
+          {/* Personal Profile - Fixed */}
           <div className="flex items-center bg-muted/50 rounded-lg p-1">
             <button
               onClick={() => setSelectedTeam('personal')}
-              className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all ${
+              className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all whitespace-nowrap ${
                 selectedTeam === 'personal'
                   ? 'bg-background text-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground'
@@ -143,17 +157,20 @@ export const EventTypes = () => {
               }`}>
                 {mockTeams[0].logo}
               </div>
-              Sanskar Yadav
+              <span className="hidden sm:inline">Sanskar Yadav</span>
+              <span className="sm:hidden">SK</span>
             </button>
           </div>
           
-          <div className="w-px h-6 bg-border"></div>
+          {/* Separator Line */}
+          <div className="w-px h-6 bg-border flex-shrink-0"></div>
           
-          <div className="flex items-center flex-1 relative">
+          {/* Teams - Scrollable */}
+          <div className="flex items-center flex-1 relative min-w-0">
             {canScrollLeft && (
               <button
                 onClick={() => scrollTeams('left')}
-                className="absolute left-0 z-10 p-1 bg-background border border-border rounded-full shadow-sm hover:bg-muted transition-colors"
+                className="absolute left-0 z-10 p-1 bg-background border border-border rounded-full shadow-sm hover:bg-muted transition-colors flex-shrink-0"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
@@ -161,14 +178,14 @@ export const EventTypes = () => {
             
             <div 
               ref={scrollContainerRef}
-              className="flex space-x-2 overflow-x-auto scrollbar-none flex-1 px-6"
+              className="flex space-x-2 overflow-x-auto scrollbar-none flex-1 px-6 min-w-0"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {mockTeams.slice(1).map((team) => (
                 <button
                   key={team.id}
                   onClick={() => setSelectedTeam(team.id)}
-                  className={`flex items-center px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-all flex-shrink-0 ${
+                  className={`flex items-center px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-all flex-shrink-0 min-w-fit ${
                     selectedTeam === team.id
                       ? 'bg-primary text-primary-foreground shadow-sm'
                       : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
@@ -187,7 +204,7 @@ export const EventTypes = () => {
             {canScrollRight && (
               <button
                 onClick={() => scrollTeams('right')}
-                className="absolute right-0 z-10 p-1 bg-background border border-border rounded-full shadow-sm hover:bg-muted transition-colors"
+                className="absolute right-0 z-10 p-1 bg-background border border-border rounded-full shadow-sm hover:bg-muted transition-colors flex-shrink-0"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
@@ -197,9 +214,9 @@ export const EventTypes = () => {
       </div>
 
       {/* Search Bar and New Button */}
-      <div className="flex items-center justify-between space-x-4 w-full">
-        <div className="flex items-center space-x-4 flex-1">
-          <div className="relative w-64">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0 sm:space-x-4 w-full">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 flex-1 w-full">
+          <div className="relative w-full sm:w-64">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
@@ -212,7 +229,7 @@ export const EventTypes = () => {
           
           <div className="relative flex items-center space-x-2">
             <div className="flex items-center space-x-2 px-3 py-2 bg-muted/70 text-muted-foreground text-xs rounded-md hover:bg-muted transition-colors">
-              <span className="text-xs">
+              <span className="text-xs truncate">
                 {selectedTeam === 'personal' ? 'cal.id/sanskar' : `cal.id/${currentTeam.url}`}
               </span>
               <button onClick={handleCopyPublicLink}>
@@ -230,10 +247,10 @@ export const EventTypes = () => {
           </div>
         </div>
         
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <button
             onClick={() => setShowNewDropdown(!showNewDropdown)}
-            className="inline-flex items-center px-4 py-2.5 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+            className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
           >
             <Plus className="h-4 w-4 mr-2" />
             New
@@ -275,7 +292,7 @@ export const EventTypes = () => {
                 }
               }}
             >
-              {/* Move buttons - halfway on tile with popup animation */}
+              {/* Move buttons */}
               {(hoveredEvent === event.id || draggedItem === event.id) && (
                 <div className="absolute -left-6 top-1/2 transform -translate-y-1/2 flex flex-col space-y-1 z-10">
                   <button 
@@ -301,13 +318,13 @@ export const EventTypes = () => {
 
               <div 
                 onClick={() => handleEventClick(event.id)}
-                className={`bg-card border border-border rounded-lg p-4 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer ${
+                className={`bg-card border border-border rounded-lg p-3 sm:p-4 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer ${
                   !isEventActive ? 'opacity-50' : ''
                 }`}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center mb-3 space-x-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center mb-2 sm:mb-3 space-y-2 sm:space-y-0 sm:space-x-3">
                       <h3 className="text-base font-medium text-foreground">
                         {event.title}
                       </h3>
@@ -329,8 +346,8 @@ export const EventTypes = () => {
                         )}
                       </div>
                     </div>
-                    <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{event.description}</p>
-                    <div className="flex items-center justify-between">
+                    <p className="text-muted-foreground text-sm mb-2 sm:mb-3 line-clamp-2">{event.description}</p>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
                       <div className="flex items-center space-x-2">
                         {event.durations?.map((duration) => (
                           <span key={duration} className="inline-flex items-center px-2 py-1 bg-muted text-foreground text-xs rounded">
@@ -406,6 +423,7 @@ export const EventTypes = () => {
       <CreateEventModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
+        onCreate={handleCreateEvent}
         teams={mockTeams}
         selectedTeam={selectedTeamForCreate}
       />
