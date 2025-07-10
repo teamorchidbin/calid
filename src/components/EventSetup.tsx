@@ -146,9 +146,7 @@ export const EventSetup = ({
               ...prev,
               showGoogleMaps: e.target.checked
             }))} className="mr-2" />
-              <label htmlFor="maps-link" className="text-sm text-muted-foreground">
-                Include Google Maps link
-              </label>
+              <label htmlFor="maps-link" className="text-sm text-muted-foreground">Include Maps link</label>
             </div>
             {locationDetails.showGoogleMaps && <div className="animate-fade-in">
                 <input type="url" value={locationDetails.googleMapsLink} onChange={e => setLocationDetails(prev => ({
