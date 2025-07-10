@@ -86,5 +86,8 @@ export const EventWorkflows = () => {
             <p className="text-muted-foreground/70 text-sm">Enable workflows above to automate your event processes</p>
           </div>}
       </div>
+        }
     </div>;
-};
+  )
+  };
+}

@@ -152,4 +152,6 @@ export const EventAvailability = () => {
         </div>
       </div>
     </div>;
-};
+  )
+  };
+}
