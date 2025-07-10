@@ -1,152 +1,100 @@
 import React, { useState } from 'react';
-import { ChevronDown, Clock, ExternalLink } from 'lucide-react';
+import { Clock, Plus, Trash2 } from 'lucide-react';
+import { Switch } from './ui/switch';
+
 export const EventAvailability = () => {
-  const [availabilityType, setAvailabilityType] = useState('working-hours');
-  const schedules = [{
-    id: 'working-hours',
-    name: 'Working Hours - Default',
-    hours: '9:00 AM - 5:00 PM, Mon-Fri',
-    workingHours: [{
-      day: 'Monday',
-      start: '9:00 am',
-      end: '5:00 pm'
-    }, {
-      day: 'Tuesday',
-      start: '9:00 am',
-      end: '5:00 pm'
-    }, {
-      day: 'Wednesday',
-      start: '9:00 am',
-      end: '5:00 pm'
-    }, {
-      day: 'Thursday',
-      start: '9:00 am',
-      end: '5:00 pm'
-    }, {
-      day: 'Friday',
-      start: '9:00 am',
-      end: '5:00 pm'
-    }, {
-      day: 'Saturday',
-      start: 'Unavailable',
-      end: ''
-    }, {
-      day: 'Sunday',
-      start: 'Unavailable',
-      end: ''
-    }]
-  }, {
-    id: 'business-hours',
-    name: 'Business Hours',
-    hours: '8:00 AM - 6:00 PM, Mon-Fri',
-    workingHours: [{
-      day: 'Monday',
-      start: '8:00 am',
-      end: '6:00 pm'
-    }, {
-      day: 'Tuesday',
-      start: '8:00 am',
-      end: '6:00 pm'
-    }, {
-      day: 'Wednesday',
-      start: '8:00 am',
-      end: '6:00 pm'
-    }, {
-      day: 'Thursday',
-      start: '8:00 am',
-      end: '6:00 pm'
-    }, {
-      day: 'Friday',
-      start: '8:00 am',
-      end: '6:00 pm'
-    }, {
-      day: 'Saturday',
-      start: '10:00 am',
-      end: '2:00 pm'
-    }, {
-      day: 'Sunday',
-      start: 'Unavailable',
-      end: ''
-    }]
-  }, {
-    id: 'flexible',
-    name: 'Flexible Schedule',
-    hours: '10:00 AM - 8:00 PM, Mon-Sun',
-    workingHours: [{
-      day: 'Monday',
-      start: '10:00 am',
-      end: '8:00 pm'
-    }, {
-      day: 'Tuesday',
-      start: '10:00 am',
-      end: '8:00 pm'
-    }, {
-      day: 'Wednesday',
-      start: '11:00 am',
-      end: '7:00 pm'
-    }, {
-      day: 'Thursday',
-      start: '10:00 am',
-      end: '8:00 pm'
-    }, {
-      day: 'Friday',
-      start: '9:00 am',
-      end: '6:00 pm'
-    }, {
-      day: 'Saturday',
-      start: '12:00 pm',
-      end: '8:00 pm'
-    }, {
-      day: 'Sunday',
-      start: '1:00 pm',
-      end: '6:00 pm'
-    }]
-  }];
-  const currentSchedule = schedules.find(s => s.id === availabilityType) || schedules[0];
-  const timezone = 'Asia/Calcutta';
-  return <div className="p-8 max-w-4xl space-y-8">
-      <div>
-        
-        
-        <div className="mb-8">
-          <div className="relative">
-            <select value={availabilityType} onChange={e => setAvailabilityType(e.target.value)} className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent appearance-none bg-background">
-              {schedules.map(schedule => <option key={schedule.id} value={schedule.id}>
-                  {schedule.name}
-                </option>)}
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
+  const [dateOverrides, setDateOverrides] = useState(false);
+  const [timeSlots, setTimeSlots] = useState([
+    { day: 'Monday', enabled: true, start: '09:00', end: '17:00' },
+    { day: 'Tuesday', enabled: true, start: '09:00', end: '17:00' },
+    { day: 'Wednesday', enabled: true, start: '09:00', end: '17:00' },
+    { day: 'Thursday', enabled: true, start: '09:00', end: '17:00' },
+    { day: 'Friday', enabled: true, start: '09:00', end: '17:00' },
+    { day: 'Saturday', enabled: false, start: '09:00', end: '17:00' },
+    { day: 'Sunday', enabled: false, start: '09:00', end: '17:00' }
+  ]);
+
+  return (
+    <div className="w-full p-4">
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-lg font-semibold mb-4">Availability</h2>
+          <p className="text-sm text-muted-foreground mb-6">
+            Set your weekly hours for this event type. You can override these hours for specific dates.
+          </p>
+        </div>
+
+        {/* Time Slots */}
+        <div className="space-y-4">
+          <h3 className="font-medium">Weekly Hours</h3>
+          <div className="space-y-3">
+            {timeSlots.map((slot, index) => (
+              <div key={slot.day} className="flex items-center justify-between p-3 border border-border rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <Switch 
+                    checked={slot.enabled}
+                    onCheckedChange={(checked) => {
+                      const newSlots = [...timeSlots];
+                      newSlots[index].enabled = checked;
+                      setTimeSlots(newSlots);
+                    }}
+                  />
+                  <span className="w-20 text-sm font-medium">{slot.day}</span>
+                </div>
+                
+                {slot.enabled && (
+                  <div className="flex items-center space-x-2">
+                    <input 
+                      type="time" 
+                      value={slot.start}
+                      className="px-2 py-1 border border-border rounded text-sm bg-background"
+                      onChange={(e) => {
+                        const newSlots = [...timeSlots];
+                        newSlots[index].start = e.target.value;
+                        setTimeSlots(newSlots);
+                      }}
+                    />
+                    <span className="text-muted-foreground">to</span>
+                    <input 
+                      type="time" 
+                      value={slot.end}
+                      className="px-2 py-1 border border-border rounded text-sm bg-background"
+                      onChange={(e) => {
+                        const newSlots = [...timeSlots];  
+                        newSlots[index].end = e.target.value;
+                        setTimeSlots(newSlots);
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-lg p-6">
-          <div className="space-y-4">
-            {currentSchedule.workingHours.map((schedule, index) => <div key={index} className="flex items-center justify-between py-3">
-                <div className="w-22 text-foreground font-medium">
-                  {schedule.day}
-                </div>
-                <div className="flex items-center space-x-4 text-muted-foreground">
-                  {schedule.start === 'Unavailable' ? <span className="text-muted-foreground">Unavailable</span> : <>
-                      <span>{schedule.start}</span>
-                      <span>-</span>
-                      <span>{schedule.end}</span>
-                    </>}
-                </div>
-              </div>)}
+        {/* Date Overrides */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-medium">Date Overrides</h3>
+              <p className="text-sm text-muted-foreground">Override your weekly hours for specific dates</p>
+            </div>
+            <Switch 
+              checked={dateOverrides}
+              onCheckedChange={setDateOverrides}
+            />
           </div>
           
-          <div className="mt-6 pt-4 border-t border-border flex items-center justify-between">
-            <div className="flex items-center">
-              <span className="text-sm text-muted-foreground mr-2">🌍</span>
-              <span className="text-sm font-medium text-foreground">{timezone}</span>
+          {dateOverrides && (
+            <div className="p-4 border border-border rounded-lg">
+              <button className="flex items-center text-sm text-primary hover:text-primary/80">
+                <Plus className="h-4 w-4 mr-2" />
+                Add date override
+              </button>
             </div>
-            <button className="text-primary hover:text-primary/80 text-sm font-medium flex items-center transition-colors">
-              <Clock className="h-4 w-4 mr-1" />
-              Edit
-              <ExternalLink className="h-3 w-3 ml-1" />
-            </button>
-          </div>
+          )}
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };

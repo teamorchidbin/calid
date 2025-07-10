@@ -1,7 +1,6 @@
 
-
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { Calendar, Users, BarChart3, Workflow, FileText, Clock, Moon, Sun, Settings } from 'lucide-react';
 
 interface SidebarProps {
@@ -10,6 +9,8 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ darkMode, setDarkMode }: SidebarProps) => {
+  const location = useLocation();
+  
   const navigation = [
     { name: 'Event Types', href: '/', icon: Calendar },
     { name: 'Bookings', href: '/bookings', icon: Clock },
@@ -23,6 +24,13 @@ export const Sidebar = ({ darkMode, setDarkMode }: SidebarProps) => {
 
   const handleDarkModeToggle = () => {
     setDarkMode(!darkMode);
+  };
+
+  const isActive = (href: string) => {
+    if (href === '/') {
+      return location.pathname === '/' || location.pathname.startsWith('/event/');
+    }
+    return location.pathname === href;
   };
 
   return (
@@ -41,13 +49,11 @@ export const Sidebar = ({ darkMode, setDarkMode }: SidebarProps) => {
           <NavLink
             key={item.name}
             to={item.href}
-            className={({ isActive }) =>
-              `group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
-                isActive
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-              }`
-            }
+            className={`group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
+              isActive(item.href)
+                ? 'bg-primary text-primary-foreground shadow-sm'
+                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+            }`}
           >
             <item.icon className="mr-3 h-5 w-5 flex-shrink-0" />
             {item.name}
@@ -75,4 +81,3 @@ export const Sidebar = ({ darkMode, setDarkMode }: SidebarProps) => {
     </div>
   );
 };
-
