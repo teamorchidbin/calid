@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Copy, Eye, Clock, Zap, Shield, Smartphone, Workflow, Webhook, RotateCcw, Settings } from 'lucide-react';
+import { ArrowLeft, Copy, Eye, Settings, Clock, Zap, Shield, Smartphone, Workflow, Webhook, RotateCcw } from 'lucide-react';
 import { EventSetup } from '../components/EventSetup';
 import { EventAvailability } from '../components/EventAvailability';
 import { EventLimits } from '../components/EventLimits';
@@ -58,7 +58,7 @@ export const EditEvent = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
+      {/* Event Header */}
       <div className="bg-card border-b border-border px-8 py-6">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center">

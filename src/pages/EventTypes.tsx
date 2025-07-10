@@ -41,6 +41,8 @@ export const EventTypes = () => {
   };
 
   const handleCreateEvent = (eventData: any) => {
+    console.log('Creating event with data:', eventData);
+    
     const newEventId = `event-${Date.now()}`;
     const newEvent = {
       id: newEventId,
@@ -48,22 +50,32 @@ export const EventTypes = () => {
       description: eventData.description || 'A new event',
       url: `/${currentTeam.url}/${eventData.url || 'new-event'}`,
       durations: [eventData.duration || '30'],
-      isActive: true,
-      bookingsToday: 0
+      isActive: true
     };
 
-    // Update team events
-    setTeamEvents(prevTeams => 
-      prevTeams.map(team => 
+    console.log('New event object:', newEvent);
+
+    // Update team events state
+    setTeamEvents(prevTeams => {
+      const updatedTeams = prevTeams.map(team => 
         team.id === selectedTeam 
           ? { ...team, eventTypes: [...team.eventTypes, newEvent] }
           : team
-      )
-    );
+      );
+      console.log('Updated teams:', updatedTeams);
+      return updatedTeams;
+    });
 
-    // Navigate to edit page
-    navigate(`/event/${newEventId}/setup`);
+    // Initialize event state
+    setEventStates(prev => ({
+      ...prev,
+      [newEventId]: true
+    }));
+
+    // Close modal and navigate
     setIsCreateModalOpen(false);
+    console.log('Navigating to event:', newEventId);
+    navigate(`/event/${newEventId}/setup`);
   };
 
   const handleCopyLink = (eventId: string, url: string) => {
@@ -138,7 +150,7 @@ export const EventTypes = () => {
   };
 
   return (
-    <div className="px-8 pt-6 pb-8 space-y-4 w-full">
+    <div className="px-8 pt-4 pb-8 space-y-6 w-full max-w-full">
       {/* Team Selector */}
       <div className="flex items-center justify-between space-x-4">
         <div className="flex items-center space-x-4 flex-1 min-w-0">
@@ -233,6 +245,7 @@ export const EventTypes = () => {
                   <button
                     key={team.id}
                     onClick={() => {
+                      console.log('Selected team for new event:', team.id);
                       setSelectedTeam(team.id);
                       setIsCreateModalOpen(true);
                       setShowNewDropdown(false);
@@ -252,7 +265,7 @@ export const EventTypes = () => {
       </div>
 
       {/* Event Types List */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         {filteredEvents.map((event) => {
           const isEventActive = eventStates[event.id] ?? event.isActive;
           return (
@@ -288,7 +301,7 @@ export const EventTypes = () => {
 
               <div 
                 onClick={() => handleEventClick(event.id)}
-                className={`bg-card border border-border rounded-lg p-4 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer ${
+                className={`bg-card border border-border rounded-lg p-6 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer ${
                   !isEventActive ? 'opacity-50' : ''
                 }`}
               >
@@ -316,7 +329,7 @@ export const EventTypes = () => {
                         )}
                       </div>
                     </div>
-                    <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{event.description}</p>
+                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{event.description}</p>
                     <div className="flex items-center">
                       {event.durations?.map((duration) => (
                         <span key={duration} className="inline-flex items-center px-3 py-1 bg-muted text-foreground text-sm rounded mr-2">

@@ -65,6 +65,7 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
   if (!isOpen) return null;
 
   const handleTeamSelect = (teamId: string) => {
+    console.log('Team selected:', teamId);
     setSelectedTeam(teamId);
     if (teamId === 'personal') {
       setShowTeamSelector(false);
@@ -75,16 +76,29 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
   };
 
   const handleEventTypeSelect = (type: string) => {
+    console.log('Event type selected:', type);
     setEventType(type);
   };
 
   const handleCreate = () => {
+    console.log('Create button clicked');
+    console.log('Form data:', formData);
+    console.log('Selected team:', selectedTeam);
+    console.log('Event type:', eventType);
+    
+    if (!formData.title.trim()) {
+      console.log('No title provided');
+      return;
+    }
+
     const eventData = {
       ...formData,
       duration: durationUnit === 'hours' ? (parseFloat(formData.duration) * 60).toString() : formData.duration,
       team: selectedTeam,
       eventType: selectedTeam === 'personal' ? 'personal' : eventType
     };
+
+    console.log('Final event data:', eventData);
     onCreateEvent(eventData);
   };
 
@@ -102,6 +116,8 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
     setDurationUnit(suggestion.unit);
     setShowDurationDropdown(false);
   };
+
+  const isFormValid = !showTeamSelector && (selectedTeam === 'personal' || eventType) && formData.title.trim();
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fade-in">
@@ -162,7 +178,7 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
             <div>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Title</label>
+                  <label className="block text-sm font-medium mb-2">Title *</label>
                   <input
                     type="text"
                     placeholder="Quick Chat"
@@ -258,8 +274,12 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
             </button>
             <button
               onClick={handleCreate}
-              disabled={showTeamSelector || (selectedTeam !== 'personal' && !eventType) || !formData.title}
-              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed transition-colors"
+              disabled={!isFormValid}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                isFormValid
+                  ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                  : 'bg-muted text-muted-foreground cursor-not-allowed'
+              }`}
             >
               Create
             </button>
