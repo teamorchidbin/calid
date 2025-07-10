@@ -192,6 +192,7 @@ export const EventLimits = () => {
             </button>
           </div>
         )}
+        </div>
       </div>
 
       {/* Show First Slot Only */}
@@ -273,6 +274,7 @@ export const EventLimits = () => {
             </button>
           </div>
         )}
+        </div>
       </div>
 
       {/* Limit Future Bookings */}
@@ -333,6 +335,7 @@ export const EventLimits = () => {
             </div>
           </div>
         )}
+        </div>
       </div>
 
       {/* Offset Start Times */}
@@ -372,6 +375,7 @@ export const EventLimits = () => {
             </p>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
