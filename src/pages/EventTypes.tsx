@@ -1,196 +1,257 @@
 
-import React, { useState } from 'react';
-import { Plus, MoreHorizontal, ExternalLink, Copy, ArrowUp, ArrowDown, ChevronDown } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Plus, MoreHorizontal, ExternalLink, Copy, ArrowUp, ArrowDown, ChevronLeft, ChevronRight, Search, Eye, Toggle, Edit, Copy as CopyIcon, Code, Trash2, Check } from 'lucide-react';
 import { CreateEventModal } from '../components/CreateEventModal';
 import { useNavigate } from 'react-router-dom';
-
-interface EventType {
-  id: string;
-  title: string;
-  description: string;
-  duration: number;
-  url: string;
-  isActive: boolean;
-  durations?: number[];
-}
-
-const mockEventTypes: EventType[] = [
-  {
-    id: '1',
-    title: 'Product Hunt Chats',
-    description: 'The essence of Product Hunt reflects in communities- Select a time suitable for you, and let\'s talk products!',
-    duration: 30,
-    url: '/sanskar/product-hunt-chats',
-    isActive: true,
-    durations: [15, 30, 45, 60]
-  },
-  {
-    id: '2',
-    title: 'Interviews',
-    description: 'Let\'s chat about how your skills can be an asset for our team. No stress, just good vibes and great questions!',
-    duration: 30,
-    url: '/sanskar/interviews',
-    isActive: true,
-    durations: [30, 60]
-  },
-  {
-    id: '3',
-    title: 'Product Demo',
-    description: 'Witness innovation in action! Reserve a time for a personalized demo of our next-gen scheduler (THIS SITE)',
-    duration: 30,
-    url: '/sanskar/product-demo',
-    isActive: true,
-    durations: [30, 45]
-  },
-  {
-    id: '4',
-    title: 'Everything Else',
-    description: 'Open Agenda! Let\'s brainstorm over coffee or talk about your favorite singer. Whatever it is, I\'m all ears! ✓',
-    duration: 15,
-    url: '/sanskar/everything-else',
-    isActive: true,
-    durations: [15, 30, 60]
-  }
-];
+import { mockTeams } from '../data/mockData';
 
 export const EventTypes = () => {
   const [selectedTeam, setSelectedTeam] = useState('personal');
-  const [eventTypes, setEventTypes] = useState(mockEventTypes);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [showNewDropdown, setShowNewDropdown] = useState(false);
   const [hoveredEvent, setHoveredEvent] = useState<string | null>(null);
+  const [showMoreOptions, setShowMoreOptions] = useState<string | null>(null);
+  const [copiedLink, setCopiedLink] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const teams = [
-    { id: 'personal', name: 'Sanskar Yadav', avatar: 'SY' },
-    { id: 'testing', name: 'Testing Cal ID', avatar: 'TC' }
-  ];
+  const currentTeam = mockTeams.find(t => t.id === selectedTeam) || mockTeams[0];
+  const filteredEvents = currentTeam.eventTypes.filter(event =>
+    event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    event.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleEventClick = (eventId: string) => {
     navigate(`/event/${eventId}/setup`);
   };
 
-  const moveEvent = (eventId: string, direction: 'up' | 'down') => {
-    const currentIndex = eventTypes.findIndex(e => e.id === eventId);
-    if (direction === 'up' && currentIndex > 0) {
-      const newEventTypes = [...eventTypes];
-      [newEventTypes[currentIndex], newEventTypes[currentIndex - 1]] = 
-      [newEventTypes[currentIndex - 1], newEventTypes[currentIndex]];
-      setEventTypes(newEventTypes);
-    } else if (direction === 'down' && currentIndex < eventTypes.length - 1) {
-      const newEventTypes = [...eventTypes];
-      [newEventTypes[currentIndex], newEventTypes[currentIndex + 1]] = 
-      [newEventTypes[currentIndex + 1], newEventTypes[currentIndex]];
-      setEventTypes(newEventTypes);
+  const handleCopyLink = (eventId: string, url: string) => {
+    navigator.clipboard.writeText(`https://cal.id${url}`);
+    setCopiedLink(eventId);
+    setTimeout(() => setCopiedLink(null), 2000);
+  };
+
+  const scrollTeams = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const scrollAmount = 200;
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
     }
   };
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-semibold text-gray-900">Event Types</h1>
-            <p className="text-gray-600 mt-1">Create events to share for people to book on your calendar.</p>
-          </div>
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">Event Types</h1>
+          <p className="text-muted-foreground mt-1">Create events to share for people to book on your calendar.</p>
+        </div>
+      </div>
+
+      {/* Team Selector with Horizontal Scroll */}
+      <div className="flex items-center space-x-4 relative">
+        <div className="flex items-center bg-muted rounded-lg p-1">
           <button
-            onClick={() => setIsCreateModalOpen(true)}
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+            onClick={() => setSelectedTeam('personal')}
+            className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all ${
+              selectedTeam === 'personal'
+                ? 'bg-background text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
+              selectedTeam === 'personal' ? 'bg-primary text-primary-foreground' : 'bg-muted-foreground/20'
+            }`}>
+              SY
+            </div>
+            Sanskar Yadav
+          </button>
+        </div>
+        
+        <div className="w-px h-8 bg-border"></div>
+        
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => scrollTeams('left')}
+            className="p-1 hover:bg-muted rounded-md transition-colors"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          
+          <div
+            ref={scrollRef}
+            className="flex space-x-1 overflow-x-auto scrollbar-minimal max-w-2xl"
+          >
+            {mockTeams.slice(1).map((team) => (
+              <button
+                key={team.id}
+                onClick={() => setSelectedTeam(team.id)}
+                className={`flex items-center px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-all ${
+                  selectedTeam === team.id
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                }`}
+              >
+                <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
+                  selectedTeam === team.id ? 'bg-primary-foreground text-primary' : 'bg-muted-foreground/20'
+                }`}>
+                  {team.avatar}
+                </div>
+                {team.name}
+              </button>
+            ))}
+          </div>
+          
+          <button
+            onClick={() => scrollTeams('right')}
+            className="p-1 hover:bg-muted rounded-md transition-colors"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
+      {/* Search Bar and New Button */}
+      <div className="flex items-center justify-between space-x-4">
+        <div className="relative max-w-md">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Search events..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-background"
+          />
+        </div>
+        
+        <div className="relative">
+          <button
+            onClick={() => setShowNewDropdown(!showNewDropdown)}
+            className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
           >
             <Plus className="h-4 w-4 mr-2" />
             New
           </button>
-        </div>
-
-        {/* Team Selector */}
-        <div className="flex items-center space-x-1 mb-6">
-          {teams.map((team) => (
-            <button
-              key={team.id}
-              onClick={() => setSelectedTeam(team.id)}
-              className={`flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                selectedTeam === team.id
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-              }`}
-            >
-              <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
-                selectedTeam === team.id ? 'bg-white text-gray-900' : 'bg-gray-200 text-gray-600'
-              }`}>
-                {team.avatar}
+          
+          {showNewDropdown && (
+            <div className="absolute right-0 top-full mt-1 w-48 bg-popover border border-border rounded-lg shadow-lg animate-scale-in z-10">
+              <div className="py-1">
+                <button
+                  onClick={() => {
+                    setIsCreateModalOpen(true);
+                    setShowNewDropdown(false);
+                  }}
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors"
+                >
+                  Create new event
+                </button>
               </div>
-              {team.name}
-            </button>
-          ))}
-        </div>
-
-        {/* Search Bar */}
-        <div className="mb-6">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+            </div>
+          )}
         </div>
       </div>
 
       {/* Event Types List */}
-      <div className="space-y-4">
-        {eventTypes.map((event) => (
+      <div className="space-y-3">
+        {filteredEvents.map((event) => (
           <div
             key={event.id}
-            className="relative group"
+            className="relative group animate-fade-in"
             onMouseEnter={() => setHoveredEvent(event.id)}
             onMouseLeave={() => setHoveredEvent(null)}
           >
             {/* Move buttons */}
             {hoveredEvent === event.id && (
-              <div className="absolute -left-12 top-1/2 transform -translate-y-1/2 flex flex-col space-y-1 z-10">
-                <button
-                  onClick={() => moveEvent(event.id, 'up')}
-                  className="p-1 bg-white border border-gray-300 rounded hover:bg-gray-50 shadow-sm"
-                >
-                  <ArrowUp className="h-3 w-3 text-gray-600" />
+              <div className="absolute -left-6 top-1/2 transform -translate-y-1/2 flex flex-col space-y-1 z-10">
+                <button className="p-1 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all">
+                  <ArrowUp className="h-3 w-3 text-muted-foreground" />
                 </button>
-                <button
-                  onClick={() => moveEvent(event.id, 'down')}
-                  className="p-1 bg-white border border-gray-300 rounded hover:bg-gray-50 shadow-sm"
-                >
-                  <ArrowDown className="h-3 w-3 text-gray-600" />
+                <button className="p-1 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all">
+                  <ArrowDown className="h-3 w-3 text-muted-foreground" />
                 </button>
               </div>
             )}
 
-            <div
-              onClick={() => handleEventClick(event.id)}
-              className="bg-white border border-gray-200 rounded-lg p-6 hover:border-gray-300 cursor-pointer transition-all"
-            >
+            <div className="bg-card border border-border rounded-lg p-4 hover:border-border/60 transition-all hover-lift">
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center mb-2">
-                    <h3 className="text-lg font-medium text-gray-900 truncate">{event.title}</h3>
-                    <div className="ml-2 flex items-center space-x-1">
-                      <button className="p-1 text-gray-400 hover:text-gray-600">
-                        <ExternalLink className="h-4 w-4" />
+                  <div className="flex items-center mb-2 space-x-2">
+                    <h3
+                      onClick={() => handleEventClick(event.id)}
+                      className="text-lg font-medium cursor-pointer hover:text-primary transition-colors"
+                    >
+                      {event.title}
+                    </h3>
+                    <div className="relative">
+                      <button
+                        onClick={() => handleCopyLink(event.id, event.url)}
+                        className="flex items-center space-x-1 px-2 py-1 bg-muted text-muted-foreground text-xs rounded hover:bg-muted/80 transition-colors"
+                      >
+                        <Copy className="h-3 w-3" />
+                        <span>Copy link</span>
                       </button>
-                      <button className="p-1 text-gray-400 hover:text-gray-600">
-                        <Copy className="h-4 w-4" />
-                      </button>
+                      {copiedLink === event.id && (
+                        <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-foreground text-background text-xs rounded animate-fade-in whitespace-nowrap">
+                          Copied!
+                        </div>
+                      )}
                     </div>
                   </div>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">{event.description}</p>
-                  <div className="flex items-center space-x-4">
-                    {event.durations?.map((duration) => (
-                      <span key={duration} className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
-                        {duration}m
-                      </span>
-                    ))}
+                  <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{event.description}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      {event.durations?.map((duration) => (
+                        <span key={duration} className="inline-flex items-center px-2 py-1 bg-muted text-foreground text-xs rounded">
+                          {duration}m
+                        </span>
+                      ))}
+                    </div>
+                    <span className="text-xs text-muted-foreground">
+                      {event.bookingsToday} bookings today
+                    </span>
                   </div>
                 </div>
+                
                 <div className="flex items-center space-x-2 ml-4">
-                  <div className={`w-3 h-3 rounded-full ${event.isActive ? 'bg-green-400' : 'bg-gray-300'}`} />
-                  <button className="p-1 text-gray-400 hover:text-gray-600">
-                    <MoreHorizontal className="h-5 w-5" />
+                  <div className={`w-3 h-3 rounded-full ${event.isActive ? 'bg-green-500' : 'bg-muted-foreground'}`} />
+                  <button className="p-1.5 hover:bg-muted rounded-md transition-colors">
+                    <Eye className="h-4 w-4 text-muted-foreground" />
                   </button>
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowMoreOptions(showMoreOptions === event.id ? null : event.id)}
+                      className="p-1.5 hover:bg-muted rounded-md transition-colors"
+                    >
+                      <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                    </button>
+                    
+                    {showMoreOptions === event.id && (
+                      <div className="absolute right-0 top-full mt-1 w-40 bg-popover border border-border rounded-lg shadow-lg animate-scale-in z-10">
+                        <div className="py-1">
+                          <button className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors">
+                            <Edit className="h-4 w-4 mr-2" />
+                            Edit
+                          </button>
+                          <button className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors">
+                            <CopyIcon className="h-4 w-4 mr-2" />
+                            Duplicate
+                          </button>
+                          <button className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors">
+                            <Code className="h-4 w-4 mr-2" />
+                            Embed
+                          </button>
+                          <button className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors text-destructive">
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -201,7 +262,8 @@ export const EventTypes = () => {
       <CreateEventModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
-        teams={teams}
+        teams={mockTeams}
+        selectedTeam={selectedTeam}
       />
     </div>
   );
