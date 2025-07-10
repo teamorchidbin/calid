@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ExternalLink, Copy, Settings, Clock, Zap, Shield, Smartphone, Workflow, Webhook, RotateCcw } from 'lucide-react';
@@ -10,34 +9,55 @@ import { EventApps } from '../components/EventApps';
 import { EventWorkflows } from '../components/EventWorkflows';
 import { EventWebhooks } from '../components/EventWebhooks';
 import { Switch } from '../components/ui/switch';
-
-const tabs = [
-  { id: 'setup', name: 'Event Setup', icon: Settings },
-  { id: 'availability', name: 'Availability', icon: Clock },
-  { id: 'limits', name: 'Limits', icon: Shield },
-  { id: 'advanced', name: 'Advanced', icon: Zap },
-  { id: 'recurring', name: 'Recurring', icon: RotateCcw },
-  { id: 'apps', name: 'Apps', icon: Smartphone },
-  { id: 'workflows', name: 'Workflows', icon: Workflow },
-  { id: 'webhooks', name: 'Webhooks', icon: Webhook },
-];
-
+const tabs = [{
+  id: 'setup',
+  name: 'Event Setup',
+  icon: Settings
+}, {
+  id: 'availability',
+  name: 'Availability',
+  icon: Clock
+}, {
+  id: 'limits',
+  name: 'Limits',
+  icon: Shield
+}, {
+  id: 'advanced',
+  name: 'Advanced',
+  icon: Zap
+}, {
+  id: 'recurring',
+  name: 'Recurring',
+  icon: RotateCcw
+}, {
+  id: 'apps',
+  name: 'Apps',
+  icon: Smartphone
+}, {
+  id: 'workflows',
+  name: 'Workflows',
+  icon: Workflow
+}, {
+  id: 'webhooks',
+  name: 'Webhooks',
+  icon: Webhook
+}];
 export const EditEvent = () => {
-  const { eventId, tab } = useParams();
+  const {
+    eventId,
+    tab
+  } = useParams();
   const [activeTab, setActiveTab] = useState(tab || 'setup');
   const [hasChanges, setHasChanges] = useState(false);
   const [eventEnabled, setEventEnabled] = useState(true);
   const navigate = useNavigate();
-
   const handleBack = () => {
     navigate('/');
   };
-
   const handleSave = () => {
     setHasChanges(false);
     // Implement save logic here
   };
-
   const renderTabContent = () => {
     switch (activeTab) {
       case 'setup':
@@ -49,13 +69,9 @@ export const EditEvent = () => {
       case 'advanced':
         return <EventAdvanced />;
       case 'recurring':
-        return (
-          <div className="p-8 max-w-4xl">
+        return <div className="p-8 max-w-4xl">
             <div className="space-y-8">
-              <div>
-                <h2 className="text-xl font-semibold text-foreground mb-2">Recurring Event</h2>
-                <p className="text-muted-foreground mb-8">Set up a recurring event that repeats at regular intervals.</p>
-              </div>
+              
               
               <div className="space-y-6">
                 <div className="flex items-center space-x-3">
@@ -98,8 +114,7 @@ export const EditEvent = () => {
                 </div>
               </div>
             </div>
-          </div>
-        );
+          </div>;
       case 'apps':
         return <EventApps />;
       case 'workflows':
@@ -110,17 +125,12 @@ export const EditEvent = () => {
         return <EventSetup onChange={() => setHasChanges(true)} />;
     }
   };
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-card border-b border-border px-8 py-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <button 
-              onClick={handleBack}
-              className="mr-4 p-2 hover:bg-muted rounded-lg transition-colors"
-            >
+            <button onClick={handleBack} className="mr-4 p-2 hover:bg-muted rounded-lg transition-colors">
               <ArrowLeft className="h-5 w-5 text-muted-foreground" />
             </button>
             <div>
@@ -131,10 +141,7 @@ export const EditEvent = () => {
                   <Copy className="h-3 w-3" />
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Switch 
-                    checked={eventEnabled} 
-                    onCheckedChange={setEventEnabled}
-                  />
+                  <Switch checked={eventEnabled} onCheckedChange={setEventEnabled} />
                   <span className="text-sm text-muted-foreground">
                     {eventEnabled ? 'Enabled' : 'Disabled'}
                   </span>
@@ -149,15 +156,7 @@ export const EditEvent = () => {
             </div>
           </div>
           <div className="flex items-center space-x-3">
-            <button
-              onClick={handleSave}
-              disabled={!hasChanges}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                hasChanges 
-                  ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
-                  : 'bg-muted text-muted-foreground cursor-not-allowed'
-              }`}
-            >
+            <button onClick={handleSave} disabled={!hasChanges} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${hasChanges ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-muted text-muted-foreground cursor-not-allowed'}`}>
               Save Changes
             </button>
             <div className="flex items-center space-x-2">
@@ -172,20 +171,10 @@ export const EditEvent = () => {
         {/* Sidebar */}
         <div className="w-64 bg-card border-r border-border min-h-screen">
           <nav className="p-6 space-y-1">
-            {tabs.map((tabItem) => (
-              <button
-                key={tabItem.id}
-                onClick={() => setActiveTab(tabItem.id)}
-                className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
-                  activeTab === tabItem.id
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                }`}
-              >
+            {tabs.map(tabItem => <button key={tabItem.id} onClick={() => setActiveTab(tabItem.id)} className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${activeTab === tabItem.id ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
                 <tabItem.icon className="mr-3 h-4 w-4" />
                 {tabItem.name}
-              </button>
-            ))}
+              </button>)}
           </nav>
         </div>
 
@@ -194,6 +183,5 @@ export const EditEvent = () => {
           {renderTabContent()}
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
