@@ -93,7 +93,6 @@ export const EventAdvanced = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {layoutOptions.map(layout => <div key={layout.id} className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${settings.eventLayout === layout.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`} onClick={() => setSettings(prev => ({
-          {layoutOptions.map(layout => <div key={layout.id} className={`p-3 border-2 rounded-lg cursor-pointer transition-all ${settings.eventLayout === layout.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`} onClick={() => setSettings(prev => ({
           ...prev,
           eventLayout: layout.id
         }))}>
@@ -103,6 +102,7 @@ export const EventAdvanced = () => {
                 <p className="text-xs text-gray-600">{layout.description}</p>
               </div>
             </div>)}
+        </div>
         </div>
       </div>
     </div>;
