@@ -80,7 +80,6 @@ export const EventSetup = ({ onChange }: EventSetupProps) => {
   };
 
   const handleCustomDurationClick = (duration: string) => {
-    // Remove the custom duration from the list
     const newDurations = formData.durations.filter(d => d !== duration);
     handleFormChange('durations', newDurations);
   };
@@ -88,8 +87,8 @@ export const EventSetup = ({ onChange }: EventSetupProps) => {
   const renderLocationDetails = () => {
     if (['zoom', 'facetime', 'teams', 'link-meeting'].includes(selectedLocation)) {
       return (
-        <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Meeting Link</label>
+        <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+          <label className="block text-sm text-gray-700 mb-2">Meeting Link</label>
           <input
             type="url"
             value={locationDetails.meetingLink}
@@ -97,7 +96,7 @@ export const EventSetup = ({ onChange }: EventSetupProps) => {
             placeholder={selectedLocation === 'zoom' ? 'https://zoom.us/j/...' : 
                         selectedLocation === 'teams' ? 'https://teams.microsoft.com/...' : 
                         'https://meet.google.com/...'}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
           />
         </div>
       );
@@ -105,15 +104,15 @@ export const EventSetup = ({ onChange }: EventSetupProps) => {
 
     if (selectedLocation === 'in-person') {
       return (
-        <div className="mt-4 p-4 bg-gray-50 rounded-lg space-y-4">
+        <div className="mt-3 p-3 bg-gray-50 rounded-lg space-y-3">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+            <label className="block text-sm text-gray-700 mb-2">Address</label>
             <textarea
               value={locationDetails.address}
               onChange={(e) => setLocationDetails(prev => ({ ...prev, address: e.target.value }))}
               placeholder="Enter the meeting address..."
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
             />
           </div>
           <div className="flex items-center">
@@ -128,14 +127,14 @@ export const EventSetup = ({ onChange }: EventSetupProps) => {
             </label>
           </div>
           {locationDetails.displayPhone && (
-            <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Google Maps Link</label>
+            <div className="mt-3">
+              <label className="block text-sm text-gray-700 mb-2">Google Maps Link</label>
               <input
                 type="url"
                 value={locationDetails.phone}
                 onChange={(e) => setLocationDetails(prev => ({ ...prev, phone: e.target.value }))}
                 placeholder="https://maps.google.com/..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
               />
             </div>
           )}
@@ -145,15 +144,15 @@ export const EventSetup = ({ onChange }: EventSetupProps) => {
 
     if (selectedLocation === 'organizer-phone') {
       return (
-        <div className="mt-4 p-4 bg-gray-50 rounded-lg space-y-4">
+        <div className="mt-3 p-3 bg-gray-50 rounded-lg space-y-3">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+            <label className="block text-sm text-gray-700 mb-2">Phone Number</label>
             <input
               type="tel"
               value={locationDetails.phone}
               onChange={(e) => setLocationDetails(prev => ({ ...prev, phone: e.target.value }))}
               placeholder="+1 (555) 000-0000"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
             />
           </div>
           <div className="flex items-center">
@@ -176,21 +175,21 @@ export const EventSetup = ({ onChange }: EventSetupProps) => {
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-8">
+    <div className="p-6 max-w-5xl space-y-6">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-3">Title</label>
+        <label className="block text-sm text-gray-700 mb-2">Title</label>
         <input
           type="text"
           value={formData.title}
           onChange={(e) => handleFormChange('title', e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-3">Description</label>
+        <label className="block text-sm text-gray-700 mb-2">Description</label>
         <div className="border border-gray-300 rounded-lg">
-          <div className="flex items-center space-x-2 p-3 border-b border-gray-200">
+          <div className="flex items-center space-x-2 p-2 border-b border-gray-200">
             <button className="p-1 hover:bg-gray-100 rounded" onClick={() => document.execCommand('bold')}>
               <Bold className="h-4 w-4 text-gray-600" />
             </button>
@@ -203,7 +202,7 @@ export const EventSetup = ({ onChange }: EventSetupProps) => {
           </div>
           <div
             contentEditable
-            className="w-full p-4 min-h-[120px] focus:outline-none text-sm"
+            className="w-full p-3 min-h-[100px] focus:outline-none text-sm"
             dangerouslySetInnerHTML={{ __html: formData.description }}
             onInput={(e) => handleFormChange('description', e.currentTarget.innerHTML)}
           />
@@ -220,7 +219,7 @@ export const EventSetup = ({ onChange }: EventSetupProps) => {
             }}
           >
             <div className="space-y-2">
-              <label className="block text-sm font-medium">Enter URL:</label>
+              <label className="block text-sm">Enter URL:</label>
               <input
                 type="url"
                 placeholder="https://example.com"
@@ -248,7 +247,7 @@ export const EventSetup = ({ onChange }: EventSetupProps) => {
           </div>
         )}
         
-        <div className="flex items-center mt-3">
+        <div className="flex items-center mt-2">
           <input type="checkbox" id="translate" className="mr-2" />
           <label htmlFor="translate" className="text-sm text-gray-600">
             Translate description to the visitor's browser language using AI
@@ -257,28 +256,28 @@ export const EventSetup = ({ onChange }: EventSetupProps) => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-3">URL</label>
+        <label className="block text-sm text-gray-700 mb-2">URL</label>
         <div className="flex">
-          <span className="inline-flex items-center px-4 py-3 border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm rounded-l-lg">
+          <span className="inline-flex items-center px-3 py-2 border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm rounded-l-lg">
             cal.id/sanskar/
           </span>
           <input
             type="text"
             value={formData.url}
             onChange={(e) => handleFormChange('url', e.target.value)}
-            className="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-4">Available durations</label>
-        <div className="flex flex-wrap gap-3 mb-4">
+        <label className="block text-sm text-gray-700 mb-3">Available durations</label>
+        <div className="flex flex-wrap gap-2 mb-3">
           {availableDurations.map((duration) => (
             <button
               key={duration}
               onClick={() => handleDurationToggle(duration)}
-              className={`px-4 py-2 text-sm rounded border ${
+              className={`px-3 py-2 text-sm rounded border ${
                 formData.durations.includes(duration)
                   ? 'bg-blue-100 border-blue-300 text-blue-800'
                   : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -291,7 +290,7 @@ export const EventSetup = ({ onChange }: EventSetupProps) => {
             <button
               key={duration}
               onClick={() => handleCustomDurationClick(duration)}
-              className="px-4 py-2 text-sm rounded border bg-blue-100 border-blue-300 text-blue-800 hover:bg-blue-200"
+              className="px-3 py-2 text-sm rounded border bg-blue-100 border-blue-300 text-blue-800 hover:bg-blue-200"
             >
               {duration} mins
             </button>
@@ -333,11 +332,11 @@ export const EventSetup = ({ onChange }: EventSetupProps) => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-3">Default duration</label>
+        <label className="block text-sm text-gray-700 mb-2">Default duration</label>
         <select
           value={formData.defaultDuration}
           onChange={(e) => handleFormChange('defaultDuration', e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
         >
           {formData.durations.map((duration) => (
             <option key={duration} value={duration}>{duration} mins</option>
@@ -354,22 +353,22 @@ export const EventSetup = ({ onChange }: EventSetupProps) => {
             onChange={(e) => handleFormChange('allowBookerToSelectDuration', e.target.checked)}
             className="mr-3"
           />
-          <label htmlFor="allowBookerToSelectDuration" className="text-sm font-medium text-gray-700">
+          <label htmlFor="allowBookerToSelectDuration" className="text-sm text-gray-700">
             Allow booker to select duration
           </label>
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-3">Location</label>
+        <label className="block text-sm text-gray-700 mb-2">Location</label>
         <div className="relative">
           <button
             onClick={() => setShowLocationDropdown(!showLocationDropdown)}
-            className="w-full flex items-center justify-between p-4 border border-gray-300 rounded-lg hover:border-gray-400 focus:ring-2 focus:ring-blue-500 text-sm"
+            className="w-full flex items-center justify-between p-3 border border-gray-300 rounded-lg hover:border-gray-400 focus:ring-2 focus:ring-blue-500 text-sm"
           >
             <div className="flex items-center">
               <div className="w-8 h-8 bg-blue-500 rounded flex items-center justify-center mr-3">
-                <span className="text-white text-xs font-bold">
+                <span className="text-white text-xs">
                   {selectedLocation === 'google-meet' ? 'GM' : selectedLocation === 'zoom' ? '🎥' : '📍'}
                 </span>
               </div>
@@ -385,13 +384,13 @@ export const EventSetup = ({ onChange }: EventSetupProps) => {
               {locationOptions.map((option) => (
                 <div key={option.id}>
                   {option.type === 'header' ? (
-                    <div className="px-4 py-2 text-sm font-semibold text-gray-500 uppercase tracking-wide bg-gray-50">
+                    <div className="px-4 py-2 text-sm text-gray-500 uppercase tracking-wide bg-gray-50">
                       {option.label}
                     </div>
                   ) : (
                     <button
                       onClick={() => handleLocationSelect(option.id)}
-                      className="w-full flex items-center px-4 py-3 text-left hover:bg-gray-50 focus:bg-gray-50 text-sm"
+                      className="w-full flex items-center px-4 py-2 text-left hover:bg-gray-50 focus:bg-gray-50 text-sm"
                     >
                       <span className="mr-3 text-sm">{option.icon}</span>
                       <span className="text-sm">{option.label}</span>
@@ -405,7 +404,7 @@ export const EventSetup = ({ onChange }: EventSetupProps) => {
         
         {renderLocationDetails()}
         
-        <p className="text-sm text-gray-600 mt-3">
+        <p className="text-sm text-gray-600 mt-2">
           Can't find the right conferencing app? Visit our{' '}
           <a href="#" className="text-blue-600 hover:text-blue-800">App Store</a>.
         </p>

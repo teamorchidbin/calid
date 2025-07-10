@@ -313,6 +313,7 @@ export const mockTeams = [
     id: 'personal',
     name: 'Sanskar Yadav',
     logo: 'SY',
+    avatar: 'SY',
     url: 'sanskar',
     eventTypes: personalEvents
   },
@@ -320,64 +321,72 @@ export const mockTeams = [
     id: 'acme-corp',
     name: 'Acme Corp',
     logo: 'AC',
+    avatar: 'AC',
     url: 'acme-corp',
-    eventTypes: teamEvents
+    eventTypes: teamEvents.slice(0, 15)
   },
   {
     id: 'product-team',
     name: 'Product Team',
     logo: 'PT',
+    avatar: 'PT',
     url: 'product-team',
-    eventTypes: teamEvents
+    eventTypes: teamEvents.slice(0, 15)
   },
   {
     id: 'design-studio',
     name: 'Design Studio',
     logo: 'DS',
+    avatar: 'DS',
     url: 'design-studio',
-    eventTypes: teamEvents
+    eventTypes: teamEvents.slice(0, 15)
   },
   {
     id: 'marketing-hub',
     name: 'Marketing Hub',
     logo: 'MH',
+    avatar: 'MH',
     url: 'marketing-hub',
-    eventTypes: teamEvents
+    eventTypes: teamEvents.slice(0, 15)
   },
   {
     id: 'sales-team',
     name: 'Sales Team',
     logo: 'ST',
+    avatar: 'ST',
     url: 'sales-team',
-    eventTypes: teamEvents
+    eventTypes: teamEvents.slice(0, 15)
   },
   {
     id: 'engineering',
     name: 'Engineering',
     logo: 'EN',
+    avatar: 'EN',
     url: 'engineering',
-    eventTypes: teamEvents
+    eventTypes: teamEvents.slice(0, 15)
   },
   {
     id: 'support-team',
     name: 'Support Team',
     logo: 'SP',
+    avatar: 'SP',
     url: 'support-team',
-    eventTypes: teamEvents
+    eventTypes: teamEvents.slice(0, 15)
   },
   {
     id: 'hr-team',
     name: 'HR Team',
     logo: 'HR',
+    avatar: 'HR',
     url: 'hr-team',
-    eventTypes: teamEvents
+    eventTypes: teamEvents.slice(0, 15)
   },
   {
     id: 'finance-team',
     name: 'Finance Team',
     logo: 'FT',
+    avatar: 'FT',
     url: 'finance-team',
-    eventTypes: teamEvents
+    eventTypes: teamEvents.slice(0, 15)
   }
 ];
-
