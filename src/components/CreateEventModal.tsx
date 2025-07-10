@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { X, ChevronDown, Users, RotateCcw, Settings } from 'lucide-react';
-import { mockTeams } from '../data/mockData';
 
 interface Team {
   id: string;
@@ -83,7 +82,8 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
     const eventData = {
       ...formData,
       duration: durationUnit === 'hours' ? (parseFloat(formData.duration) * 60).toString() : formData.duration,
-      team: selectedTeam
+      team: selectedTeam,
+      eventType: selectedTeam === 'personal' ? 'personal' : eventType
     };
     onCreateEvent(eventData);
   };
@@ -129,7 +129,7 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
                     className="w-full flex items-center p-3 border border-border rounded-lg hover:border-border/60 hover:bg-muted/50 transition-all"
                   >
                     <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-sm font-medium mr-3">
-                      {team.logo || team.avatar}
+                      {team.avatar}
                     </div>
                     <span className="font-medium">{team.name}</span>
                   </button>
