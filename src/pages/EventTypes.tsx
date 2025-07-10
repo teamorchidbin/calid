@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Plus, MoreHorizontal, Eye, Edit, Copy as CopyIcon, Code, Trash2, ArrowUp, ArrowDown, Search, Copy } from 'lucide-react';
 import { CreateEventModal } from '../components/CreateEventModal';
@@ -49,7 +48,8 @@ export const EventTypes = () => {
       title: eventData.title || 'New Event',
       description: eventData.description || 'A new event',
       url: `/${currentTeam.url}/${eventData.url || 'new-event'}`,
-      durations: [eventData.duration || '30'],
+      durations: [parseInt(eventData.duration) || 30],
+      bookingsToday: 0,
       isActive: true
     };
 
@@ -72,9 +72,9 @@ export const EventTypes = () => {
       [newEventId]: true
     }));
 
-    // Close modal and navigate
+    // Close modal and navigate to the NEW event
     setIsCreateModalOpen(false);
-    console.log('Navigating to event:', newEventId);
+    console.log('Navigating to new event:', newEventId);
     navigate(`/event/${newEventId}/setup`);
   };
 
