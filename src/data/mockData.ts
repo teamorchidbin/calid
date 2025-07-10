@@ -1,513 +1,99 @@
 
-// Event types for Tech team
-const techEvents = [
-  {
-    id: 'tech1',
-    title: 'Code Review',
-    durations: [30],
-    description: 'Code review and feedback session',
-    isActive: true,
-    url: '/tech/code-review',
-    color: '#007ee5',
-    bookingsToday: 8
-  },
-  {
-    id: 'tech2',
-    title: 'Technical Architecture',
-    durations: [90],
-    description: 'System architecture planning and discussion',
-    isActive: true,
-    url: '/tech/architecture',
-    color: '#007ee5',
-    bookingsToday: 3
-  },
-  {
-    id: 'tech3',
-    title: 'Bug Triage',
-    durations: [45],
-    description: 'Bug prioritization and assignment',
-    isActive: true,
-    url: '/tech/bug-triage',
-    color: '#007ee5',
-    bookingsToday: 5
-  },
-  {
-    id: 'tech4',
-    title: 'Sprint Planning',
-    durations: [120],
-    description: 'Sprint planning and story estimation',
-    isActive: true,
-    url: '/tech/sprint-planning',
-    color: '#007ee5',
-    bookingsToday: 2
-  },
-  {
-    id: 'tech5',
-    title: 'Technical Interview',
-    durations: [60],
-    description: 'Technical interview for candidates',
-    isActive: true,
-    url: '/tech/interview',
-    color: '#007ee5',
-    bookingsToday: 4
-  },
-  {
-    id: 'tech6',
-    title: 'Database Review',
-    durations: [45],
-    description: 'Database schema and performance review',
-    isActive: true,
-    url: '/tech/database-review',
-    color: '#007ee5',
-    bookingsToday: 2
-  },
-  {
-    id: 'tech7',
-    title: 'API Design Session',
-    durations: [60],
-    description: 'API design and documentation',
-    isActive: true,
-    url: '/tech/api-design',
-    color: '#007ee5',
-    bookingsToday: 3
-  },
-  {
-    id: 'tech8',
-    title: 'DevOps Sync',
-    durations: [30],
-    description: 'DevOps and deployment discussion',
-    isActive: true,
-    url: '/tech/devops',
-    color: '#007ee5',
-    bookingsToday: 6
-  },
-  {
-    id: 'tech9',
-    title: 'Security Review',
-    durations: [45],
-    description: 'Security audit and vulnerability assessment',
-    isActive: true,
-    url: '/tech/security',
-    color: '#007ee5',
-    bookingsToday: 2
-  },
-  {
-    id: 'tech10',
-    title: 'Tech Stack Discussion',
-    durations: [60],
-    description: 'Technology stack evaluation and selection',
-    isActive: true,
-    url: '/tech/stack',
-    color: '#007ee5',
-    bookingsToday: 1
-  }
-];
-
-// Event types for Design team
-const designEvents = [
-  {
-    id: 'design1',
-    title: 'Design Review',
-    durations: [45],
-    description: 'Design critique and feedback session',
-    isActive: true,
-    url: '/design/review',
-    color: '#007ee5',
-    bookingsToday: 7
-  },
-  {
-    id: 'design2',
-    title: 'User Research',
-    durations: [60],
-    description: 'User interviews and research sessions',
-    isActive: true,
-    url: '/design/research',
-    color: '#007ee5',
-    bookingsToday: 4
-  },
-  {
-    id: 'design3',
-    title: 'Wireframe Session',
-    durations: [90],
-    description: 'Wireframing and prototyping session',
-    isActive: true,
-    url: '/design/wireframe',
-    color: '#007ee5',
-    bookingsToday: 3
-  },
-  {
-    id: 'design4',
-    title: 'Brand Guidelines',
-    durations: [60],
-    description: 'Brand identity and guidelines discussion',
-    isActive: true,
-    url: '/design/brand',
-    color: '#007ee5',
-    bookingsToday: 2
-  },
-  {
-    id: 'design5',
-    title: 'UI/UX Consultation',
-    durations: [45],
-    description: 'UI/UX design consultation',
-    isActive: true,
-    url: '/design/consultation',
-    color: '#007ee5',
-    bookingsToday: 8
-  },
-  {
-    id: 'design6',
-    title: 'Design System Review',
-    durations: [60],
-    description: 'Design system components and standards',
-    isActive: true,
-    url: '/design/system',
-    color: '#007ee5',
-    bookingsToday: 3
-  },
-  {
-    id: 'design7',
-    title: 'Creative Brainstorm',
-    durations: [90],
-    description: 'Creative ideation and brainstorming',
-    isActive: true,
-    url: '/design/brainstorm',
-    color: '#007ee5',
-    bookingsToday: 5
-  },
-  {
-    id: 'design8',
-    title: 'Accessibility Review',
-    durations: [45],
-    description: 'Design accessibility audit and improvements',
-    isActive: true,
-    url: '/design/accessibility',
-    color: '#007ee5',
-    bookingsToday: 2
-  },
-  {
-    id: 'design9',
-    title: 'Portfolio Review',
-    durations: [60],
-    description: 'Design portfolio review and feedback',
-    isActive: true,
-    url: '/design/portfolio',
-    color: '#007ee5',
-    bookingsToday: 4
-  },
-  {
-    id: 'design10',
-    title: 'Visual Design Sync',
-    durations: [30],
-    description: 'Visual design alignment and updates',
-    isActive: true,
-    url: '/design/visual',
-    color: '#007ee5',
-    bookingsToday: 6
-  }
-];
-
-// Event types for Marketing team
-const marketingEvents = [
-  {
-    id: 'marketing1',
-    title: 'Campaign Review',
-    durations: [45],
-    description: 'Marketing campaign performance review',
-    isActive: true,
-    url: '/marketing/campaign',
-    color: '#007ee5',
-    bookingsToday: 6
-  },
-  {
-    id: 'marketing2',
-    title: 'Content Planning',
-    durations: [60],
-    description: 'Content strategy and planning session',
-    isActive: true,
-    url: '/marketing/content',
-    color: '#007ee5',
-    bookingsToday: 4
-  },
-  {
-    id: 'marketing3',
-    title: 'SEO Strategy',
-    durations: [45],
-    description: 'SEO strategy and optimization planning',
-    isActive: true,
-    url: '/marketing/seo',
-    color: '#007ee5',
-    bookingsToday: 3
-  },
-  {
-    id: 'marketing4',
-    title: 'Social Media Planning',
-    durations: [30],
-    description: 'Social media content and strategy',
-    isActive: true,
-    url: '/marketing/social',
-    color: '#007ee5',
-    bookingsToday: 8
-  },
-  {
-    id: 'marketing5',
-    title: 'Brand Strategy',
-    durations: [90],
-    description: 'Brand positioning and strategy session',
-    isActive: true,
-    url: '/marketing/brand',
-    color: '#007ee5',
-    bookingsToday: 2
-  },
-  {
-    id: 'marketing6',
-    title: 'Lead Generation',
-    durations: [45],
-    description: 'Lead generation strategy and tactics',
-    isActive: true,
-    url: '/marketing/leads',
-    color: '#007ee5',
-    bookingsToday: 5
-  },
-  {
-    id: 'marketing7',
-    title: 'Analytics Review',
-    durations: [60],
-    description: 'Marketing analytics and performance review',
-    isActive: true,
-    url: '/marketing/analytics',
-    color: '#007ee5',
-    bookingsToday: 3
-  },
-  {
-    id: 'marketing8',
-    title: 'Email Campaign',
-    durations: [30],
-    description: 'Email marketing strategy and execution',
-    isActive: true,
-    url: '/marketing/email',
-    color: '#007ee5',
-    bookingsToday: 7
-  },
-  {
-    id: 'marketing9',
-    title: 'PR Strategy',
-    durations: [60],
-    description: 'Public relations and media strategy',
-    isActive: true,
-    url: '/marketing/pr',
-    color: '#007ee5',
-    bookingsToday: 2
-  },
-  {
-    id: 'marketing10',
-    title: 'Growth Hacking',
-    durations: [45],
-    description: 'Growth hacking and experimentation',
-    isActive: true,
-    url: '/marketing/growth',
-    color: '#007ee5',
-    bookingsToday: 4
-  }
-];
-
-// Event types for Sales team
-const salesEvents = [
-  {
-    id: 'sales1',
-    title: 'Sales Pitch',
-    durations: [30],
-    description: 'Product demonstration and sales pitch',
-    isActive: true,
-    url: '/sales/pitch',
-    color: '#007ee5',
-    bookingsToday: 12
-  },
-  {
-    id: 'sales2',
-    title: 'Client Consultation',
-    durations: [45],
-    description: 'Initial client consultation and needs assessment',
-    isActive: true,
-    url: '/sales/consultation',
-    color: '#007ee5',
-    bookingsToday: 8
-  },
-  {
-    id: 'sales3',
-    title: 'Deal Review',
-    durations: [30],
-    description: 'Sales deal review and strategy',
-    isActive: true,
-    url: '/sales/deal-review',
-    color: '#007ee5',
-    bookingsToday: 6
-  },
-  {
-    id: 'sales4',
-    title: 'Proposal Discussion',
-    durations: [60],
-    description: 'Proposal presentation and discussion',
-    isActive: true,
-    url: '/sales/proposal',
-    color: '#007ee5',
-    bookingsToday: 4
-  },
-  {
-    id: 'sales5',
-    title: 'Contract Negotiation',
-    durations: [90],
-    description: 'Contract terms and negotiation meeting',
-    isActive: true,
-    url: '/sales/negotiation',
-    color: '#007ee5',
-    bookingsToday: 2
-  },
-  {
-    id: 'sales6',
-    title: 'Follow-up Call',
-    durations: [15],
-    description: 'Client follow-up and relationship building',
-    isActive: true,
-    url: '/sales/followup',
-    color: '#007ee5',
-    bookingsToday: 15
-  },
-  {
-    id: 'sales7',
-    title: 'Pipeline Review',
-    durations: [45],
-    description: 'Sales pipeline review and forecasting',
-    isActive: true,
-    url: '/sales/pipeline',
-    color: '#007ee5',
-    bookingsToday: 3
-  },
-  {
-    id: 'sales8',
-    title: 'Customer Success',
-    durations: [30],
-    description: 'Customer success and retention discussion',
-    isActive: true,
-    url: '/sales/success',
-    color: '#007ee5',
-    bookingsToday: 7
-  },
-  {
-    id: 'sales9',
-    title: 'Competitive Analysis',
-    durations: [60],
-    description: 'Competitive landscape and positioning',
-    isActive: true,
-    url: '/sales/competitive',
-    color: '#007ee5',
-    bookingsToday: 2
-  },
-  {
-    id: 'sales10',
-    title: 'Training Session',
-    durations: [90],
-    description: 'Sales training and skill development',
-    isActive: true,
-    url: '/sales/training',
-    color: '#007ee5',
-    bookingsToday: 1
-  }
-];
-
-// Event types for personal account
-const personalEvents = [
-  {
-    id: '1',
-    title: '15 Minute Meeting',
-    durations: [15],
-    description: 'A quick 15-minute meeting',
-    isActive: true,
-    url: '/sanskar/15min',
-    color: '#007ee5',
-    bookingsToday: 3
-  },
-  {
-    id: '2',
-    title: '30 Minute Meeting',
-    durations: [30],
-    description: 'A standard 30-minute meeting',
-    isActive: true,
-    url: '/sanskar/30min',
-    color: '#007ee5',
-    bookingsToday: 7
-  },
-  {
-    id: '3',
-    title: '1 Hour Meeting',
-    durations: [60],
-    description: 'An hour-long meeting for detailed discussions',
-    isActive: true,
-    url: '/sanskar/1hour',
-    color: '#007ee5',
-    bookingsToday: 2
-  },
-  {
-    id: '4',
-    title: 'Coffee Chat',
-    durations: [30],
-    description: 'Casual coffee meeting',
-    isActive: false,
-    url: '/sanskar/coffee-chat',
-    color: '#007ee5',
-    bookingsToday: 0
-  },
-  {
-    id: '5',
-    title: 'Strategy Session',
-    durations: [90],
-    description: 'Deep dive strategy planning session',
-    isActive: true,
-    url: '/sanskar/strategy-session',
-    color: '#007ee5',
-    bookingsToday: 1
-  }
-];
-
 export const mockTeams = [
   {
     id: 'personal',
     name: 'Sanskar Yadav',
-    logo: 'SY',
     avatar: 'SY',
     url: 'sanskar',
-    eventTypes: personalEvents
+    logo: '👤',
+    eventTypes: [
+      { id: '1', title: 'Product Hunt Chats', description: 'Quick 15-minute chat about Product Hunt strategies', durations: [15], bookingsToday: 3, isActive: true, url: '/sanskar/product-hunt-chats' },
+      { id: '2', title: 'Discovery Call', description: 'Initial consultation to understand your project needs', durations: [30], bookingsToday: 2, isActive: true, url: '/sanskar/discovery-call' },
+      { id: '3', title: 'Strategy Session', description: 'Deep dive into your business strategy and goals', durations: [45, 60], bookingsToday: 1, isActive: false, url: '/sanskar/strategy-session' },
+      { id: '4', title: 'Project Review', description: 'Review your current project status and next steps', durations: [30], bookingsToday: 4, isActive: true, url: '/sanskar/project-review' },
+      { id: '5', title: 'Quick Check-in', description: 'Brief update on ongoing projects', durations: [15], bookingsToday: 0, isActive: true, url: '/sanskar/quick-checkin' },
+      { id: '6', title: 'Technical Interview', description: 'Technical discussion for potential candidates', durations: [60], bookingsToday: 2, isActive: true, url: '/sanskar/technical-interview' },
+      { id: '7', title: 'Feedback Session', description: 'Collect feedback on recent deliverables', durations: [30], bookingsToday: 1, isActive: false, url: '/sanskar/feedback-session' },
+      { id: '8', title: 'Brainstorming Call', description: 'Creative brainstorming for new ideas', durations: [45], bookingsToday: 3, isActive: true, url: '/sanskar/brainstorming' },
+      { id: '9', title: 'Client Onboarding', description: 'Welcome new clients and set expectations', durations: [30, 45], bookingsToday: 1, isActive: true, url: '/sanskar/client-onboarding' },
+      { id: '10', title: 'Demo Session', description: 'Product demonstration for prospects', durations: [30], bookingsToday: 2, isActive: true, url: '/sanskar/demo-session' },
+      { id: '11', title: 'Mentorship Call', description: 'One-on-one mentoring session', durations: [60], bookingsToday: 1, isActive: true, url: '/sanskar/mentorship' },
+      { id: '12', title: 'Code Review', description: 'Review code quality and best practices', durations: [45], bookingsToday: 0, isActive: false, url: '/sanskar/code-review' },
+      { id: '13', title: 'Planning Meeting', description: 'Plan upcoming sprints and deliverables', durations: [30, 60], bookingsToday: 2, isActive: true, url: '/sanskar/planning' },
+      { id: '14', title: 'Coffee Chat', description: 'Informal conversation over coffee', durations: [30], bookingsToday: 1, isActive: true, url: '/sanskar/coffee-chat' },
+      { id: '15', title: 'Workshop Session', description: 'Interactive workshop on specific topics', durations: [90, 120], bookingsToday: 0, isActive: true, url: '/sanskar/workshop' },
+    ]
   },
   {
-    id: 'tech',
-    name: 'Tech',
-    logo: 'TC',
-    avatar: 'TC',
-    url: 'tech',
-    eventTypes: techEvents
+    id: 'tech-team',
+    name: 'Tech Team',
+    avatar: 'TT',
+    url: 'tech-team',
+    logo: '💻',
+    eventTypes: [
+      { id: '16', title: 'Technical Deep Dive', description: 'In-depth technical discussion', durations: [60], bookingsToday: 2, isActive: true, url: '/tech-team/technical-deep-dive' },
+      { id: '17', title: 'Architecture Review', description: 'Review system architecture decisions', durations: [45], bookingsToday: 1, isActive: true, url: '/tech-team/architecture-review' },
+      { id: '18', title: 'Sprint Planning', description: 'Plan development sprints', durations: [60], bookingsToday: 3, isActive: true, url: '/tech-team/sprint-planning' },
+      { id: '19', title: 'Bug Triage', description: 'Prioritize and assign bug fixes', durations: [30], bookingsToday: 1, isActive: false, url: '/tech-team/bug-triage' },
+      { id: '20', title: 'Performance Review', description: 'Review application performance metrics', durations: [45], bookingsToday: 0, isActive: true, url: '/tech-team/performance-review' },
+      { id: '21', title: 'Security Audit', description: 'Security assessment and recommendations', durations: [60], bookingsToday: 1, isActive: true, url: '/tech-team/security-audit' },
+      { id: '22', title: 'Database Optimization', description: 'Optimize database queries and structure', durations: [45], bookingsToday: 2, isActive: true, url: '/tech-team/db-optimization' },
+      { id: '23', title: 'API Design Review', description: 'Review API design and documentation', durations: [30], bookingsToday: 1, isActive: true, url: '/tech-team/api-review' },
+      { id: '24', title: 'DevOps Consultation', description: 'Infrastructure and deployment discussion', durations: [45], bookingsToday: 2, isActive: false, url: '/tech-team/devops' },
+      { id: '25', title: 'Tech Mentoring', description: 'Technical mentoring for junior developers', durations: [60], bookingsToday: 1, isActive: true, url: '/tech-team/mentoring' },
+      { id: '26', title: 'Library Evaluation', description: 'Evaluate new libraries and frameworks', durations: [30], bookingsToday: 0, isActive: true, url: '/tech-team/library-eval' },
+      { id: '27', title: 'Refactoring Session', description: 'Plan and execute code refactoring', durations: [60], bookingsToday: 1, isActive: true, url: '/tech-team/refactoring' },
+      { id: '28', title: 'Testing Strategy', description: 'Define testing approaches and coverage', durations: [45], bookingsToday: 2, isActive: true, url: '/tech-team/testing' },
+      { id: '29', title: 'Documentation Review', description: 'Review and update technical documentation', durations: [30], bookingsToday: 1, isActive: true, url: '/tech-team/docs-review' },
+      { id: '30', title: 'Innovation Lab', description: 'Explore new technologies and ideas', durations: [90], bookingsToday: 0, isActive: true, url: '/tech-team/innovation' },
+    ]
   },
   {
-    id: 'design',
-    name: 'Design',
-    logo: 'DS',
-    avatar: 'DS',
-    url: 'design',
-    eventTypes: designEvents
+    id: 'design-team',
+    name: 'Design Team',
+    avatar: 'DT',
+    url: 'design-team',
+    logo: '🎨',
+    eventTypes: [
+      { id: '31', title: 'Design Critique', description: 'Review and provide feedback on designs', durations: [45], bookingsToday: 2, isActive: true, url: '/design-team/critique' },
+      { id: '32', title: 'User Research Session', description: 'Conduct user interviews and research', durations: [60], bookingsToday: 1, isActive: true, url: '/design-team/user-research' },
+      { id: '33', title: 'Wireframe Review', description: 'Review wireframes and user flows', durations: [30], bookingsToday: 3, isActive: true, url: '/design-team/wireframe-review' },
+      { id: '34', title: 'Brand Guidelines', description: 'Discuss brand identity and guidelines', durations: [45], bookingsToday: 1, isActive: false, url: '/design-team/brand-guidelines' },
+      { id: '35', title: 'Prototype Testing', description: 'Test interactive prototypes with users', durations: [60], bookingsToday: 0, isActive: true, url: '/design-team/prototype-testing' },
+      { id: '36', title: 'Design System Review', description: 'Review and update design system components', durations: [45], bookingsToday: 2, isActive: true, url: '/design-team/design-system' },
+      { id: '37', title: 'Accessibility Audit', description: 'Review designs for accessibility compliance', durations: [30], bookingsToday: 1, isActive: true, url: '/design-team/accessibility' },
+      { id: '38', title: 'Creative Brainstorm', description: 'Generate creative ideas and concepts', durations: [60], bookingsToday: 1, isActive: true, url: '/design-team/brainstorm' },
+      { id: '39', title: 'Client Presentation', description: 'Present design concepts to clients', durations: [45], bookingsToday: 2, isActive: false, url: '/design-team/presentation' },
+      { id: '40', title: 'Design Workshop', description: 'Collaborative design thinking workshop', durations: [90], bookingsToday: 0, isActive: true, url: '/design-team/workshop' },
+      { id: '41', title: 'Portfolio Review', description: 'Review designer portfolios and work', durations: [30], bookingsToday: 1, isActive: true, url: '/design-team/portfolio-review' },
+      { id: '42', title: 'Tool Training', description: 'Training on new design tools and software', durations: [60], bookingsToday: 1, isActive: true, url: '/design-team/tool-training' },
+      { id: '43', title: 'UX Strategy', description: 'Discuss user experience strategy', durations: [45], bookingsToday: 2, isActive: true, url: '/design-team/ux-strategy' },
+      { id: '44', title: 'Visual Design Review', description: 'Review visual design elements', durations: [30], bookingsToday: 1, isActive: true, url: '/design-team/visual-review' },
+      { id: '45', title: 'Design Handoff', description: 'Handoff designs to development team', durations: [30], bookingsToday: 3, isActive: true, url: '/design-team/handoff' },
+    ]
   },
   {
-    id: 'marketing',
-    name: 'Marketing',
-    logo: 'MK',
-    avatar: 'MK',
-    url: 'marketing',
-    eventTypes: marketingEvents
-  },
-  {
-    id: 'sales',
-    name: 'Sales',
-    logo: 'SL',
-    avatar: 'SL',
-    url: 'sales',
-    eventTypes: salesEvents
+    id: 'marketing-team',
+    name: 'Marketing Team',
+    avatar: 'MT',
+    url: 'marketing-team',
+    logo: '📈',
+    eventTypes: [
+      { id: '46', title: 'Campaign Strategy', description: 'Plan marketing campaign strategies', durations: [60], bookingsToday: 2, isActive: true, url: '/marketing-team/campaign-strategy' },
+      { id: '47', title: 'Content Review', description: 'Review and approve marketing content', durations: [30], bookingsToday: 1, isActive: true, url: '/marketing-team/content-review' },
+      { id: '48', title: 'Analytics Deep Dive', description: 'Analyze marketing metrics and performance', durations: [45], bookingsToday: 3, isActive: true, url: '/marketing-team/analytics' },
+      { id: '49', title: 'Brand Positioning', description: 'Discuss brand positioning and messaging', durations: [45], bookingsToday: 1, isActive: false, url: '/marketing-team/brand-positioning' },
+      { id: '50', title: 'Social Media Planning', description: 'Plan social media content and strategy', durations: [30], bookingsToday: 2, isActive: true, url: '/marketing-team/social-media' },
+      { id: '51', title: 'Email Campaign Review', description: 'Review email marketing campaigns', durations: [30], bookingsToday: 1, isActive: true, url: '/marketing-team/email-campaign' },
+      { id: '52', title: 'SEO Strategy', description: 'Discuss search engine optimization tactics', durations: [45], bookingsToday: 1, isActive: true, url: '/marketing-team/seo-strategy' },
+      { id: '53', title: 'Influencer Outreach', description: 'Plan influencer marketing initiatives', durations: [30], bookingsToday: 0, isActive: true, url: '/marketing-team/influencer' },
+      { id: '54', title: 'Event Marketing', description: 'Plan event marketing and promotion', durations: [45], bookingsToday: 2, isActive: false, url: '/marketing-team/event-marketing' },
+      { id: '55', title: 'Customer Journey', description: 'Map and optimize customer journey', durations: [60], bookingsToday: 1, isActive: true, url: '/marketing-team/customer-journey' },
+      { id: '56', title: 'PR Strategy', description: 'Public relations and media outreach planning', durations: [45], bookingsToday: 1, isActive: true, url: '/marketing-team/pr-strategy' },
+      { id: '57', title: 'Competitive Analysis', description: 'Analyze competitor marketing strategies', durations: [30], bookingsToday: 2, isActive: true, url: '/marketing-team/competitive' },
+      { id: '58', title: 'Budget Planning', description: 'Marketing budget allocation and planning', durations: [45], bookingsToday: 1, isActive: true, url: '/marketing-team/budget' },
+      { id: '59', title: 'Lead Generation', description: 'Discuss lead generation strategies', durations: [30], bookingsToday: 3, isActive: true, url: '/marketing-team/lead-gen' },
+      { id: '60', title: 'Marketing Automation', description: 'Set up marketing automation workflows', durations: [60], bookingsToday: 0, isActive: true, url: '/marketing-team/automation' },
+    ]
   }
 ];

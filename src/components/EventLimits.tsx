@@ -1,328 +1,371 @@
 
 import React, { useState } from 'react';
-import { Calendar, Clock, Users, AlertCircle } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Switch } from './ui/switch';
 
 export const EventLimits = () => {
-  const [limits, setLimits] = useState({
-    minimumNotice: {
-      enabled: true,
-      value: '2',
-      unit: 'Hours'
+  const [settings, setSettings] = useState({
+    beforeEvent: {
+      bufferTime: 'no-buffer',
+      minimumNotice: { value: 2, unit: 'hours' }
     },
-    bookingFrequency: {
+    afterEvent: {
+      bufferTime: 'no-buffer',
+      timeSlotIntervals: 'default'
+    },
+    limitBookingFrequency: {
       enabled: false,
-      value: '1',
-      unit: 'Per day'
+      limit: 1,
+      period: 'per-day',
+      limits: [{ limit: 1, period: 'per-day' }]
     },
-    showFirstSlot: {
+    showFirstSlotOnly: {
       enabled: false
     },
-    totalBookingDuration: {
+    limitTotalBookingDuration: {
       enabled: false,
-      value: '60',
-      unit: 'Minutes',
-      period: 'Per day'
+      duration: 60,
+      unit: 'minutes',
+      period: 'per-day',
+      limits: [{ duration: 60, unit: 'minutes', period: 'per-day' }]
     },
-    futureBookings: {
+    limitFutureBookings: {
       enabled: false,
-      value: '30',
-      unit: 'business days'
-    },
-    dateRange: {
-      enabled: false,
-      start: '2025-07-10',
-      end: '2025-07-10'
+      days: 30,
+      type: 'business-days',
+      alwaysAvailable: true,
+      dateRange: { start: 'Jul 10, 2025', end: 'Jul 10, 2025' }
     },
     offsetStartTimes: {
       enabled: false,
-      value: '0',
-      unit: 'Minutes'
+      offset: 0,
+      unit: 'minutes'
     }
   });
 
-  const handleLimitChange = (category: string, field: string, value: string | boolean) => {
-    setLimits(prev => ({
+  const updateSetting = (section: string, field: string, value: any) => {
+    setSettings(prev => ({
       ...prev,
-      [category]: {
-        ...prev[category],
+      [section]: {
+        ...prev[section as keyof typeof prev],
         [field]: value
       }
     }));
   };
 
+  const addBookingLimit = () => {
+    const newLimit = { limit: 1, period: 'per-day' };
+    updateSetting('limitBookingFrequency', 'limits', [...settings.limitBookingFrequency.limits, newLimit]);
+  };
+
+  const addDurationLimit = () => {
+    const newLimit = { duration: 60, unit: 'minutes', period: 'per-day' };
+    updateSetting('limitTotalBookingDuration', 'limits', [...settings.limitTotalBookingDuration.limits, newLimit]);
+  };
+
   return (
-    <div className="p-6 w-full space-y-4">
-      <div className="space-y-4">
-        {/* Before event */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-4">
-            <h3 className="text-base font-medium">Before event</h3>
-            
-            <div className="space-y-4">
-              <div>
-                <div className="flex items-center space-x-2 mb-2">
-                  <label className="text-sm">Minimum Notice</label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="number"
-                    value={limits.minimumNotice.value}
-                    onChange={(e) => handleLimitChange('minimumNotice', 'value', e.target.value)}
-                    className="w-20 px-3 py-2 border border-border rounded text-sm bg-background"
-                  />
-                  <select
-                    value={limits.minimumNotice.unit}
-                    onChange={(e) => handleLimitChange('minimumNotice', 'unit', e.target.value)}
-                    className="px-3 py-2 border border-border rounded text-sm bg-background"
-                  >
-                    <option value="Hours">Hours</option>
-                    <option value="Days">Days</option>
-                    <option value="Weeks">Weeks</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="text-base font-medium">After event</h3>
-            
-            <div className="space-y-4">
-              <div>
-                <div className="flex items-center space-x-2 mb-2">
-                  <label className="text-sm">Time-slot intervals</label>
-                </div>
-                <select className="w-full px-3 py-2 border border-border rounded text-sm bg-background">
-                  <option>Use event length (default)</option>
-                  <option>15 minutes</option>
-                  <option>30 minutes</option>
-                  <option>60 minutes</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Limit booking frequency */}
-        <div className="border-t border-border pt-4">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="text-base font-medium">Limit booking frequency</h3>
-              <p className="text-sm text-muted-foreground">Limit how many times this event can be booked</p>
-            </div>
-            <Switch
-              checked={limits.bookingFrequency.enabled}
-              onCheckedChange={(checked) => handleLimitChange('bookingFrequency', 'enabled', checked)}
-            />
-          </div>
-          
-          {limits.bookingFrequency.enabled && (
-            <div className="flex items-center space-x-2">
-              <input
-                type="number"
-                value={limits.bookingFrequency.value}
-                onChange={(e) => handleLimitChange('bookingFrequency', 'value', e.target.value)}
-                className="w-20 px-3 py-2 border border-border rounded text-sm bg-background"
-              />
-              <select
-                value={limits.bookingFrequency.unit}
-                onChange={(e) => handleLimitChange('bookingFrequency', 'unit', e.target.value)}
-                className="px-3 py-2 border border-border rounded text-sm bg-background"
-              >
-                <option value="Per day">Per day</option>
-                <option value="Per week">Per week</option>
-                <option value="Per month">Per month</option>
-              </select>
-              <button className="text-sm text-primary hover:text-primary/80">+ Add Limit</button>
-            </div>
-          )}
-        </div>
-
-        {/* Only show the first slot of each day as available */}
-        <div className="border-t border-border pt-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-base font-medium">Only show the first slot of each day as available</h3>
-              <p className="text-sm text-muted-foreground">This will limit your availability for this event type to one slot per day, scheduled at the earliest available time.</p>
-            </div>
-            <Switch
-              checked={limits.showFirstSlot.enabled}
-              onCheckedChange={(checked) => handleLimitChange('showFirstSlot', 'enabled', checked)}
-            />
-          </div>
-        </div>
-
-        {/* Limit total booking duration */}
-        <div className="border-t border-border pt-4">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="text-base font-medium">Limit total booking duration</h3>
-              <p className="text-sm text-muted-foreground">Limit total amount of time that this event can be booked</p>
-            </div>
-            <Switch
-              checked={limits.totalBookingDuration.enabled}
-              onCheckedChange={(checked) => handleLimitChange('totalBookingDuration', 'enabled', checked)}
-            />
-          </div>
-          
-          {limits.totalBookingDuration.enabled && (
-            <div className="flex items-center space-x-2">
-              <input
-                type="number"
-                value={limits.totalBookingDuration.value}
-                onChange={(e) => handleLimitChange('totalBookingDuration', 'value', e.target.value)}
-                className="w-20 px-3 py-2 border border-border rounded text-sm bg-background"
-              />
-              <select
-                value={limits.totalBookingDuration.unit}
-                onChange={(e) => handleLimitChange('totalBookingDuration', 'unit', e.target.value)}
-                className="px-3 py-2 border border-border rounded text-sm bg-background"
-              >
-                <option value="Minutes">Minutes</option>
-                <option value="Hours">Hours</option>
-              </select>
-              <select
-                value={limits.totalBookingDuration.period}
-                onChange={(e) => handleLimitChange('totalBookingDuration', 'period', e.target.value)}
-                className="px-3 py-2 border border-border rounded text-sm bg-background"
-              >
-                <option value="Per day">Per day</option>
-                <option value="Per week">Per week</option>
-                <option value="Per month">Per month</option>
-              </select>
-              <button className="text-sm text-primary hover:text-primary/80">+ Add Limit</button>
-            </div>
-          )}
-        </div>
-
-        {/* Limit future bookings */}
-        <div className="border-t border-border pt-4">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="text-base font-medium">Limit future bookings</h3>
-              <p className="text-sm text-muted-foreground">Limit how far in the future this event can be booked</p>
-            </div>
-            <Switch
-              checked={limits.futureBookings.enabled}
-              onCheckedChange={(checked) => handleLimitChange('futureBookings', 'enabled', checked)}
-            />
-          </div>
-          
-          {limits.futureBookings.enabled && (
-            <div className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  id="businessDays"
-                  name="futureBookings"
-                  className="rounded"
-                  defaultChecked
-                />
-                <input
-                  type="number"
-                  value={limits.futureBookings.value}
-                  onChange={(e) => handleLimitChange('futureBookings', 'value', e.target.value)}
-                  className="w-20 px-3 py-2 border border-border rounded text-sm bg-background"
-                />
-                <select
-                  value={limits.futureBookings.unit}
-                  onChange={(e) => handleLimitChange('futureBookings', 'unit', e.target.value)}
-                  className="px-3 py-2 border border-border rounded text-sm bg-background"
-                >
-                  <option value="business days">business days</option>
-                  <option value="calendar days">calendar days</option>
-                  <option value="weeks">weeks</option>
-                  <option value="months">months</option>
-                </select>
-                <span className="text-sm">into the future</span>
-              </div>
-              <div className="text-sm text-muted-foreground">Always 30 days available</div>
-              
-              <div className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  id="dateRange"
-                  name="futureBookings"
-                  className="rounded"
-                />
-                <label htmlFor="dateRange" className="text-sm">Within a date range</label>
-                <input
-                  type="date"
-                  value={limits.dateRange.start}
-                  onChange={(e) => handleLimitChange('dateRange', 'start', e.target.value)}
-                  className="px-3 py-2 border border-border rounded text-sm bg-background"
-                />
-                <span className="text-sm">-</span>
-                <input
-                  type="date"
-                  value={limits.dateRange.end}
-                  onChange={(e) => handleLimitChange('dateRange', 'end', e.target.value)}
-                  className="px-3 py-2 border border-border rounded text-sm bg-background"
-                />
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Offset start times */}
-        <div className="border-t border-border pt-4">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="text-base font-medium">Offset start times</h3>
-              <p className="text-sm text-muted-foreground">Offset timeslots shown to bookers by a specified number of minutes</p>
-            </div>
-            <Switch
-              checked={limits.offsetStartTimes.enabled}
-              onCheckedChange={(checked) => handleLimitChange('offsetStartTimes', 'enabled', checked)}
-            />
-          </div>
-          
-          {limits.offsetStartTimes.enabled && (
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <input
-                  type="number"
-                  value={limits.offsetStartTimes.value}
-                  onChange={(e) => handleLimitChange('offsetStartTimes', 'value', e.target.value)}
-                  className="w-20 px-3 py-2 border border-border rounded text-sm bg-background"
-                />
-                <select
-                  value={limits.offsetStartTimes.unit}
-                  onChange={(e) => handleLimitChange('offsetStartTimes', 'unit', e.target.value)}
-                  className="px-3 py-2 border border-border rounded text-sm bg-background"
-                >
-                  <option value="Minutes">Minutes</option>
-                </select>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                e.g. this will show time slots to your bookers at<br />
-                9:00 AM instead of 9:00 AM
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Offset by */}
-        <div className="border-t border-border pt-4">
+    <div className="p-6 max-w-4xl space-y-6">
+      {/* Before Event */}
+      <div className="border-b border-gray-200 pb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Before event</h3>
+        
+        <div className="grid grid-cols-2 gap-6">
           <div>
-            <h3 className="text-base font-medium">Offset by</h3>
-            <div className="flex items-center space-x-2 mt-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Buffer time</label>
+            <select 
+              value={settings.beforeEvent.bufferTime}
+              onChange={(e) => updateSetting('beforeEvent', 'bufferTime', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="no-buffer">No buffer time</option>
+              <option value="15">15 minutes</option>
+              <option value="30">30 minutes</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Notice</label>
+            <div className="flex space-x-2">
               <input
                 type="number"
-                value="0"
-                className="w-20 px-3 py-2 border border-border rounded text-sm bg-background"
+                value={settings.beforeEvent.minimumNotice.value}
+                onChange={(e) => updateSetting('beforeEvent', 'minimumNotice', { ...settings.beforeEvent.minimumNotice, value: parseInt(e.target.value) })}
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
-              <select className="px-3 py-2 border border-border rounded text-sm bg-background">
-                <option value="Minutes">Minutes</option>
+              <select 
+                value={settings.beforeEvent.minimumNotice.unit}
+                onChange={(e) => updateSetting('beforeEvent', 'minimumNotice', { ...settings.beforeEvent.minimumNotice, unit: e.target.value })}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="hours">Hours</option>
+                <option value="days">Days</option>
               </select>
             </div>
-            <p className="text-sm text-muted-foreground mt-2">
-              e.g. this will show time slots to your bookers at<br />
-              9:00 AM instead of 9:00 AM
+          </div>
+        </div>
+      </div>
+
+      {/* After Event */}
+      <div className="border-b border-gray-200 pb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">After event</h3>
+        
+        <div className="grid grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Buffer time</label>
+            <select 
+              value={settings.afterEvent.bufferTime}
+              onChange={(e) => updateSetting('afterEvent', 'bufferTime', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="no-buffer">No buffer time</option>
+              <option value="15">15 minutes</option>
+              <option value="30">30 minutes</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Time-slot intervals</label>
+            <select 
+              value={settings.afterEvent.timeSlotIntervals}
+              onChange={(e) => updateSetting('afterEvent', 'timeSlotIntervals', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="default">Use event length (default)</option>
+              <option value="15">15 minutes</option>
+              <option value="30">30 minutes</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Limit Booking Frequency */}
+      <div className="border-b border-gray-200 pb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Limit booking frequency</h3>
+            <p className="text-sm text-gray-600">Limit how many times this event can be booked</p>
+          </div>
+          <Switch 
+            checked={settings.limitBookingFrequency.enabled}
+            onCheckedChange={(checked) => updateSetting('limitBookingFrequency', 'enabled', checked)}
+          />
+        </div>
+        
+        {settings.limitBookingFrequency.enabled && (
+          <div className="space-y-4">
+            {settings.limitBookingFrequency.limits.map((limit, index) => (
+              <div key={index} className="flex items-center space-x-2">
+                <input
+                  type="number"
+                  value={limit.limit}
+                  onChange={(e) => {
+                    const newLimits = [...settings.limitBookingFrequency.limits];
+                    newLimits[index] = { ...limit, limit: parseInt(e.target.value) };
+                    updateSetting('limitBookingFrequency', 'limits', newLimits);
+                  }}
+                  className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                />
+                <select 
+                  value={limit.period}
+                  onChange={(e) => {
+                    const newLimits = [...settings.limitBookingFrequency.limits];
+                    newLimits[index] = { ...limit, period: e.target.value };
+                    updateSetting('limitBookingFrequency', 'limits', newLimits);
+                  }}
+                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="per-day">Per day</option>
+                  <option value="per-week">Per week</option>
+                  <option value="per-month">Per month</option>
+                </select>
+              </div>
+            ))}
+            <button 
+              onClick={addBookingLimit}
+              className="text-blue-600 hover:text-blue-800 flex items-center text-sm"
+            >
+              <Plus className="h-4 w-4 mr-1" />
+              Add Limit
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Show First Slot Only */}
+      <div className="border-b border-gray-200 pb-6">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Only show the first slot of each day as available</h3>
+            <p className="text-sm text-gray-600 max-w-3xl">
+              This will limit your availability for this event type to one slot per day, scheduled at the earliest available time.
             </p>
           </div>
+          <Switch 
+            checked={settings.showFirstSlotOnly.enabled}
+            onCheckedChange={(checked) => updateSetting('showFirstSlotOnly', 'enabled', checked)}
+          />
         </div>
+      </div>
+
+      {/* Limit Total Booking Duration */}
+      <div className="border-b border-gray-200 pb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Limit total booking duration</h3>
+            <p className="text-sm text-gray-600">Limit total amount of time that this event can be booked</p>
+          </div>
+          <Switch 
+            checked={settings.limitTotalBookingDuration.enabled}
+            onCheckedChange={(checked) => updateSetting('limitTotalBookingDuration', 'enabled', checked)}
+          />
+        </div>
+        
+        {settings.limitTotalBookingDuration.enabled && (
+          <div className="space-y-4">
+            {settings.limitTotalBookingDuration.limits.map((limit, index) => (
+              <div key={index} className="flex items-center space-x-2">
+                <input
+                  type="number"
+                  value={limit.duration}
+                  onChange={(e) => {
+                    const newLimits = [...settings.limitTotalBookingDuration.limits];
+                    newLimits[index] = { ...limit, duration: parseInt(e.target.value) };
+                    updateSetting('limitTotalBookingDuration', 'limits', newLimits);
+                  }}
+                  className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                />
+                <select 
+                  value={limit.unit}
+                  onChange={(e) => {
+                    const newLimits = [...settings.limitTotalBookingDuration.limits];
+                    newLimits[index] = { ...limit, unit: e.target.value };
+                    updateSetting('limitTotalBookingDuration', 'limits', newLimits);
+                  }}
+                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="minutes">Minutes</option>
+                  <option value="hours">Hours</option>
+                </select>
+                <select 
+                  value={limit.period}
+                  onChange={(e) => {
+                    const newLimits = [...settings.limitTotalBookingDuration.limits];
+                    newLimits[index] = { ...limit, period: e.target.value };
+                    updateSetting('limitTotalBookingDuration', 'limits', newLimits);
+                  }}
+                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="per-day">Per day</option>
+                  <option value="per-week">Per week</option>
+                </select>
+              </div>
+            ))}
+            <button 
+              onClick={addDurationLimit}
+              className="text-blue-600 hover:text-blue-800 flex items-center text-sm"
+            >
+              <Plus className="h-4 w-4 mr-1" />
+              Add Limit
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Limit Future Bookings */}
+      <div className="border-b border-gray-200 pb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Limit future bookings</h3>
+            <p className="text-sm text-gray-600">Limit how far in the future this event can be booked</p>
+          </div>
+          <Switch 
+            checked={settings.limitFutureBookings.enabled}
+            onCheckedChange={(checked) => updateSetting('limitFutureBookings', 'enabled', checked)}
+          />
+        </div>
+        
+        {settings.limitFutureBookings.enabled && (
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <input
+                type="number"
+                value={settings.limitFutureBookings.days}
+                onChange={(e) => updateSetting('limitFutureBookings', 'days', parseInt(e.target.value))}
+                className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+              <select 
+                value={settings.limitFutureBookings.type}
+                onChange={(e) => updateSetting('limitFutureBookings', 'type', e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="business-days">business days</option>
+                <option value="calendar-days">calendar days</option>
+              </select>
+              <span className="text-sm text-gray-600">into the future</span>
+            </div>
+            
+            <div className="text-sm text-gray-600">
+              Always {settings.limitFutureBookings.days} days available
+            </div>
+            
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-2">Within a date range</p>
+              <div className="flex items-center space-x-2">
+                <input
+                  type="text"
+                  value={settings.limitFutureBookings.dateRange.start}
+                  onChange={(e) => updateSetting('limitFutureBookings', 'dateRange', { ...settings.limitFutureBookings.dateRange, start: e.target.value })}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                />
+                <span className="text-gray-500">-</span>
+                <input
+                  type="text"
+                  value={settings.limitFutureBookings.dateRange.end}
+                  onChange={(e) => updateSetting('limitFutureBookings', 'dateRange', { ...settings.limitFutureBookings.dateRange, end: e.target.value })}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Offset Start Times */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Offset start times</h3>
+            <p className="text-sm text-gray-600">Offset timeslots shown to bookers by a specified number of minutes</p>
+          </div>
+          <Switch 
+            checked={settings.offsetStartTimes.enabled}
+            onCheckedChange={(checked) => updateSetting('offsetStartTimes', 'enabled', checked)}
+          />
+        </div>
+        
+        {settings.offsetStartTimes.enabled && (
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-600">Offset by</span>
+              <input
+                type="number"
+                value={settings.offsetStartTimes.offset}
+                onChange={(e) => updateSetting('offsetStartTimes', 'offset', parseInt(e.target.value))}
+                className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+              <select 
+                value={settings.offsetStartTimes.unit}
+                onChange={(e) => updateSetting('offsetStartTimes', 'unit', e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="minutes">Minutes</option>
+              </select>
+            </div>
+            <p className="text-sm text-gray-600">
+              e.g. this will show time slots to your bookers at {9 + settings.offsetStartTimes.offset / 60}:00 AM instead of 9:00 AM
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,238 +1,272 @@
 
-import React, { useState, useEffect } from 'react';
-import { X, Clock, MapPin, Users, Calendar } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, ChevronDown, Users, RotateCcw, Settings } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { mockTeams } from '../data/mockData';
 
 interface Team {
   id: string;
   name: string;
-  logo: string;
+  avatar: string;
   url: string;
-  eventTypes: any[];
 }
 
-interface CreateEventModalProps {
+interface Props {
   isOpen: boolean;
   onClose: () => void;
-  onCreate: (eventData: any) => void;
   teams: Team[];
-  selectedTeam: string;
+  selectedTeam?: string;
 }
 
-const durationSuggestions = [
-  { value: '15', label: '15 mins' },
-  { value: '30', label: '30 mins' },
-  { value: '45', label: '45 mins' },
-  { value: '60', label: '1 hr' },
-  { value: '90', label: '1.5 hrs' },
-  { value: '120', label: '2 hrs' },
-  { value: '150', label: '2.5 hrs' },
-  { value: '180', label: '3 hrs' }
-];
-
-export const CreateEventModal = ({ isOpen, onClose, onCreate, teams, selectedTeam }: CreateEventModalProps) => {
+export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initialTeam }: Props) => {
+  const [selectedTeam, setSelectedTeam] = useState<string>(initialTeam || '');
+  const [showTeamSelector, setShowTeamSelector] = useState(!initialTeam);
+  const [eventType, setEventType] = useState<string>('');
+  const [showDurationDropdown, setShowDurationDropdown] = useState(false);
+  const [durationUnit, setDurationUnit] = useState<'minutes' | 'hours'>('minutes');
   const [formData, setFormData] = useState({
     title: '',
-    duration: '30',
-    durationUnit: 'minutes',
+    url: '',
     description: '',
-    location: 'google-meet',
-    teamId: selectedTeam
+    duration: '30'
   });
-  const [showDurationSuggestions, setShowDurationSuggestions] = useState(false);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (selectedTeam) {
-      setFormData(prev => ({ ...prev, teamId: selectedTeam }));
+  const eventTypeOptions = [
+    {
+      id: 'collective',
+      title: 'Collective',
+      description: 'Schedule meetings when all selected team members are available.',
+      icon: Users
+    },
+    {
+      id: 'round-robin',
+      title: 'Round Robin',
+      description: 'Cycle meetings between multiple team members.',
+      icon: RotateCcw
+    },
+    {
+      id: 'managed',
+      title: 'Managed Event',
+      description: 'Create & distribute event types in bulk to team members',
+      icon: Settings
     }
-  }, [selectedTeam]);
+  ];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const eventData = {
-      ...formData,
-      id: `event-${Date.now()}`,
-      url: `/${formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`,
-      durations: [formData.duration],
-      isActive: true,
-      bookingsToday: 0,
-      createdAt: new Date().toISOString()
-    };
-
-    onCreate(eventData);
-    onClose();
-    
-    // Reset form
-    setFormData({
-      title: '',
-      duration: '30',
-      durationUnit: 'minutes',
-      description: '',
-      location: 'google-meet',
-      teamId: selectedTeam
-    });
-  };
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleDurationSuggestion = (duration: string) => {
-    setFormData(prev => ({ ...prev, duration }));
-    setShowDurationSuggestions(false);
-  };
+  const durationSuggestions = [
+    { value: '30', label: '30 mins', unit: 'minutes' as const },
+    { value: '45', label: '45 mins', unit: 'minutes' as const },
+    { value: '60', label: '60 mins', unit: 'minutes' as const },
+    { value: '90', label: '90 mins', unit: 'minutes' as const },
+    { value: '2', label: '2 hrs', unit: 'hours' as const },
+    { value: '2.5', label: '2.5 hrs', unit: 'hours' as const },
+    { value: '3', label: '3 hrs', unit: 'hours' as const }
+  ];
 
   if (!isOpen) return null;
 
-  const selectedTeamData = teams.find(t => t.id === formData.teamId);
+  const handleTeamSelect = (teamId: string) => {
+    setSelectedTeam(teamId);
+    if (teamId === 'personal') {
+      setShowTeamSelector(false);
+      setEventType('personal');
+    } else {
+      setShowTeamSelector(false);
+    }
+  };
+
+  const handleEventTypeSelect = (type: string) => {
+    setEventType(type);
+  };
+
+  const handleCreate = () => {
+    // Create a new event with a temporary ID that includes timestamp for uniqueness
+    const newEventId = `event-${Date.now()}`;
+    navigate(`/event/${newEventId}/setup`);
+    onClose();
+  };
+
+  const handleBack = () => {
+    if (eventType && selectedTeam !== 'personal') {
+      setEventType('');
+    } else if (selectedTeam) {
+      setSelectedTeam('');
+      setShowTeamSelector(true);
+    }
+  };
+
+  const handleDurationSelect = (suggestion: typeof durationSuggestions[0]) => {
+    setFormData({ ...formData, duration: suggestion.value });
+    setDurationUnit(suggestion.unit);
+    setShowDurationDropdown(false);
+  };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-background border border-border rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-4 border-b border-border">
-          <div>
-            <h2 className="text-lg font-semibold">Add a new event type</h2>
-            <p className="text-sm text-muted-foreground">Create a new event type for people to book times with.</p>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-muted rounded-md transition-colors"
-          >
-            <X className="h-4 w-4" />
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fade-in">
+      <div className="bg-card rounded-lg shadow-xl w-full max-w-md mx-4 animate-scale-in">
+        <div className="flex items-center justify-between p-6 border-b border-border">
+          <h2 className="text-lg font-semibold">
+            {showTeamSelector ? 'Create new event' : 
+             selectedTeam === 'personal' ? 'Add a new event type' :
+             eventType ? 'Add a new event type' : 'Select event type'}
+          </h2>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
+            <X className="h-5 w-5" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-2">Title</label>
-            <input
-              type="text"
-              value={formData.title}
-              onChange={(e) => handleInputChange('title', e.target.value)}
-              placeholder="Quick Chat"
-              required
-              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent text-sm"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-2">URL</label>
-            <div className="flex">
-              <div className="bg-muted px-3 py-2 border border-r-0 border-border rounded-l-lg text-sm text-muted-foreground">
-                https://cal.id/sanskar/
-              </div>
-              <input
-                type="text"
-                value={formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}
-                readOnly
-                className="flex-1 px-3 py-2 border border-border rounded-r-lg focus:ring-2 focus:ring-ring focus:border-transparent text-sm bg-background"
-              />
-            </div>
-          </div>
-
-          <div>
-            <div className="mb-4 p-4 border border-border rounded-lg">
-              <div className="flex items-center space-x-2 mb-2">
-                <button type="button" className="text-sm font-medium bg-muted px-2 py-1 rounded">B</button>
-                <button type="button" className="text-sm font-medium bg-muted px-2 py-1 rounded italic">I</button>
-              </div>
-              <textarea
-                value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
-                placeholder="A quick video meeting."
-                rows={3}
-                className="w-full px-0 py-0 border-0 focus:ring-0 text-sm bg-transparent resize-none"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-2">Duration</label>
-            <div className="relative">
-              <div className="flex">
-                <input
-                  type="number"
-                  value={formData.duration}
-                  onChange={(e) => handleInputChange('duration', e.target.value)}
-                  onFocus={() => setShowDurationSuggestions(true)}
-                  className="flex-1 px-3 py-2 border border-r-0 border-border rounded-l-lg focus:ring-2 focus:ring-ring focus:border-transparent text-sm"
-                />
-                <select
-                  value={formData.durationUnit}
-                  onChange={(e) => handleInputChange('durationUnit', e.target.value)}
-                  className="px-3 py-2 border border-border rounded-r-lg focus:ring-2 focus:ring-ring focus:border-transparent text-sm bg-background"
-                >
-                  <option value="minutes">Minutes</option>
-                  <option value="hours">Hours</option>
-                </select>
-              </div>
-              
-              {showDurationSuggestions && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-lg shadow-lg z-10">
-                  <div className="p-2 text-xs text-muted-foreground border-b border-border">
-                    Quick select:
-                  </div>
-                  <div className="grid grid-cols-4 gap-1 p-2">
-                    {durationSuggestions.map((suggestion) => (
-                      <button
-                        key={suggestion.value}
-                        type="button"
-                        onClick={() => handleDurationSuggestion(suggestion.value)}
-                        className="px-2 py-1 text-xs hover:bg-muted rounded transition-colors"
-                      >
-                        {suggestion.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-2">Team</label>
-            <select
-              value={formData.teamId}
-              onChange={(e) => handleInputChange('teamId', e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent text-sm"
-            >
-              {teams.map((team) => (
-                <option key={team.id} value={team.id}>
-                  {team.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {selectedTeamData && (
-            <div className="bg-muted/50 p-3 rounded-lg">
-              <div className="flex items-center space-x-2">
-                <div className="h-6 w-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs">
-                  {selectedTeamData.logo}
-                </div>
-                <span className="text-sm font-medium">{selectedTeamData.name}</span>
+        <div className="p-6">
+          {showTeamSelector && (
+            <div>
+              <p className="text-muted-foreground mb-4">Create a new event type for people to book times with.</p>
+              <div className="space-y-2">
+                {teams.map((team) => (
+                  <button
+                    key={team.id}
+                    onClick={() => handleTeamSelect(team.id)}
+                    className="w-full flex items-center p-3 border border-border rounded-lg hover:border-border/60 hover:bg-muted/50 transition-all"
+                  >
+                    <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-sm font-medium mr-3">
+                      {team.avatar}
+                    </div>
+                    <span className="font-medium">{team.name}</span>
+                  </button>
+                ))}
               </div>
             </div>
           )}
 
-          <div className="flex items-center justify-end space-x-3 pt-4">
+          {!showTeamSelector && selectedTeam !== 'personal' && !eventType && (
+            <div>
+              <div className="space-y-3">
+                {eventTypeOptions.map((option) => (
+                  <button
+                    key={option.id}
+                    onClick={() => handleEventTypeSelect(option.id)}
+                    className="w-full flex items-start p-4 border border-border rounded-lg hover:border-border/60 hover:bg-muted/50 transition-all text-left"
+                  >
+                    <option.icon className="h-5 w-5 text-muted-foreground mt-0.5 mr-3 flex-shrink-0" />
+                    <div>
+                      <h3 className="font-medium mb-1">{option.title}</h3>
+                      <p className="text-sm text-muted-foreground">{option.description}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {(!showTeamSelector && (selectedTeam === 'personal' || eventType)) && (
+            <div>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Title</label>
+                  <input
+                    type="text"
+                    placeholder="Quick Chat"
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-background"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">URL</label>
+                  <div className="flex">
+                    <span className="inline-flex items-center px-3 py-2 border border-r-0 border-border bg-muted text-muted-foreground text-sm rounded-l-lg">
+                      cal.id/{teams.find(t => t.id === selectedTeam)?.url || 'sanskar'}/
+                    </span>
+                    <input
+                      type="text"
+                      value={formData.url}
+                      onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                      className="flex-1 px-3 py-2 border border-border rounded-r-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-background"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Description</label>
+                  <textarea
+                    placeholder="A quick video meeting."
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-background"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Duration</label>
+                  <div className="relative">
+                    <div className="flex">
+                      <input
+                        type="number"
+                        value={formData.duration}
+                        onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                        onFocus={() => setShowDurationDropdown(true)}
+                        className="flex-1 px-3 py-2 border border-r-0 border-border rounded-l-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-background"
+                      />
+                      <span className="inline-flex items-center px-3 py-2 border border-border bg-muted text-sm rounded-r-lg">
+                        {durationUnit === 'minutes' ? 'Minutes' : 'Hours'}
+                      </span>
+                    </div>
+                    
+                    {showDurationDropdown && (
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-popover border border-border rounded-lg shadow-lg z-10 animate-scale-in">
+                        <div className="py-1 max-h-48 overflow-y-auto">
+                          {durationSuggestions.map((suggestion) => (
+                            <button
+                              key={suggestion.value}
+                              onClick={() => handleDurationSelect(suggestion)}
+                              className="w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors"
+                            >
+                              {suggestion.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="flex justify-between items-center p-6 border-t border-border">
+          <button
+            onClick={handleBack}
+            className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors"
+            disabled={showTeamSelector}
+          >
+            Back
+          </button>
+          <div className="flex space-x-3">
             <button
-              type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors"
             >
               Close
             </button>
             <button
-              type="submit"
-              disabled={!formData.title.trim()}
-              className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              onClick={handleCreate}
+              disabled={showTeamSelector || (selectedTeam !== 'personal' && !eventType)}
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed transition-colors"
             >
-              Continue
+              Create
             </button>
           </div>
-        </form>
+        </div>
       </div>
+      
+      {/* Backdrop to close dropdown */}
+      {showDurationDropdown && (
+        <div 
+          className="fixed inset-0 z-0" 
+          onClick={() => setShowDurationDropdown(false)}
+        />
+      )}
     </div>
   );
 };

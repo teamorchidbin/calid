@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Plus, MoreHorizontal, Eye, Edit, Copy as CopyIcon, Code, Trash2, ArrowUp, ArrowDown, Search, Copy, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
+import { Plus, MoreHorizontal, Eye, Edit, Copy as CopyIcon, Code, Trash2, ArrowUp, ArrowDown, Search, Copy } from 'lucide-react';
 import { CreateEventModal } from '../components/CreateEventModal';
 import { useNavigate } from 'react-router-dom';
 import { mockTeams } from '../data/mockData';
@@ -17,10 +17,6 @@ export const EventTypes = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const [eventStates, setEventStates] = useState<{[key: string]: boolean}>({});
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-  const [selectedTeamForCreate, setSelectedTeamForCreate] = useState('');
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   const currentTeam = mockTeams.find(t => t.id === selectedTeam) || mockTeams[0];
@@ -39,39 +35,6 @@ export const EventTypes = () => {
     });
     setEventStates(initialStates);
   }, []);
-
-  // Check scroll position
-  const checkScroll = () => {
-    if (scrollContainerRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
-      setCanScrollLeft(scrollLeft > 0);
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
-    }
-  };
-
-  useEffect(() => {
-    checkScroll();
-    const container = scrollContainerRef.current;
-    if (container) {
-      container.addEventListener('scroll', checkScroll);
-      const resizeObserver = new ResizeObserver(checkScroll);
-      resizeObserver.observe(container);
-      return () => {
-        container.removeEventListener('scroll', checkScroll);
-        resizeObserver.disconnect();
-      };
-    }
-  }, []);
-
-  const scrollTeams = (direction: 'left' | 'right') => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = 200;
-      scrollContainerRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      });
-    }
-  };
 
   const handleEventClick = (eventId: string) => {
     navigate(`/event/${eventId}/setup`);
@@ -99,7 +62,7 @@ export const EventTypes = () => {
 
   const handleArrowClick = (eventId: string, direction: 'up' | 'down') => {
     setDraggedItem(eventId);
-    console.log(`Moving event ${eventId} ${direction}`);
+    // Here you would implement the actual reordering logic
     setTimeout(() => setDraggedItem(null), 1000);
   };
 
@@ -110,40 +73,29 @@ export const EventTypes = () => {
         handleEventClick(eventId);
         break;
       case 'duplicate':
+        // Implement duplicate logic
         console.log('Duplicating event', eventId);
         break;
       case 'embed':
+        // Implement embed logic
         console.log('Embed event', eventId);
         break;
       case 'delete':
+        // Implement delete logic
         console.log('Deleting event', eventId);
         break;
     }
   };
 
-  const handleCreateEventClick = (teamId: string) => {
-    setSelectedTeamForCreate(teamId);
-    setSelectedTeam(teamId);
-    setShowNewDropdown(false);
-    setIsCreateModalOpen(true);
-  };
-
-  const handleCreateEvent = (eventData: any) => {
-    const newEventId = `event-${Date.now()}`;
-    console.log('Creating new event:', eventData);
-    navigate(`/event/${newEventId}/setup`);
-  };
-
   return (
-    <div className="p-6 space-y-6 w-full max-w-full overflow-hidden">
-      {/* Team Selector */}
-      <div className="flex items-center justify-between bg-background/95 backdrop-blur-sm sticky top-16 z-10 py-4 -mx-6 px-6 border-b border-border/40 w-full">
-        <div className="flex items-center space-x-4 w-full min-w-0">
-          {/* Personal Profile - Fixed */}
+    <div className="p-6 space-y-6">
+      {/* Team Selector - Full Width */}
+      <div className="flex items-center justify-between space-x-4 bg-background/95 backdrop-blur-sm sticky top-20 z-10 py-3 -mx-6 px-6 border-b border-border/40">
+        <div className="flex items-center space-x-4 flex-1">
           <div className="flex items-center bg-muted/50 rounded-lg p-1">
             <button
               onClick={() => setSelectedTeam('personal')}
-              className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all whitespace-nowrap ${
+              className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all ${
                 selectedTeam === 'personal'
                   ? 'bg-background text-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground'
@@ -154,66 +106,39 @@ export const EventTypes = () => {
               }`}>
                 {mockTeams[0].logo}
               </div>
-              <span className="hidden sm:inline">Sanskar Yadav</span>
-              <span className="sm:hidden">SK</span>
+              Sanskar Yadav
             </button>
           </div>
           
-          {/* Separator Line */}
-          <div className="w-px h-6 bg-border flex-shrink-0"></div>
+          <div className="w-px h-6 bg-border"></div>
           
-          {/* Teams - Scrollable */}
-          <div className="flex items-center flex-1 relative min-w-0">
-            {canScrollLeft && (
+          <div className="flex space-x-2 flex-1 overflow-x-auto scrollbar-none">
+            {mockTeams.slice(1).map((team) => (
               <button
-                onClick={() => scrollTeams('left')}
-                className="absolute left-0 z-10 p-1 bg-background border border-border rounded-full shadow-sm hover:bg-muted transition-colors flex-shrink-0"
+                key={team.id}
+                onClick={() => setSelectedTeam(team.id)}
+                className={`flex items-center px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-all flex-shrink-0 ${
+                  selectedTeam === team.id
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                }`}
               >
-                <ChevronLeft className="h-4 w-4" />
+                <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
+                  selectedTeam === team.id ? 'bg-primary-foreground text-primary' : 'bg-muted-foreground/20'
+                }`}>
+                  {team.logo}
+                </div>
+                {team.name}
               </button>
-            )}
-            
-            <div 
-              ref={scrollContainerRef}
-              className="flex space-x-2 overflow-x-auto scrollbar-none flex-1 px-6 min-w-0"
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-            >
-              {mockTeams.slice(1).map((team) => (
-                <button
-                  key={team.id}
-                  onClick={() => setSelectedTeam(team.id)}
-                  className={`flex items-center px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-all flex-shrink-0 min-w-fit ${
-                    selectedTeam === team.id
-                      ? 'bg-primary text-primary-foreground shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                  }`}
-                >
-                  <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
-                    selectedTeam === team.id ? 'bg-primary-foreground text-primary' : 'bg-muted-foreground/20'
-                  }`}>
-                    {team.logo}
-                  </div>
-                  {team.name}
-                </button>
-              ))}
-            </div>
-            
-            {canScrollRight && (
-              <button
-                onClick={() => scrollTeams('right')}
-                className="absolute right-0 z-10 p-1 bg-background border border-border rounded-full shadow-sm hover:bg-muted transition-colors flex-shrink-0"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            )}
+            ))}
           </div>
         </div>
       </div>
 
       {/* Search Bar and New Button */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0 sm:space-x-4 w-full">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 flex-1 w-full">
-          <div className="relative w-full sm:w-64">
+      <div className="flex items-center justify-between space-x-4">
+        <div className="flex items-center space-x-4 flex-1">
+          <div className="relative w-64">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
@@ -224,18 +149,16 @@ export const EventTypes = () => {
             />
           </div>
           
-          <div className="relative flex items-center space-x-2">
-            <div className="flex items-center space-x-2 px-3 py-2 bg-muted/70 text-muted-foreground text-xs rounded-md hover:bg-muted transition-colors">
-              <span className="text-xs truncate">
+          <div className="relative">
+            <button
+              onClick={handleCopyPublicLink}
+              className="flex items-center space-x-2 px-3 py-2 bg-muted/70 text-muted-foreground text-xs rounded-md hover:bg-muted transition-colors"
+            >
+              <span className="text-xs">
                 {selectedTeam === 'personal' ? 'cal.id/sanskar' : `cal.id/${currentTeam.url}`}
               </span>
-              <button onClick={handleCopyPublicLink}>
-                <Copy className="h-3 w-3" />
-              </button>
-              <button className="p-1">
-                <ExternalLink className="h-3 w-3" />
-              </button>
-            </div>
+              <Copy className="h-3 w-3" />
+            </button>
             {copiedPublicLink && (
               <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-foreground text-background text-xs rounded animate-fade-in whitespace-nowrap">
                 Copied
@@ -244,10 +167,10 @@ export const EventTypes = () => {
           </div>
         </div>
         
-        <div className="relative w-full sm:w-auto">
+        <div className="relative">
           <button
             onClick={() => setShowNewDropdown(!showNewDropdown)}
-            className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center px-4 py-2.5 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
           >
             <Plus className="h-4 w-4 mr-2" />
             New
@@ -259,7 +182,11 @@ export const EventTypes = () => {
                 {mockTeams.map((team) => (
                   <button
                     key={team.id}
-                    onClick={() => handleCreateEventClick(team.id)}
+                    onClick={() => {
+                      setSelectedTeam(team.id);
+                      setIsCreateModalOpen(true);
+                      setShowNewDropdown(false);
+                    }}
                     className="w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors flex items-center"
                   >
                     <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium mr-2">
@@ -289,15 +216,15 @@ export const EventTypes = () => {
                 }
               }}
             >
-              {/* Move buttons */}
+              {/* Move buttons - halfway on tile */}
               {(hoveredEvent === event.id || draggedItem === event.id) && (
-                <div className="absolute -left-6 top-1/2 transform -translate-y-1/2 flex flex-col space-y-1 z-10">
+                <div className="absolute -left-3 top-1/2 transform -translate-y-1/2 flex flex-col space-y-1 z-10">
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
                       handleArrowClick(event.id, 'up');
                     }}
-                    className="p-1.5 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all animate-arrow-popup"
+                    className="p-1.5 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all"
                   >
                     <ArrowUp className="h-3 w-3 text-muted-foreground" />
                   </button>
@@ -306,7 +233,7 @@ export const EventTypes = () => {
                       e.stopPropagation();
                       handleArrowClick(event.id, 'down');
                     }}
-                    className="p-1.5 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all animate-arrow-popup"
+                    className="p-1.5 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all"
                   >
                     <ArrowDown className="h-3 w-3 text-muted-foreground" />
                   </button>
@@ -321,7 +248,7 @@ export const EventTypes = () => {
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
-                    <div className="flex flex-col sm:flex-row sm:items-center mb-3 space-y-2 sm:space-y-0 sm:space-x-3">
+                    <div className="flex items-center mb-3 space-x-3">
                       <h3 className="text-base font-medium text-foreground">
                         {event.title}
                       </h3>
@@ -333,7 +260,7 @@ export const EventTypes = () => {
                           }}
                           className="flex items-center space-x-1 px-2 py-1 bg-muted/70 text-muted-foreground text-xs rounded hover:bg-muted transition-colors"
                         >
-                          <Copy className="h-3 w-3" />
+                          <Copy className="h-2.5 w-2.5" />
                           <span className="text-xs">Copy</span>
                         </button>
                         {copiedLink === event.id && (
@@ -344,7 +271,7 @@ export const EventTypes = () => {
                       </div>
                     </div>
                     <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{event.description}</p>
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                    <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         {event.durations?.map((duration) => (
                           <span key={duration} className="inline-flex items-center px-2 py-1 bg-muted text-foreground text-xs rounded">
@@ -420,9 +347,8 @@ export const EventTypes = () => {
       <CreateEventModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
-        onCreate={handleCreateEvent}
         teams={mockTeams}
-        selectedTeam={selectedTeamForCreate}
+        selectedTeam={selectedTeam}
       />
     </div>
   );
