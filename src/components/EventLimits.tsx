@@ -140,8 +140,8 @@ export const EventLimits = () => {
       <div className="border-b border-gray-200 pb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="font-semibold text-gray-900 text-base">Limit booking frequency</h3>
-            <p className="text-sm text-gray-600">Limit how many times this event can be booked</p>
+            <h3 className="font-semibold text-gray-900 text-sm">Limit booking frequency</h3>
+            <p className="text-gray-600 text-xs">Limit how many times this event can be booked</p>
           </div>
           <Switch checked={settings.limitBookingFrequency.enabled} onCheckedChange={checked => updateSetting('limitBookingFrequency', 'enabled', checked)} />
         </div>
@@ -180,8 +180,8 @@ export const EventLimits = () => {
       <div className="border-b border-gray-200 pb-6">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <h3 className="font-semibold text-gray-900 mb-2 text-base">Only show the first slot of each day as available</h3>
-            <p className="text-sm text-gray-600 max-w-3xl">
+            <h3 className="font-semibold text-gray-900 mb-2 text-sm">Only show the first slot of each day as available</h3>
+            <p className="text-gray-600 max-w-3xl text-xs">
               This will limit your availability for this event type to one slot per day, scheduled at the earliest available time.
             </p>
           </div>
@@ -193,8 +193,8 @@ export const EventLimits = () => {
       <div className="border-b border-gray-200 pb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="font-semibold text-gray-900 text-base">Limit total booking duration</h3>
-            <p className="text-sm text-gray-600">Limit total amount of time that this event can be booked</p>
+            <h3 className="font-semibold text-gray-900 text-sm">Limit total booking duration</h3>
+            <p className="text-gray-600 text-xs">Limit total amount of time that this event can be booked</p>
           </div>
           <Switch checked={settings.limitTotalBookingDuration.enabled} onCheckedChange={checked => updateSetting('limitTotalBookingDuration', 'enabled', checked)} />
         </div>
@@ -243,8 +243,8 @@ export const EventLimits = () => {
       <div className="border-b border-gray-200 pb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="font-semibold text-gray-900 text-base">Limit future bookings</h3>
-            <p className="text-sm text-gray-600">Limit how far in the future this event can be booked</p>
+            <h3 className="font-semibold text-gray-900 text-sm">Limit future bookings</h3>
+            <p className="text-gray-600 text-xs">Limit how far in the future this event can be booked</p>
           </div>
           <Switch checked={settings.limitFutureBookings.enabled} onCheckedChange={checked => updateSetting('limitFutureBookings', 'enabled', checked)} />
         </div>
@@ -284,8 +284,8 @@ export const EventLimits = () => {
       <div>
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="font-semibold text-gray-900 text-base">Offset start times</h3>
-            <p className="text-sm text-gray-600">Offset timeslots shown to bookers by a specified number of minutes</p>
+            <h3 className="font-semibold text-gray-900 text-sm">Offset start times</h3>
+            <p className="text-gray-600 text-xs">Offset timeslots shown to bookers by a specified number of minutes</p>
           </div>
           <Switch checked={settings.offsetStartTimes.enabled} onCheckedChange={checked => updateSetting('offsetStartTimes', 'enabled', checked)} />
         </div>
