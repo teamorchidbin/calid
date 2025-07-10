@@ -113,7 +113,7 @@ export const EditEvent = () => {
 
       <div className="flex w-full">
         {/* Sidebar */}
-        <div className="w-60 bg-card border-r border-border min-h-screen sticky top-0">
+        <div className="w-64 bg-card border-r border-border min-h-screen sticky top-0">
           <nav className="p-4 space-y-1">
             {tabs.map(tabItem => <button key={tabItem.id} onClick={() => setActiveTab(tabItem.id)} className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${activeTab === tabItem.id ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
             {tabs.map(tabItem => <button key={tabItem.id} onClick={() => setActiveTab(tabItem.id)} className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${activeTab === tabItem.id ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
@@ -129,4 +129,6 @@ export const EditEvent = () => {
         </div>
       </div>
     </div>;
-};
+  )
+  };
+}
