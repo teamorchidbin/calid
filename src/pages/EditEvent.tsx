@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ExternalLink, Copy, Settings, Clock, Zap, Shield, Smartphone, Workflow, Webhook } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Copy, Settings, Clock, Zap, Shield, Smartphone, Workflow, Webhook, RotateCcw } from 'lucide-react';
 import { EventSetup } from '../components/EventSetup';
 import { EventAvailability } from '../components/EventAvailability';
 import { EventLimits } from '../components/EventLimits';
@@ -9,13 +9,14 @@ import { EventAdvanced } from '../components/EventAdvanced';
 import { EventApps } from '../components/EventApps';
 import { EventWorkflows } from '../components/EventWorkflows';
 import { EventWebhooks } from '../components/EventWebhooks';
+import { Switch } from '../components/ui/switch';
 
 const tabs = [
   { id: 'setup', name: 'Event Setup', icon: Settings },
   { id: 'availability', name: 'Availability', icon: Clock },
   { id: 'limits', name: 'Limits', icon: Shield },
   { id: 'advanced', name: 'Advanced', icon: Zap },
-  { id: 'recurring', name: 'Recurring', icon: Clock },
+  { id: 'recurring', name: 'Recurring', icon: RotateCcw },
   { id: 'apps', name: 'Apps', icon: Smartphone },
   { id: 'workflows', name: 'Workflows', icon: Workflow },
   { id: 'webhooks', name: 'Webhooks', icon: Webhook },
@@ -25,6 +26,7 @@ export const EditEvent = () => {
   const { eventId, tab } = useParams();
   const [activeTab, setActiveTab] = useState(tab || 'setup');
   const [hasChanges, setHasChanges] = useState(false);
+  const [eventEnabled, setEventEnabled] = useState(true);
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -33,6 +35,7 @@ export const EditEvent = () => {
 
   const handleSave = () => {
     setHasChanges(false);
+    // Implement save logic here
   };
 
   const renderTabContent = () => {
@@ -46,55 +49,57 @@ export const EditEvent = () => {
       case 'advanced':
         return <EventAdvanced />;
       case 'recurring':
-        return <div className="p-6 max-w-4xl">
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-2">Recurring Event</h2>
-              <p className="text-gray-600 mb-6">Set up a recurring event that repeats at regular intervals.</p>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <input type="checkbox" id="enable-recurring" className="rounded" />
-                <label htmlFor="enable-recurring" className="text-sm font-medium">Enable recurring events</label>
+        return (
+          <div className="p-8 max-w-4xl">
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-xl font-semibold text-foreground mb-2">Recurring Event</h2>
+                <p className="text-muted-foreground mb-8">Set up a recurring event that repeats at regular intervals.</p>
               </div>
               
-              <div className="pl-6 space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Frequency</label>
-                  <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option>Does not repeat</option>
-                    <option>Daily</option>
-                    <option>Weekly</option>
-                    <option>Monthly</option>
-                    <option>Yearly</option>
-                  </select>
+              <div className="space-y-6">
+                <div className="flex items-center space-x-3">
+                  <Switch id="enable-recurring" />
+                  <label htmlFor="enable-recurring" className="text-sm font-medium">Enable recurring events</label>
                 </div>
                 
-                <div>
-                  <label className="block text-sm font-medium mb-2">End date</label>
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center space-x-2">
-                      <input type="radio" id="never" name="endType" className="rounded" />
-                      <label htmlFor="never" className="text-sm">Never</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <input type="radio" id="date" name="endType" className="rounded" />
-                      <label htmlFor="date" className="text-sm">On date</label>
-                      <input type="date" className="px-3 py-1 border border-gray-300 rounded text-sm" />
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <input type="radio" id="occurrences" name="endType" className="rounded" />
-                      <label htmlFor="occurrences" className="text-sm">After</label>
-                      <input type="number" className="w-16 px-2 py-1 border border-gray-300 rounded text-sm" placeholder="1" />
-                      <span className="text-sm">occurrences</span>
+                <div className="pl-6 space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-3">Frequency</label>
+                    <select className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring bg-background">
+                      <option>Does not repeat</option>
+                      <option>Daily</option>
+                      <option>Weekly</option>
+                      <option>Monthly</option>
+                      <option>Yearly</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-3">End date</label>
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <input type="radio" id="never" name="endType" className="rounded" />
+                        <label htmlFor="never" className="text-sm">Never</label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <input type="radio" id="date" name="endType" className="rounded" />
+                        <label htmlFor="date" className="text-sm">On date</label>
+                        <input type="date" className="ml-2 px-3 py-2 border border-border rounded text-sm bg-background" />
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <input type="radio" id="occurrences" name="endType" className="rounded" />
+                        <label htmlFor="occurrences" className="text-sm">After</label>
+                        <input type="number" className="w-20 ml-2 px-3 py-2 border border-border rounded text-sm bg-background" placeholder="1" />
+                        <span className="text-sm">occurrences</span>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>;
+        );
       case 'apps':
         return <EventApps />;
       case 'workflows':
@@ -107,27 +112,38 @@ export const EditEvent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4">
+      <div className="bg-card border-b border-border px-8 py-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <button 
               onClick={handleBack}
-              className="mr-4 p-1 hover:bg-gray-100 rounded"
+              className="mr-4 p-2 hover:bg-muted rounded-lg transition-colors"
             >
-              <ArrowLeft className="h-5 w-5 text-gray-600" />
+              <ArrowLeft className="h-5 w-5 text-muted-foreground" />
             </button>
             <div>
-              <h1 className="text-lg font-semibold text-gray-900">Product Hunt Chats</h1>
-              <div className="flex items-center mt-1 space-x-2">
-                <button className="text-sm text-blue-600 hover:text-blue-800 flex items-center">
+              <div className="flex items-center space-x-4 mb-2">
+                <h1 className="text-xl font-semibold text-foreground">Product Hunt Chats</h1>
+                <div className="flex items-center space-x-2 px-3 py-1 bg-muted/70 text-muted-foreground text-sm rounded-md">
+                  <span>cal.id/sanskar/product-hunt-chats</span>
+                  <Copy className="h-3 w-3" />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch 
+                    checked={eventEnabled} 
+                    onCheckedChange={setEventEnabled}
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    {eventEnabled ? 'Enabled' : 'Disabled'}
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <button className="text-sm text-primary hover:text-primary/80 flex items-center transition-colors">
                   <ExternalLink className="h-3 w-3 mr-1" />
                   Preview
-                </button>
-                <button className="text-sm text-gray-600 hover:text-gray-800 flex items-center">
-                  <Copy className="h-3 w-3 mr-1" />
-                  Copy link
                 </button>
               </div>
             </div>
@@ -138,15 +154,15 @@ export const EditEvent = () => {
               disabled={!hasChanges}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 hasChanges 
-                  ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
+                  : 'bg-muted text-muted-foreground cursor-not-allowed'
               }`}
             >
               Save Changes
             </button>
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-              <span className="text-sm text-gray-600">Published</span>
+              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+              <span className="text-sm text-muted-foreground">Published</span>
             </div>
           </div>
         </div>
@@ -154,16 +170,16 @@ export const EditEvent = () => {
 
       <div className="flex">
         {/* Sidebar */}
-        <div className="w-64 bg-white border-r border-gray-200 min-h-screen">
-          <nav className="p-4 space-y-1">
+        <div className="w-64 bg-card border-r border-border min-h-screen">
+          <nav className="p-6 space-y-1">
             {tabs.map((tabItem) => (
               <button
                 key={tabItem.id}
                 onClick={() => setActiveTab(tabItem.id)}
-                className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
                   activeTab === tabItem.id
-                    ? 'bg-blue-50 text-blue-700'
-                    : 'text-gray-700 hover:bg-gray-50'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
                 <tabItem.icon className="mr-3 h-4 w-4" />
@@ -174,7 +190,7 @@ export const EditEvent = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1">
+        <div className="flex-1 bg-background">
           {renderTabContent()}
         </div>
       </div>

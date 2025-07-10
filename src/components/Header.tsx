@@ -22,11 +22,12 @@ export const Header = ({ showEventTypesHeader = false }: HeaderProps) => {
         <div className="relative ml-auto">
           <button
             onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-            className="flex items-center space-x-2 px-3 py-2 hover:bg-muted rounded-lg transition-colors"
+            className="flex items-center space-x-3 px-3 py-2 hover:bg-muted rounded-lg transition-colors"
           >
             <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
               <span className="text-sm font-medium text-primary-foreground">SY</span>
             </div>
+            <span className="text-sm font-medium text-foreground">Sanskar</span>
             <ChevronDown className="h-4 w-4 text-muted-foreground" />
           </button>
           

@@ -20,9 +20,13 @@ export const Sidebar = ({ darkMode, setDarkMode }: SidebarProps) => {
     { name: 'Insights', href: '/insights', icon: BarChart3 },
   ];
 
+  const handleDarkModeToggle = () => {
+    setDarkMode(!darkMode);
+  };
+
   return (
     <div className="fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border">
-      <div className="flex h-16 items-center px-6 border-b border-border">
+      <div className="flex h-20 items-center px-6 border-b border-border">
         <img 
           src="https://cdn.prod.website-files.com/5e53d34464688e6f5960a338/682f1bb36cedcb0cd39a7027_Onehash-CalId-logo%20icon.svg" 
           alt="Cal ID" 
@@ -51,10 +55,12 @@ export const Sidebar = ({ darkMode, setDarkMode }: SidebarProps) => {
       </nav>
       
       <div className="border-t border-border p-4">
-        <div className="flex items-center justify-between mb-4">
+        <div className="w-px h-4 bg-border mx-auto mb-4"></div>
+        
+        <div className="flex items-center justify-center space-x-2">
           <button
-            onClick={() => setDarkMode(!darkMode)}
-            className="p-2 hover:bg-muted rounded-lg transition-colors"
+            onClick={handleDarkModeToggle}
+            className="p-2.5 bg-muted/50 hover:bg-muted rounded-lg transition-all duration-200 animate-button-press"
           >
             {darkMode ? (
               <Sun className="h-5 w-5 text-muted-foreground" />
@@ -62,18 +68,9 @@ export const Sidebar = ({ darkMode, setDarkMode }: SidebarProps) => {
               <Moon className="h-5 w-5 text-muted-foreground" />
             )}
           </button>
-          <button className="p-2 hover:bg-muted rounded-lg transition-colors">
+          <button className="p-2.5 bg-muted/50 hover:bg-muted rounded-lg transition-all duration-200 animate-button-press">
             <Settings className="h-5 w-5 text-muted-foreground" />
           </button>
-        </div>
-        
-        <div className="flex items-center">
-          <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-            <span className="text-sm font-medium text-primary-foreground">SY</span>
-          </div>
-          <div className="ml-3">
-            <p className="text-sm font-medium">Sanskar Yadav</p>
-          </div>
         </div>
       </div>
     </div>
