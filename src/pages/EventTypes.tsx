@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Plus, MoreHorizontal, Eye, Edit, Copy as CopyIcon, Code, Trash2, ArrowUp, ArrowDown, Search, Copy } from 'lucide-react';
 import { CreateEventModal } from '../components/CreateEventModal';
@@ -62,7 +61,8 @@ export const EventTypes = () => {
 
   const handleArrowClick = (eventId: string, direction: 'up' | 'down') => {
     setDraggedItem(eventId);
-    // Here you would implement the actual reordering logic
+    // Simulate reordering logic
+    console.log(`Moving event ${eventId} ${direction}`);
     setTimeout(() => setDraggedItem(null), 1000);
   };
 
@@ -73,25 +73,28 @@ export const EventTypes = () => {
         handleEventClick(eventId);
         break;
       case 'duplicate':
-        // Implement duplicate logic
         console.log('Duplicating event', eventId);
         break;
       case 'embed':
-        // Implement embed logic
         console.log('Embed event', eventId);
         break;
       case 'delete':
-        // Implement delete logic
         console.log('Deleting event', eventId);
         break;
     }
+  };
+
+  const handleCreateEvent = (teamId: string) => {
+    // Create a new event and redirect to edit
+    const newEventId = `event-${Date.now()}`;
+    navigate(`/event/${newEventId}/setup`);
   };
 
   return (
     <div className="p-6 space-y-6">
       {/* Team Selector - Full Width */}
       <div className="flex items-center justify-between space-x-4 bg-background/95 backdrop-blur-sm sticky top-20 z-10 py-3 -mx-6 px-6 border-b border-border/40">
-        <div className="flex items-center space-x-4 flex-1">
+        <div className="flex items-center space-x-4 w-full">
           <div className="flex items-center bg-muted/50 rounded-lg p-1">
             <button
               onClick={() => setSelectedTeam('personal')}
@@ -184,7 +187,7 @@ export const EventTypes = () => {
                     key={team.id}
                     onClick={() => {
                       setSelectedTeam(team.id);
-                      setIsCreateModalOpen(true);
+                      handleCreateEvent(team.id);
                       setShowNewDropdown(false);
                     }}
                     className="w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors flex items-center"
@@ -216,15 +219,15 @@ export const EventTypes = () => {
                 }
               }}
             >
-              {/* Move buttons - halfway on tile */}
+              {/* Move buttons - halfway on tile with popup animation */}
               {(hoveredEvent === event.id || draggedItem === event.id) && (
-                <div className="absolute -left-3 top-1/2 transform -translate-y-1/2 flex flex-col space-y-1 z-10">
+                <div className="absolute -left-6 top-1/2 transform -translate-y-1/2 flex flex-col space-y-1 z-10">
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
                       handleArrowClick(event.id, 'up');
                     }}
-                    className="p-1.5 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all"
+                    className="p-1.5 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all animate-arrow-popup"
                   >
                     <ArrowUp className="h-3 w-3 text-muted-foreground" />
                   </button>
@@ -233,7 +236,7 @@ export const EventTypes = () => {
                       e.stopPropagation();
                       handleArrowClick(event.id, 'down');
                     }}
-                    className="p-1.5 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all"
+                    className="p-1.5 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all animate-arrow-popup"
                   >
                     <ArrowDown className="h-3 w-3 text-muted-foreground" />
                   </button>
@@ -343,13 +346,6 @@ export const EventTypes = () => {
           );
         })}
       </div>
-
-      <CreateEventModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        teams={mockTeams}
-        selectedTeam={selectedTeam}
-      />
     </div>
   );
 };

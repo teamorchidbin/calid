@@ -27,7 +27,7 @@ export const Header = ({ showEventTypesHeader = false }: HeaderProps) => {
             <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
               <span className="text-sm font-medium text-primary-foreground">SY</span>
             </div>
-            <span className="text-sm font-medium text-foreground">Sanskar</span>
+            <span className="text-sm font-medium text-foreground">Sanskar Yadav</span>
             <ChevronDown className="h-4 w-4 text-muted-foreground" />
           </button>
           

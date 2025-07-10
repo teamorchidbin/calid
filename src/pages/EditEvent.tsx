@@ -9,6 +9,7 @@ import { EventApps } from '../components/EventApps';
 import { EventWorkflows } from '../components/EventWorkflows';
 import { EventWebhooks } from '../components/EventWebhooks';
 import { Switch } from '../components/ui/switch';
+
 const tabs = [{
   id: 'setup',
   name: 'Event Setup',
@@ -42,26 +43,24 @@ const tabs = [{
   name: 'Webhooks',
   icon: Webhook
 }];
+
 export const EditEvent = () => {
   const {
     eventId,
     tab
   } = useParams();
   const [activeTab, setActiveTab] = useState(tab || 'setup');
-  const [hasChanges, setHasChanges] = useState(false);
   const [eventEnabled, setEventEnabled] = useState(true);
   const navigate = useNavigate();
+
   const handleBack = () => {
     navigate('/');
   };
-  const handleSave = () => {
-    setHasChanges(false);
-    // Implement save logic here
-  };
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'setup':
-        return <EventSetup onChange={() => setHasChanges(true)} />;
+        return <EventSetup />;
       case 'availability':
         return <EventAvailability />;
       case 'limits':
@@ -69,45 +68,51 @@ export const EditEvent = () => {
       case 'advanced':
         return <EventAdvanced />;
       case 'recurring':
-        return <div className="p-8 max-w-4xl">
-            <div className="space-y-8">
+        return <div className="p-8 max-w-full">
+            <div className="space-y-6">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                <p className="text-sm text-yellow-800">
+                  <strong>Experimental:</strong> Recurring Events are currently experimental and causes some issues sometimes when checking for availability. We are working on fixing this.
+                </p>
+              </div>
               
-              
-              <div className="space-y-6">
-                <div className="flex items-center space-x-3">
-                  <Switch id="enable-recurring" />
-                  <label htmlFor="enable-recurring" className="text-sm font-medium">Enable recurring events</label>
-                </div>
-                
-                <div className="pl-6 space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium mb-3">Frequency</label>
-                    <select className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring bg-background">
-                      <option>Does not repeat</option>
-                      <option>Daily</option>
-                      <option>Weekly</option>
-                      <option>Monthly</option>
-                      <option>Yearly</option>
-                    </select>
+              <div className="bg-card border border-border rounded-lg p-6">
+                <div className="space-y-6">
+                  <div className="flex items-center space-x-3">
+                    <Switch id="enable-recurring" />
+                    <label htmlFor="enable-recurring" className="text-base font-medium">Enable recurring events</label>
                   </div>
                   
-                  <div>
-                    <label className="block text-sm font-medium mb-3">End date</label>
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-2">
-                        <input type="radio" id="never" name="endType" className="rounded" />
-                        <label htmlFor="never" className="text-sm">Never</label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <input type="radio" id="date" name="endType" className="rounded" />
-                        <label htmlFor="date" className="text-sm">On date</label>
-                        <input type="date" className="ml-2 px-3 py-2 border border-border rounded text-sm bg-background" />
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <input type="radio" id="occurrences" name="endType" className="rounded" />
-                        <label htmlFor="occurrences" className="text-sm">After</label>
-                        <input type="number" className="w-20 ml-2 px-3 py-2 border border-border rounded text-sm bg-background" placeholder="1" />
-                        <span className="text-sm">occurrences</span>
+                  <div className="pl-6 space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium mb-3">Frequency</label>
+                      <select className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring bg-background text-base">
+                        <option>Does not repeat</option>
+                        <option>Daily</option>
+                        <option>Weekly</option>
+                        <option>Monthly</option>
+                        <option>Yearly</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium mb-3">End date</label>
+                      <div className="space-y-3">
+                        <div className="flex items-center space-x-2">
+                          <input type="radio" id="never" name="endType" className="rounded" />
+                          <label htmlFor="never" className="text-base">Never</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <input type="radio" id="date" name="endType" className="rounded" />
+                          <label htmlFor="date" className="text-base">On date</label>
+                          <input type="date" className="ml-2 px-3 py-2 border border-border rounded text-base bg-background" />
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <input type="radio" id="occurrences" name="endType" className="rounded" />
+                          <label htmlFor="occurrences" className="text-base">After</label>
+                          <input type="number" className="w-20 ml-2 px-3 py-2 border border-border rounded text-base bg-background" placeholder="1" />
+                          <span className="text-base">occurrences</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -122,9 +127,10 @@ export const EditEvent = () => {
       case 'webhooks':
         return <EventWebhooks />;
       default:
-        return <EventSetup onChange={() => setHasChanges(true)} />;
+        return <EventSetup />;
     }
   };
+
   return <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-card border-b border-border px-8 py-6">
@@ -140,28 +146,19 @@ export const EditEvent = () => {
                   <span>cal.id/sanskar/product-hunt-chats</span>
                   <Copy className="h-3 w-3" />
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Switch checked={eventEnabled} onCheckedChange={setEventEnabled} />
-                  <span className="text-sm text-muted-foreground">
-                    {eventEnabled ? 'Enabled' : 'Disabled'}
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <button className="text-sm text-primary hover:text-primary/80 flex items-center transition-colors">
-                  <ExternalLink className="h-3 w-3 mr-1" />
-                  Preview
-                </button>
               </div>
             </div>
           </div>
-          <div className="flex items-center space-x-3">
-            <button onClick={handleSave} disabled={!hasChanges} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${hasChanges ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-muted text-muted-foreground cursor-not-allowed'}`}>
-              Save Changes
+          <div className="flex items-center space-x-4">
+            <button className="text-sm text-primary hover:text-primary/80 flex items-center transition-colors">
+              <ExternalLink className="h-3 w-3 mr-1" />
+              Preview
             </button>
             <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-              <span className="text-sm text-muted-foreground">Published</span>
+              <Switch checked={eventEnabled} onCheckedChange={setEventEnabled} />
+              <span className="text-sm text-muted-foreground">
+                {eventEnabled ? 'Enabled' : 'Disabled'}
+              </span>
             </div>
           </div>
         </div>
@@ -171,7 +168,7 @@ export const EditEvent = () => {
         {/* Sidebar */}
         <div className="w-64 bg-card border-r border-border min-h-screen">
           <nav className="p-6 space-y-1">
-            {tabs.map(tabItem => <button key={tabItem.id} onClick={() => setActiveTab(tabItem.id)} className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${activeTab === tabItem.id ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+            {tabs.map(tabItem => <button key={tabItem.id} onClick={() => setActiveTab(tabItem.id)} className={`w-full flex items-center px-4 py-3 text-base font-medium rounded-lg transition-colors ${activeTab === tabItem.id ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
                 <tabItem.icon className="mr-3 h-4 w-4" />
                 {tabItem.name}
               </button>)}
