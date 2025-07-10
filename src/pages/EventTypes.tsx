@@ -138,9 +138,9 @@ export const EventTypes = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 w-full max-w-full overflow-hidden">
+    <div className="p-4 sm:p-6 space-y-3 w-full max-w-full overflow-hidden">
       {/* Team Selector */}
-      <div className="flex items-center justify-between bg-background/95 backdrop-blur-sm sticky top-20 z-10 py-3 -mx-4 sm:-mx-6 px-4 sm:px-6 border-b border-border/40 w-full">
+      <div className="flex items-center justify-between bg-background/95 backdrop-blur-sm sticky top-16 z-10 py-2 -mx-4 sm:-mx-6 px-4 sm:px-6 border-b border-border/40 w-full">
         <div className="flex items-center space-x-4 w-full min-w-0">
           {/* Personal Profile - Fixed */}
           <div className="flex items-center bg-muted/50 rounded-lg p-1">
@@ -185,7 +185,7 @@ export const EventTypes = () => {
                 <button
                   key={team.id}
                   onClick={() => setSelectedTeam(team.id)}
-                  className={`flex items-center px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-all flex-shrink-0 min-w-fit ${
+                  className={`flex items-center px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-all flex-shrink-0 min-w-fit ${
                     selectedTeam === team.id
                       ? 'bg-primary text-primary-foreground shadow-sm'
                       : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
@@ -278,7 +278,7 @@ export const EventTypes = () => {
       </div>
 
       {/* Event Types List */}
-      <div className="space-y-3">
+      <div className="space-y-2">
         {filteredEvents.map((event) => {
           const isEventActive = eventStates[event.id] ?? event.isActive;
           return (
@@ -318,7 +318,7 @@ export const EventTypes = () => {
 
               <div 
                 onClick={() => handleEventClick(event.id)}
-                className={`bg-card border border-border rounded-lg p-3 sm:p-4 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer ${
+                className={`bg-card border border-border rounded-lg p-3 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer ${
                   !isEventActive ? 'opacity-50' : ''
                 }`}
               >
@@ -346,7 +346,7 @@ export const EventTypes = () => {
                         )}
                       </div>
                     </div>
-                    <p className="text-muted-foreground text-sm mb-2 sm:mb-3 line-clamp-2">{event.description}</p>
+                    <p className="text-muted-foreground text-sm mb-2 line-clamp-2">{event.description}</p>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
                       <div className="flex items-center space-x-2">
                         {event.durations?.map((duration) => (

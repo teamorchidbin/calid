@@ -5,38 +5,39 @@ import { Switch } from './ui/switch';
 
 export const EventLimits = () => {
   const [limits, setLimits] = useState({
-    duration: {
-      minimum: '',
-      maximum: '',
+    minimumNotice: {
+      enabled: true,
+      value: '2',
+      unit: 'Hours'
+    },
+    bookingFrequency: {
+      enabled: false,
+      value: '1',
+      unit: 'Per day'
+    },
+    showFirstSlot: {
       enabled: false
     },
-    frequency: {
-      perDay: '',
-      perWeek: '',
-      perMonth: '',
-      enableDaily: false,
-      enableWeekly: false,
-      enableMonthly: false
+    totalBookingDuration: {
+      enabled: false,
+      value: '60',
+      unit: 'Minutes',
+      period: 'Per day'
     },
-    buffer: {
-      before: '',
-      after: '',
-      enableBefore: false,
-      enableAfter: false
+    futureBookings: {
+      enabled: false,
+      value: '30',
+      unit: 'business days'
     },
-    notice: {
-      minimum: '60',
-      maximum: '',
-      enableMinimum: true,
-      enableMaximum: false
+    dateRange: {
+      enabled: false,
+      start: '2025-07-10',
+      end: '2025-07-10'
     },
-    future: {
-      days: '60',
-      enabled: true
-    },
-    capacity: {
-      maxBookings: '',
-      enabled: false
+    offsetStartTimes: {
+      enabled: false,
+      value: '0',
+      unit: 'Minutes'
     }
   });
 
@@ -51,244 +52,276 @@ export const EventLimits = () => {
   };
 
   return (
-    <div className="p-6 w-full space-y-6">
-      <div className="space-y-6">
-        {/* Booking Frequency */}
-        <div className="bg-card border border-border rounded-lg p-4">
-          <div className="flex items-center space-x-2 mb-4">
-            <Calendar className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-medium">Booking Frequency</h3>
-          </div>
-          
+    <div className="p-6 w-full space-y-4">
+      <div className="space-y-4">
+        {/* Before event */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <div className="flex items-center space-x-2 mb-2">
-                  <Switch 
-                    checked={limits.frequency.enableDaily}
-                    onCheckedChange={(checked) => handleLimitChange('frequency', 'enableDaily', checked)}
-                  />
-                  <label className="text-sm font-medium">Limit per day</label>
-                </div>
-                {limits.frequency.enableDaily && (
-                  <input
-                    type="number"
-                    value={limits.frequency.perDay}
-                    onChange={(e) => handleLimitChange('frequency', 'perDay', e.target.value)}
-                    placeholder="e.g., 5"
-                    className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-background"
-                  />
-                )}
-              </div>
-              
-              <div>
-                <div className="flex items-center space-x-2 mb-2">
-                  <Switch 
-                    checked={limits.frequency.enableWeekly}
-                    onCheckedChange={(checked) => handleLimitChange('frequency', 'enableWeekly', checked)}
-                  />
-                  <label className="text-sm font-medium">Limit per week</label>
-                </div>
-                {limits.frequency.enableWeekly && (
-                  <input
-                    type="number"
-                    value={limits.frequency.perWeek}
-                    onChange={(e) => handleLimitChange('frequency', 'perWeek', e.target.value)}
-                    placeholder="e.g., 20"
-                    className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-background"
-                  />
-                )}
-              </div>
-              
-              <div>
-                <div className="flex items-center space-x-2 mb-2">
-                  <Switch 
-                    checked={limits.frequency.enableMonthly}
-                    onCheckedChange={(checked) => handleLimitChange('frequency', 'enableMonthly', checked)}
-                  />
-                  <label className="text-sm font-medium">Limit per month</label>
-                </div>
-                {limits.frequency.enableMonthly && (
-                  <input
-                    type="number"
-                    value={limits.frequency.perMonth}
-                    onChange={(e) => handleLimitChange('frequency', 'perMonth', e.target.value)}
-                    placeholder="e.g., 50"
-                    className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-background"
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Buffer Time */}
-        <div className="bg-card border border-border rounded-lg p-4">
-          <div className="flex items-center space-x-2 mb-4">
-            <Clock className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-medium">Buffer Time</h3>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <div className="flex items-center space-x-2 mb-2">
-                <Switch 
-                  checked={limits.buffer.enableBefore}
-                  onCheckedChange={(checked) => handleLimitChange('buffer', 'enableBefore', checked)}
-                />
-                <label className="text-sm font-medium">Buffer before event</label>
-              </div>
-              {limits.buffer.enableBefore && (
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="number"
-                    value={limits.buffer.before}
-                    onChange={(e) => handleLimitChange('buffer', 'before', e.target.value)}
-                    placeholder="15"
-                    className="flex-1 px-3 py-2 border border-border rounded-lg text-sm bg-background"
-                  />
-                  <span className="text-sm text-muted-foreground">minutes</span>
-                </div>
-              )}
-            </div>
+            <h3 className="text-base font-medium">Before event</h3>
             
-            <div>
-              <div className="flex items-center space-x-2 mb-2">
-                <Switch 
-                  checked={limits.buffer.enableAfter}
-                  onCheckedChange={(checked) => handleLimitChange('buffer', 'enableAfter', checked)}
-                />
-                <label className="text-sm font-medium">Buffer after event</label>
-              </div>
-              {limits.buffer.enableAfter && (
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="number"
-                    value={limits.buffer.after}
-                    onChange={(e) => handleLimitChange('buffer', 'after', e.target.value)}
-                    placeholder="15"
-                    className="flex-1 px-3 py-2 border border-border rounded-lg text-sm bg-background"
-                  />
-                  <span className="text-sm text-muted-foreground">minutes</span>
+            <div className="space-y-4">
+              <div>
+                <div className="flex items-center space-x-2 mb-2">
+                  <label className="text-sm">Minimum Notice</label>
                 </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Booking Notice */}
-        <div className="bg-card border border-border rounded-lg p-4">
-          <div className="flex items-center space-x-2 mb-4">
-            <AlertCircle className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-medium">Booking Notice</h3>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <div className="flex items-center space-x-2 mb-2">
-                <Switch 
-                  checked={limits.notice.enableMinimum}
-                  onCheckedChange={(checked) => handleLimitChange('notice', 'enableMinimum', checked)}
-                />
-                <label className="text-sm font-medium">Minimum notice</label>
-              </div>
-              {limits.notice.enableMinimum && (
                 <div className="flex items-center space-x-2">
                   <input
                     type="number"
-                    value={limits.notice.minimum}
-                    onChange={(e) => handleLimitChange('notice', 'minimum', e.target.value)}
-                    placeholder="60"
-                    className="flex-1 px-3 py-2 border border-border rounded-lg text-sm bg-background"
+                    value={limits.minimumNotice.value}
+                    onChange={(e) => handleLimitChange('minimumNotice', 'value', e.target.value)}
+                    className="w-20 px-3 py-2 border border-border rounded text-sm bg-background"
                   />
-                  <select className="px-3 py-2 border border-border rounded-lg text-sm bg-background">
-                    <option value="minutes">minutes</option>
-                    <option value="hours">hours</option>
-                    <option value="days">days</option>
+                  <select
+                    value={limits.minimumNotice.unit}
+                    onChange={(e) => handleLimitChange('minimumNotice', 'unit', e.target.value)}
+                    className="px-3 py-2 border border-border rounded text-sm bg-background"
+                  >
+                    <option value="Hours">Hours</option>
+                    <option value="Days">Days</option>
+                    <option value="Weeks">Weeks</option>
                   </select>
                 </div>
-              )}
-            </div>
-            
-            <div>
-              <div className="flex items-center space-x-2 mb-2">
-                <Switch 
-                  checked={limits.notice.enableMaximum}
-                  onCheckedChange={(checked) => handleLimitChange('notice', 'enableMaximum', checked)}
-                />
-                <label className="text-sm font-medium">Maximum notice</label>
               </div>
-              {limits.notice.enableMaximum && (
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="number"
-                    value={limits.notice.maximum}
-                    onChange={(e) => handleLimitChange('notice', 'maximum', e.target.value)}
-                    placeholder="30"
-                    className="flex-1 px-3 py-2 border border-border rounded-lg text-sm bg-background"
-                  />
-                  <select className="px-3 py-2 border border-border rounded-lg text-sm bg-background">
-                    <option value="days">days</option>
-                    <option value="weeks">weeks</option>
-                    <option value="months">months</option>
-                  </select>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="text-base font-medium">After event</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <div className="flex items-center space-x-2 mb-2">
+                  <label className="text-sm">Time-slot intervals</label>
                 </div>
-              )}
+                <select className="w-full px-3 py-2 border border-border rounded text-sm bg-background">
+                  <option>Use event length (default)</option>
+                  <option>15 minutes</option>
+                  <option>30 minutes</option>
+                  <option>60 minutes</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Future Booking Limit */}
-        <div className="bg-card border border-border rounded-lg p-4">
-          <div className="flex items-center space-x-2 mb-4">
-            <Switch 
-              checked={limits.future.enabled}
-              onCheckedChange={(checked) => handleLimitChange('future', 'enabled', checked)}
+        {/* Limit booking frequency */}
+        <div className="border-t border-border pt-4">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-base font-medium">Limit booking frequency</h3>
+              <p className="text-sm text-muted-foreground">Limit how many times this event can be booked</p>
+            </div>
+            <Switch
+              checked={limits.bookingFrequency.enabled}
+              onCheckedChange={(checked) => handleLimitChange('bookingFrequency', 'enabled', checked)}
             />
-            <h3 className="text-lg font-medium">Limit future bookings</h3>
           </div>
           
-          {limits.future.enabled && (
+          {limits.bookingFrequency.enabled && (
             <div className="flex items-center space-x-2">
-              <span className="text-sm">Don't allow bookings more than</span>
               <input
                 type="number"
-                value={limits.future.days}
-                onChange={(e) => handleLimitChange('future', 'days', e.target.value)}
-                className="w-20 px-3 py-2 border border-border rounded-lg text-sm bg-background"
+                value={limits.bookingFrequency.value}
+                onChange={(e) => handleLimitChange('bookingFrequency', 'value', e.target.value)}
+                className="w-20 px-3 py-2 border border-border rounded text-sm bg-background"
               />
-              <span className="text-sm">days in advance</span>
+              <select
+                value={limits.bookingFrequency.unit}
+                onChange={(e) => handleLimitChange('bookingFrequency', 'unit', e.target.value)}
+                className="px-3 py-2 border border-border rounded text-sm bg-background"
+              >
+                <option value="Per day">Per day</option>
+                <option value="Per week">Per week</option>
+                <option value="Per month">Per month</option>
+              </select>
+              <button className="text-sm text-primary hover:text-primary/80">+ Add Limit</button>
             </div>
           )}
         </div>
 
-        {/* Booking Capacity */}
-        <div className="bg-card border border-border rounded-lg p-4">
-          <div className="flex items-center space-x-2 mb-4">
-            <Users className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-medium">Booking Capacity</h3>
-          </div>
-          
-          <div className="flex items-center space-x-2 mb-3">
-            <Switch 
-              checked={limits.capacity.enabled}
-              onCheckedChange={(checked) => handleLimitChange('capacity', 'enabled', checked)}
+        {/* Only show the first slot of each day as available */}
+        <div className="border-t border-border pt-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-base font-medium">Only show the first slot of each day as available</h3>
+              <p className="text-sm text-muted-foreground">This will limit your availability for this event type to one slot per day, scheduled at the earliest available time.</p>
+            </div>
+            <Switch
+              checked={limits.showFirstSlot.enabled}
+              onCheckedChange={(checked) => handleLimitChange('showFirstSlot', 'enabled', checked)}
             />
-            <label className="text-sm font-medium">Enable group bookings</label>
+          </div>
+        </div>
+
+        {/* Limit total booking duration */}
+        <div className="border-t border-border pt-4">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-base font-medium">Limit total booking duration</h3>
+              <p className="text-sm text-muted-foreground">Limit total amount of time that this event can be booked</p>
+            </div>
+            <Switch
+              checked={limits.totalBookingDuration.enabled}
+              onCheckedChange={(checked) => handleLimitChange('totalBookingDuration', 'enabled', checked)}
+            />
           </div>
           
-          {limits.capacity.enabled && (
+          {limits.totalBookingDuration.enabled && (
             <div className="flex items-center space-x-2">
-              <span className="text-sm">Maximum attendees per booking:</span>
               <input
                 type="number"
-                value={limits.capacity.maxBookings}
-                onChange={(e) => handleLimitChange('capacity', 'maxBookings', e.target.value)}
-                placeholder="10"
-                className="w-20 px-3 py-2 border border-border rounded-lg text-sm bg-background"
+                value={limits.totalBookingDuration.value}
+                onChange={(e) => handleLimitChange('totalBookingDuration', 'value', e.target.value)}
+                className="w-20 px-3 py-2 border border-border rounded text-sm bg-background"
               />
+              <select
+                value={limits.totalBookingDuration.unit}
+                onChange={(e) => handleLimitChange('totalBookingDuration', 'unit', e.target.value)}
+                className="px-3 py-2 border border-border rounded text-sm bg-background"
+              >
+                <option value="Minutes">Minutes</option>
+                <option value="Hours">Hours</option>
+              </select>
+              <select
+                value={limits.totalBookingDuration.period}
+                onChange={(e) => handleLimitChange('totalBookingDuration', 'period', e.target.value)}
+                className="px-3 py-2 border border-border rounded text-sm bg-background"
+              >
+                <option value="Per day">Per day</option>
+                <option value="Per week">Per week</option>
+                <option value="Per month">Per month</option>
+              </select>
+              <button className="text-sm text-primary hover:text-primary/80">+ Add Limit</button>
             </div>
           )}
+        </div>
+
+        {/* Limit future bookings */}
+        <div className="border-t border-border pt-4">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-base font-medium">Limit future bookings</h3>
+              <p className="text-sm text-muted-foreground">Limit how far in the future this event can be booked</p>
+            </div>
+            <Switch
+              checked={limits.futureBookings.enabled}
+              onCheckedChange={(checked) => handleLimitChange('futureBookings', 'enabled', checked)}
+            />
+          </div>
+          
+          {limits.futureBookings.enabled && (
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  id="businessDays"
+                  name="futureBookings"
+                  className="rounded"
+                  defaultChecked
+                />
+                <input
+                  type="number"
+                  value={limits.futureBookings.value}
+                  onChange={(e) => handleLimitChange('futureBookings', 'value', e.target.value)}
+                  className="w-20 px-3 py-2 border border-border rounded text-sm bg-background"
+                />
+                <select
+                  value={limits.futureBookings.unit}
+                  onChange={(e) => handleLimitChange('futureBookings', 'unit', e.target.value)}
+                  className="px-3 py-2 border border-border rounded text-sm bg-background"
+                >
+                  <option value="business days">business days</option>
+                  <option value="calendar days">calendar days</option>
+                  <option value="weeks">weeks</option>
+                  <option value="months">months</option>
+                </select>
+                <span className="text-sm">into the future</span>
+              </div>
+              <div className="text-sm text-muted-foreground">Always 30 days available</div>
+              
+              <div className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  id="dateRange"
+                  name="futureBookings"
+                  className="rounded"
+                />
+                <label htmlFor="dateRange" className="text-sm">Within a date range</label>
+                <input
+                  type="date"
+                  value={limits.dateRange.start}
+                  onChange={(e) => handleLimitChange('dateRange', 'start', e.target.value)}
+                  className="px-3 py-2 border border-border rounded text-sm bg-background"
+                />
+                <span className="text-sm">-</span>
+                <input
+                  type="date"
+                  value={limits.dateRange.end}
+                  onChange={(e) => handleLimitChange('dateRange', 'end', e.target.value)}
+                  className="px-3 py-2 border border-border rounded text-sm bg-background"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Offset start times */}
+        <div className="border-t border-border pt-4">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-base font-medium">Offset start times</h3>
+              <p className="text-sm text-muted-foreground">Offset timeslots shown to bookers by a specified number of minutes</p>
+            </div>
+            <Switch
+              checked={limits.offsetStartTimes.enabled}
+              onCheckedChange={(checked) => handleLimitChange('offsetStartTimes', 'enabled', checked)}
+            />
+          </div>
+          
+          {limits.offsetStartTimes.enabled && (
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="number"
+                  value={limits.offsetStartTimes.value}
+                  onChange={(e) => handleLimitChange('offsetStartTimes', 'value', e.target.value)}
+                  className="w-20 px-3 py-2 border border-border rounded text-sm bg-background"
+                />
+                <select
+                  value={limits.offsetStartTimes.unit}
+                  onChange={(e) => handleLimitChange('offsetStartTimes', 'unit', e.target.value)}
+                  className="px-3 py-2 border border-border rounded text-sm bg-background"
+                >
+                  <option value="Minutes">Minutes</option>
+                </select>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                e.g. this will show time slots to your bookers at<br />
+                9:00 AM instead of 9:00 AM
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Offset by */}
+        <div className="border-t border-border pt-4">
+          <div>
+            <h3 className="text-base font-medium">Offset by</h3>
+            <div className="flex items-center space-x-2 mt-2">
+              <input
+                type="number"
+                value="0"
+                className="w-20 px-3 py-2 border border-border rounded text-sm bg-background"
+              />
+              <select className="px-3 py-2 border border-border rounded text-sm bg-background">
+                <option value="Minutes">Minutes</option>
+              </select>
+            </div>
+            <p className="text-sm text-muted-foreground mt-2">
+              e.g. this will show time slots to your bookers at<br />
+              9:00 AM instead of 9:00 AM
+            </p>
+          </div>
         </div>
       </div>
     </div>
