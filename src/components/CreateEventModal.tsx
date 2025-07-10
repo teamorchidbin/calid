@@ -38,7 +38,11 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
   if (!isOpen) return null;
 
   const handleCreate = () => {
+    console.log('Create button clicked with form data:', formData);
+    console.log('Selected team:', selectedTeam);
+    
     if (!formData.title.trim()) {
+      console.log('No title provided, aborting creation');
       return;
     }
 
@@ -48,6 +52,7 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
       team: selectedTeam
     };
 
+    console.log('Calling onCreateEvent with:', eventData);
     onCreateEvent(eventData);
   };
 

@@ -56,13 +56,13 @@ export const EventTypes = () => {
     console.log('New event object:', newEvent);
 
     // Update team events state
-    setTeamEvents(prevTeams => {
-      return prevTeams.map(team => 
+    setTeamEvents(prevTeams => 
+      prevTeams.map(team => 
         team.id === selectedTeam 
           ? { ...team, eventTypes: [...team.eventTypes, newEvent] }
           : team
-      );
-    });
+      )
+    );
 
     // Initialize event state
     setEventStates(prev => ({
@@ -73,11 +73,7 @@ export const EventTypes = () => {
     // Close modal and navigate to the NEW event
     setIsCreateModalOpen(false);
     console.log('Navigating to new event:', newEventId);
-    
-    // Use setTimeout to ensure state update completes before navigation
-    setTimeout(() => {
-      navigate(`/event/${newEventId}/setup`);
-    }, 100);
+    navigate(`/event/${newEventId}/setup`);
   };
 
   const handleCopyLink = (eventId: string, url: string) => {

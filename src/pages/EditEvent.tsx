@@ -80,42 +80,6 @@ export const EditEvent = () => {
   };
   
   return <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="h-20 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="h-full px-8 flex items-center justify-between w-full">
-          <div className="flex-1">
-            <h1 className="text-xl font-semibold text-foreground">Event Types</h1>
-            <p className="text-sm text-muted-foreground mt-1">Create events to share for people to book on your calendar.</p>
-          </div>
-          
-          <div className="flex items-center space-x-4 ml-auto">
-            {/* Notifications */}
-            <div className="relative">
-              <button className="p-2 hover:bg-muted rounded-lg transition-colors relative">
-                <svg className="h-5 w-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19c-5 0-8-3-8-6s3-6 8-6 8 3 8 6-3 6-8 6z" />
-                </svg>
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
-              </button>
-            </div>
-
-            {/* Profile */}
-            <div className="relative">
-              <button className="flex items-center space-x-3 px-4 py-2 hover:bg-muted rounded-lg transition-colors w-full">
-                <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-                  <span className="text-sm font-medium text-primary-foreground">SY</span>
-                </div>
-                <span className="text-sm font-medium text-foreground">Sanskar Yadav</span>
-                <svg className="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
       {/* Event Header */}
       <div className="bg-card border-b border-border px-8 py-6">
         <div className="flex items-center justify-between w-full">
