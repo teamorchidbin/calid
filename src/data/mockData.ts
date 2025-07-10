@@ -1,4 +1,5 @@
 
+
 // Event types for personal account
 const personalEvents = [
   {
@@ -96,10 +97,10 @@ const personalEvents = [
     title: 'Brainstorming Session',
     durations: [60],
     description: 'Creative brainstorming and ideation',
-    isActive: false,
+    isActive: true,
     url: '/sanskar/brainstorming',
     color: '#007ee5',
-    bookingsToday: 0
+    bookingsToday: 8
   },
   {
     id: '11',
@@ -126,10 +127,10 @@ const personalEvents = [
     title: 'Workshop',
     durations: [120],
     description: 'Interactive workshop session',
-    isActive: false,
+    isActive: true,
     url: '/sanskar/workshop',
     color: '#007ee5',
-    bookingsToday: 0
+    bookingsToday: 3
   },
   {
     id: '14',
@@ -250,10 +251,10 @@ const teamEvents = [
     title: 'Sales Meeting',
     durations: [30],
     description: 'Sales team meeting',
-    isActive: false,
+    isActive: true,
     url: '/team/sales-meeting',
     color: '#007ee5',
-    bookingsToday: 0
+    bookingsToday: 7
   },
   {
     id: 't11',
@@ -280,10 +281,10 @@ const teamEvents = [
     title: 'Budget Review',
     durations: [60],
     description: 'Budget and financial review',
-    isActive: false,
+    isActive: true,
     url: '/team/budget-review',
     color: '#007ee5',
-    bookingsToday: 0
+    bookingsToday: 2
   },
   {
     id: 't14',
@@ -377,103 +378,6 @@ export const mockTeams = [
     logo: 'FT',
     url: 'finance-team',
     eventTypes: teamEvents
-  },
-  {
-    id: 'operations',
-    name: 'Operations',
-    logo: 'OP',
-    url: 'operations',
-    eventTypes: teamEvents
-  },
-  {
-    id: 'consulting',
-    name: 'Consulting',
-    logo: 'CO',
-    url: 'consulting',
-    eventTypes: teamEvents
-  },
-  {
-    id: 'research-lab',
-    name: 'Research Lab',
-    logo: 'RL',
-    url: 'research-lab',
-    eventTypes: teamEvents
-  },
-  {
-    id: 'innovation-lab',
-    name: 'Innovation Lab',
-    logo: 'IL',
-    url: 'innovation-lab',
-    eventTypes: teamEvents
-  },
-  {
-    id: 'business-dev',
-    name: 'Business Dev',
-    logo: 'BD',
-    url: 'business-dev',
-    eventTypes: teamEvents
-  },
-  {
-    id: 'customer-success',
-    name: 'Customer Success',
-    logo: 'CS',
-    url: 'customer-success',
-    eventTypes: teamEvents
-  },
-  {
-    id: 'data-science',
-    name: 'Data Science',
-    logo: 'DS',
-    url: 'data-science',
-    eventTypes: teamEvents
-  },
-  {
-    id: 'security-team',
-    name: 'Security Team',
-    logo: 'SE',
-    url: 'security-team',
-    eventTypes: teamEvents
-  },
-  {
-    id: 'quality-assurance',
-    name: 'Quality Assurance',
-    logo: 'QA',
-    url: 'quality-assurance',
-    eventTypes: teamEvents
-  },
-  {
-    id: 'partnerships',
-    name: 'Partnerships',
-    logo: 'PA',
-    url: 'partnerships',
-    eventTypes: teamEvents
-  },
-  {
-    id: 'legal-team',
-    name: 'Legal Team',
-    logo: 'LT',
-    url: 'legal-team',
-    eventTypes: teamEvents
-  },
-  {
-    id: 'content-team',
-    name: 'Content Team',
-    logo: 'CT',
-    url: 'content-team',
-    eventTypes: teamEvents
-  },
-  {
-    id: 'analytics-team',
-    name: 'Analytics Team',
-    logo: 'AT',
-    url: 'analytics-team',
-    eventTypes: teamEvents
-  },
-  {
-    id: 'growth-team',
-    name: 'Growth Team',
-    logo: 'GT',
-    url: 'growth-team',
-    eventTypes: teamEvents
   }
 ];
+

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Plus, Mail, MessageSquare, Clock } from 'lucide-react';
 import { Switch } from './ui/switch';
@@ -34,7 +35,7 @@ export const EventWorkflows = () => {
     setActiveWorkflows(prev => prev.includes(workflowId) ? prev.filter(id => id !== workflowId) : [...prev, workflowId]);
   };
 
-  return <div className="p-8 max-w-full space-y-8">
+  return <div className="p-8 max-w-4xl mx-auto space-y-8">
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-foreground">Available Workflows</h3>
@@ -45,15 +46,15 @@ export const EventWorkflows = () => {
         </div>
 
         <div className="space-y-4">
-          {workflowTemplates.map(workflow => <div key={workflow.id} className={`w-full p-6 border rounded-lg transition-all ${activeWorkflows.includes(workflow.id) ? 'border-primary/30 bg-primary/5' : 'border-border bg-card hover:border-border/60'}`}>
+          {workflowTemplates.map(workflow => <div key={workflow.id} className={`w-full p-6 border rounded-lg transition-all ${activeWorkflows.includes(workflow.id) ? 'border-[#008c44]/30 bg-[#008c44]/5' : 'border-border bg-card hover:border-border/60'}`}>
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center space-x-4 flex-1">
-                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${activeWorkflows.includes(workflow.id) ? 'bg-primary/10' : 'bg-muted'}`}>
-                    <workflow.icon className={`h-6 w-6 ${activeWorkflows.includes(workflow.id) ? 'text-primary' : 'text-muted-foreground'}`} />
+                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${activeWorkflows.includes(workflow.id) ? 'bg-[#008c44]/10' : 'bg-muted'}`}>
+                    <workflow.icon className={`h-6 w-6 ${activeWorkflows.includes(workflow.id) ? 'text-[#008c44]' : 'text-muted-foreground'}`} />
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-semibold text-foreground mb-1 text-base">{workflow.name}</h4>
-                    <p className="text-muted-foreground mb-3 text-base">{workflow.description}</p>
+                    <h4 className="font-semibold text-foreground mb-1 text-sm">{workflow.name}</h4>
+                    <p className="text-muted-foreground mb-3 text-sm">{workflow.description}</p>
                     <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                       <span className="flex items-center">
                         <Clock className="h-3 w-3 mr-1" />
@@ -69,7 +70,7 @@ export const EventWorkflows = () => {
               </div>
               
               <div className="flex items-center justify-between pt-4 border-t border-border">
-                <div className={`px-3 py-1 rounded-full text-sm ${activeWorkflows.includes(workflow.id) ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+                <div className={`px-3 py-1 rounded-full text-sm ${activeWorkflows.includes(workflow.id) ? 'bg-[#008c44]/10 text-[#008c44]' : 'bg-gray-100 text-gray-600'}`}>
                   {activeWorkflows.includes(workflow.id) ? 'Enabled' : 'Disabled'}
                 </div>
                 <Switch checked={activeWorkflows.includes(workflow.id)} onCheckedChange={() => toggleWorkflow(workflow.id)} />
@@ -81,7 +82,7 @@ export const EventWorkflows = () => {
             <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
               <MessageSquare className="h-8 w-8 text-muted-foreground" />
             </div>
-            <p className="text-muted-foreground font-medium text-base">No workflows are currently active</p>
+            <p className="text-muted-foreground font-medium text-sm">No workflows are currently active</p>
             <p className="text-muted-foreground/70 text-sm mt-1">Enable workflows above to automate your event processes</p>
           </div>}
       </div>

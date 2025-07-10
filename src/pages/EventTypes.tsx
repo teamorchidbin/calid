@@ -1,5 +1,6 @@
+
 import React, { useState, useRef, useEffect } from 'react';
-import { Plus, MoreHorizontal, Eye, Edit, Copy as CopyIcon, Code, Trash2, ArrowUp, ArrowDown, Search, Copy } from 'lucide-react';
+import { Plus, MoreHorizontal, Eye, Edit, Copy as CopyIcon, Code, Trash2, ArrowUp, ArrowDown, Search, Copy, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import { CreateEventModal } from '../components/CreateEventModal';
 import { useNavigate } from 'react-router-dom';
 import { mockTeams } from '../data/mockData';
@@ -16,6 +17,10 @@ export const EventTypes = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const [eventStates, setEventStates] = useState<{[key: string]: boolean}>({});
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const [selectedTeamForCreate, setSelectedTeamForCreate] = useState('');
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   const currentTeam = mockTeams.find(t => t.id === selectedTeam) || mockTeams[0];
@@ -34,6 +39,34 @@ export const EventTypes = () => {
     });
     setEventStates(initialStates);
   }, []);
+
+  // Check scroll position
+  const checkScroll = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
+    }
+  };
+
+  useEffect(() => {
+    checkScroll();
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', checkScroll);
+      return () => container.removeEventListener('scroll', checkScroll);
+    }
+  }, []);
+
+  const scrollTeams = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = 200;
+      scrollContainerRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   const handleEventClick = (eventId: string) => {
     navigate(`/event/${eventId}/setup`);
@@ -84,15 +117,23 @@ export const EventTypes = () => {
     }
   };
 
-  const handleCreateEvent = (teamId: string) => {
+  const handleCreateEventClick = (teamId: string) => {
+    setSelectedTeamForCreate(teamId);
+    setSelectedTeam(teamId);
+    setShowNewDropdown(false);
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCreateEvent = () => {
     // Create a new event and redirect to edit
     const newEventId = `event-${Date.now()}`;
+    setIsCreateModalOpen(false);
     navigate(`/event/${newEventId}/setup`);
   };
 
   return (
     <div className="p-6 space-y-6">
-      {/* Team Selector - Full Width */}
+      {/* Team Selector - Full Width with Scrolling */}
       <div className="flex items-center justify-between space-x-4 bg-background/95 backdrop-blur-sm sticky top-20 z-10 py-3 -mx-6 px-6 border-b border-border/40">
         <div className="flex items-center space-x-4 w-full">
           <div className="flex items-center bg-muted/50 rounded-lg p-1">
@@ -115,25 +156,49 @@ export const EventTypes = () => {
           
           <div className="w-px h-6 bg-border"></div>
           
-          <div className="flex space-x-2 flex-1 overflow-x-auto scrollbar-none">
-            {mockTeams.slice(1).map((team) => (
+          <div className="flex items-center flex-1 relative">
+            {canScrollLeft && (
               <button
-                key={team.id}
-                onClick={() => setSelectedTeam(team.id)}
-                className={`flex items-center px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-all flex-shrink-0 ${
-                  selectedTeam === team.id
-                    ? 'bg-primary text-primary-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                }`}
+                onClick={() => scrollTeams('left')}
+                className="absolute left-0 z-10 p-1 bg-background border border-border rounded-full shadow-sm hover:bg-muted transition-colors"
               >
-                <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
-                  selectedTeam === team.id ? 'bg-primary-foreground text-primary' : 'bg-muted-foreground/20'
-                }`}>
-                  {team.logo}
-                </div>
-                {team.name}
+                <ChevronLeft className="h-4 w-4" />
               </button>
-            ))}
+            )}
+            
+            <div 
+              ref={scrollContainerRef}
+              className="flex space-x-2 overflow-x-auto scrollbar-none flex-1 px-6"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {mockTeams.slice(1).map((team) => (
+                <button
+                  key={team.id}
+                  onClick={() => setSelectedTeam(team.id)}
+                  className={`flex items-center px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-all flex-shrink-0 ${
+                    selectedTeam === team.id
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                  }`}
+                >
+                  <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
+                    selectedTeam === team.id ? 'bg-primary-foreground text-primary' : 'bg-muted-foreground/20'
+                  }`}>
+                    {team.logo}
+                  </div>
+                  {team.name}
+                </button>
+              ))}
+            </div>
+            
+            {canScrollRight && (
+              <button
+                onClick={() => scrollTeams('right')}
+                className="absolute right-0 z-10 p-1 bg-background border border-border rounded-full shadow-sm hover:bg-muted transition-colors"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -152,16 +217,18 @@ export const EventTypes = () => {
             />
           </div>
           
-          <div className="relative">
-            <button
-              onClick={handleCopyPublicLink}
-              className="flex items-center space-x-2 px-3 py-2 bg-muted/70 text-muted-foreground text-xs rounded-md hover:bg-muted transition-colors"
-            >
+          <div className="relative flex items-center space-x-2">
+            <div className="flex items-center space-x-2 px-3 py-2 bg-muted/70 text-muted-foreground text-xs rounded-md hover:bg-muted transition-colors">
               <span className="text-xs">
                 {selectedTeam === 'personal' ? 'cal.id/sanskar' : `cal.id/${currentTeam.url}`}
               </span>
-              <Copy className="h-3 w-3" />
-            </button>
+              <button onClick={handleCopyPublicLink}>
+                <Copy className="h-3 w-3" />
+              </button>
+              <button className="p-1">
+                <ExternalLink className="h-3 w-3" />
+              </button>
+            </div>
             {copiedPublicLink && (
               <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-foreground text-background text-xs rounded animate-fade-in whitespace-nowrap">
                 Copied
@@ -185,11 +252,7 @@ export const EventTypes = () => {
                 {mockTeams.map((team) => (
                   <button
                     key={team.id}
-                    onClick={() => {
-                      setSelectedTeam(team.id);
-                      handleCreateEvent(team.id);
-                      setShowNewDropdown(false);
-                    }}
+                    onClick={() => handleCreateEventClick(team.id)}
                     className="w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors flex items-center"
                   >
                     <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium mr-2">
@@ -346,6 +409,13 @@ export const EventTypes = () => {
           );
         })}
       </div>
+
+      <CreateEventModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onCreateEvent={handleCreateEvent}
+        selectedTeam={selectedTeamForCreate}
+      />
     </div>
   );
 };
