@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Plus, MoreHorizontal, Copy, Trash2 } from 'lucide-react';
 import {
@@ -44,11 +45,14 @@ import {
 } from "@/components/ui/dialog"
 import { CreateEventModal } from '../components/CreateEventModal';
 import { useNavigate } from 'react-router-dom';
+import { mockTeams } from '../data/mockData';
 
 interface Team {
   id: string;
   name: string;
-  description: string;
+  avatar: string;
+  url: string;
+  logo: string;
   eventTypes: EventType[];
 }
 
@@ -63,34 +67,8 @@ interface EventType {
 }
 
 export const EventTypes = () => {
-  const [teams, setTeams] = useState<Team[]>([
-    {
-      id: 'team-1',
-      name: 'Product & Design',
-      description: 'The team working on the product and design.',
-      eventTypes: [
-        {
-          id: 'event-1',
-          title: 'Product Hunt Chats',
-          description: 'The essence of Product Hunt reflects in communities- Select a time suitable for you, and let\'s talk products!',
-          url: 'product-hunt-chats',
-          durations: [15, 30, 45],
-          bookingsToday: 3,
-          isActive: true,
-        },
-        {
-          id: 'event-2',
-          title: 'Discovery Call',
-          description: 'A 30 minute call to discover if we are a good fit for each other.',
-          url: 'discovery-call',
-          durations: [30],
-          bookingsToday: 1,
-          isActive: false,
-        },
-      ],
-    },
-  ]);
-  const [selectedTeamId, setSelectedTeamId] = useState('team-1');
+  const [teams, setTeams] = useState<Team[]>(mockTeams);
+  const [selectedTeamId, setSelectedTeamId] = useState('personal');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -104,7 +82,7 @@ export const EventTypes = () => {
   const handleCreateEvent = (eventData: any) => {
     console.log('Creating event with data:', eventData);
     
-    const newEvent = {
+    const newEvent: EventType = {
       id: Date.now().toString(),
       title: eventData.title,
       description: eventData.description,
@@ -162,7 +140,7 @@ export const EventTypes = () => {
         if (team.id === selectedTeamId) {
           const eventToDuplicate = team.eventTypes.find(eventType => eventType.id === eventId);
           if (eventToDuplicate) {
-            const duplicatedEvent = {
+            const duplicatedEvent: EventType = {
               ...eventToDuplicate,
               id: Date.now().toString(),
               title: `${eventToDuplicate.title} (Copy)`,
@@ -286,10 +264,7 @@ export const EventTypes = () => {
       <CreateEventModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
-        teams={[
-          { id: 'personal', name: 'Personal', avatar: 'S', url: 'sanskar' },
-          ...teams.map(team => ({ ...team, avatar: team.name.charAt(0), url: team.name.toLowerCase().replace(/\s+/g, '-') }))
-        ]}
+        teams={teams}
         selectedTeam={selectedTeamId}
         onCreateEvent={handleCreateEvent}
       />
