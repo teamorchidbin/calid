@@ -180,6 +180,7 @@ export const EventSetup = ({
     return null;
   };
   return <div className="p-8 max-w-4xl space-y-6 mx-0">
+  return <div className="p-6 max-w-4xl space-y-4 mx-0">
       <div>
         <label className="block text-sm font-medium text-foreground mb-2">Title</label>
         <input type="text" value={formData.title} onChange={e => handleFormChange('title', e.target.value)} className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-background" />
@@ -187,7 +188,7 @@ export const EventSetup = ({
 
       <div>
         <label className="block text-sm font-medium text-foreground mb-2">Description</label>
-        <div className="border border-border rounded-lg bg-background">
+        <div className="border border-border rounded-lg bg-background mb-2">
           <div className="flex items-center space-x-2 p-3 border-b border-border">
             <button className="p-2 hover:bg-muted rounded transition-colors" onClick={() => document.execCommand('bold')}>
               <Bold className="h-4 w-4 text-muted-foreground" />
@@ -215,8 +216,11 @@ export const EventSetup = ({
           <div contentEditable className="w-full p-4 min-h-[100px] focus:outline-none" dangerouslySetInnerHTML={{
           __html: formData.description
         }} onInput={e => handleFormChange('description', e.currentTarget.innerHTML)} />
+          <div contentEditable className="w-full p-3 min-h-[80px] focus:outline-none" dangerouslySetInnerHTML={{
+          __html: formData.description
+        }} onInput={e => handleFormChange('description', e.currentTarget.innerHTML)} />
         </div>
-        <div className="flex items-center mt-2">
+        <div className="flex items-center">
           <input type="checkbox" id="translate" className="mr-2" />
           <label htmlFor="translate" className="text-sm text-muted-foreground">
             Translate description to the visitor's browser language using AI
@@ -235,8 +239,9 @@ export const EventSetup = ({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-foreground mb-4">Available durations</label>
+        <label className="block text-sm font-medium text-foreground mb-3">Available durations</label>
         <div className="flex flex-wrap gap-2 mb-4">
+        <div className="flex flex-wrap gap-2 mb-3">
           {availableDurations.map(duration => <button key={duration} onClick={() => handleDurationToggle(duration)} className={`px-4 py-2 text-sm rounded border transition-colors ${formData.durations.includes(duration) ? 'bg-primary/10 border-primary text-primary' : 'bg-background border-border text-foreground hover:bg-muted'}`}>
               {duration} mins
             </button>)}

@@ -81,14 +81,14 @@ export const EditEvent = () => {
   
   return <div className="min-h-screen bg-background">
       {/* Event Header */}
-      <div className="bg-card border-b border-border px-8 py-6">
+      <div className="bg-card border-b border-border px-6 py-4">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center">
-            <button onClick={handleBack} className="mr-4 p-2 hover:bg-muted rounded-lg transition-colors">
+            <button onClick={handleBack} className="mr-3 p-2 hover:bg-muted rounded-lg transition-colors">
               <ArrowLeft className="h-5 w-5 text-muted-foreground" />
             </button>
             <div>
-              <div className="flex items-center space-x-4 mb-2">
+              <div className="flex items-center space-x-3 mb-1">
                 <h1 className="text-xl font-semibold text-foreground">Product Hunt Chats</h1>
                 <div className="flex items-center space-x-2 px-3 py-1 bg-muted/70 text-muted-foreground text-sm rounded-md">
                   <span>cal.id/sanskar/product-hunt-chats</span>
@@ -100,7 +100,7 @@ export const EditEvent = () => {
               </div>
             </div>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3">
             <div className="flex items-center space-x-2">
               <Switch checked={eventEnabled} onCheckedChange={setEventEnabled} />
               <span className="text-sm text-muted-foreground">
@@ -113,9 +113,10 @@ export const EditEvent = () => {
 
       <div className="flex w-full">
         {/* Sidebar */}
-        <div className="w-64 bg-card border-r border-border min-h-screen sticky top-0">
-          <nav className="p-6 space-y-1">
+        <div className="w-60 bg-card border-r border-border min-h-screen sticky top-0">
+          <nav className="p-4 space-y-1">
             {tabs.map(tabItem => <button key={tabItem.id} onClick={() => setActiveTab(tabItem.id)} className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${activeTab === tabItem.id ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+            {tabs.map(tabItem => <button key={tabItem.id} onClick={() => setActiveTab(tabItem.id)} className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${activeTab === tabItem.id ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
                 <tabItem.icon className="mr-3 h-4 w-4" />
                 {tabItem.name}
               </button>)}

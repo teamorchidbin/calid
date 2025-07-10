@@ -24,14 +24,15 @@ export const EventAdvanced = () => {
     icon: Tablet,
     description: 'Clean, minimal design'
   }];
-  return <div className="p-6 max-w-4xl space-y-8">
+  return <div className="p-6 max-w-4xl space-y-6">
       
 
       {/* Booking Settings */}
-      <div className="border-b border-gray-200 pb-6">
+      <div className="border-b border-gray-200 pb-4">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Booking Settings</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-3">Booking Settings</h3>
         
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
               <h4 className="text-base font-medium text-gray-900">Requires confirmation</h4>
@@ -68,8 +69,9 @@ export const EventAdvanced = () => {
       </div>
 
       {/* Redirect Settings */}
-      <div className="border-b border-gray-200 pb-6">
+      <div className="border-b border-gray-200 pb-4">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Redirect Settings</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-3">Redirect Settings</h3>
         
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Redirect on booking</label>
@@ -84,10 +86,14 @@ export const EventAdvanced = () => {
       {/* Layout Settings */}
       <div>
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Event Layout</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-3">Event Layout</h3>
         <p className="text-sm text-gray-600 mb-4">Choose how your booking page will be displayed to bookers</p>
+        <p className="text-sm text-gray-600 mb-3">Choose how your booking page will be displayed to bookers</p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {layoutOptions.map(layout => <div key={layout.id} className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${settings.eventLayout === layout.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`} onClick={() => setSettings(prev => ({
+          {layoutOptions.map(layout => <div key={layout.id} className={`p-3 border-2 rounded-lg cursor-pointer transition-all ${settings.eventLayout === layout.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`} onClick={() => setSettings(prev => ({
           ...prev,
           eventLayout: layout.id
         }))}>

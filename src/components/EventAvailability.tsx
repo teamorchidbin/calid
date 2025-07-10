@@ -104,11 +104,11 @@ export const EventAvailability = () => {
   }];
   const currentSchedule = schedules.find(s => s.id === availabilityType) || schedules[0];
   const timezone = 'Asia/Calcutta';
-  return <div className="p-8 max-w-4xl space-y-8">
+  return <div className="p-6 max-w-4xl space-y-6">
       <div>
         
         
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="relative">
             <select value={availabilityType} onChange={e => setAvailabilityType(e.target.value)} className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent appearance-none bg-background">
               {schedules.map(schedule => <option key={schedule.id} value={schedule.id}>
@@ -120,8 +120,11 @@ export const EventAvailability = () => {
         </div>
 
         <div className="bg-card border border-border rounded-lg p-6">
+        <div className="bg-card border border-border rounded-lg p-4">
           <div className="space-y-4">
+          <div className="space-y-3">
             {currentSchedule.workingHours.map((schedule, index) => <div key={index} className="flex items-center justify-between py-3">
+            {currentSchedule.workingHours.map((schedule, index) => <div key={index} className="flex items-center justify-between py-2">
                 <div className="w-28 text-foreground font-medium">
                   {schedule.day}
                 </div>
@@ -135,7 +138,7 @@ export const EventAvailability = () => {
               </div>)}
           </div>
           
-          <div className="mt-6 pt-4 border-t border-border flex items-center justify-between">
+          <div className="mt-4 pt-3 border-t border-border flex items-center justify-between">
             <div className="flex items-center">
               <span className="text-sm text-muted-foreground mr-2">🌍</span>
               <span className="text-sm font-medium text-foreground">{timezone}</span>

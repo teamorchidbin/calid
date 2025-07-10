@@ -153,7 +153,7 @@ export const EventTypes = () => {
   };
 
   return (
-    <div className="px-8 pt-4 pb-8 space-y-6 w-full max-w-full">
+    <div className="px-6 pt-3 pb-6 space-y-4 w-full max-w-full">
       {/* Team Selector */}
       <div className="flex items-center justify-between space-x-4">
         <div className="flex items-center space-x-4 flex-1 min-w-0">
@@ -201,7 +201,7 @@ export const EventTypes = () => {
       </div>
 
       {/* Search Bar and New Button */}
-      <div className="flex items-center justify-between space-x-4">
+      <div className="flex items-center justify-between space-x-3">
         <div className="flex items-center space-x-4 flex-1">
           <div className="relative w-80">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -270,7 +270,7 @@ export const EventTypes = () => {
       </div>
 
       {/* Event Types List */}
-      <div className="space-y-4">
+      <div className="space-y-3">
         {filteredEvents.map((event) => {
           const isEventActive = eventStates[event.id] ?? event.isActive;
           return (
@@ -309,10 +309,13 @@ export const EventTypes = () => {
                 className={`bg-card border border-border rounded-lg p-6 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer ${
                   !isEventActive ? 'opacity-50' : ''
                 }`}
+                className={`bg-card border border-border rounded-lg p-4 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer ${
+                  !isEventActive ? 'opacity-50' : ''
+                }`}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center mb-3 space-x-3">
+                    <div className="flex items-center mb-2 space-x-3">
                       <h3 className="text-lg font-semibold text-foreground">
                         {event.title}
                       </h3>
@@ -334,7 +337,7 @@ export const EventTypes = () => {
                         )}
                       </div>
                     </div>
-                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{event.description}</p>
+                    <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{event.description}</p>
                     <div className="flex items-center">
                       {event.durations?.map((duration) => (
                         <span key={duration} className="inline-flex items-center px-3 py-1 bg-muted text-foreground text-sm rounded mr-2">
@@ -344,7 +347,7 @@ export const EventTypes = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-center space-x-3 ml-6" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex items-center space-x-2 ml-4" onClick={(e) => e.stopPropagation()}>
                     <Switch 
                       checked={isEventActive} 
                       onCheckedChange={(checked) => handleToggleEvent(event.id, checked)}

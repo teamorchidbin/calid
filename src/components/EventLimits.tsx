@@ -64,12 +64,13 @@ export const EventLimits = () => {
   };
 
   return (
-    <div className="p-6 max-w-4xl space-y-6">
+    <div className="p-6 max-w-4xl space-y-5">
       {/* Before Event */}
-      <div className="border-b border-gray-200 pb-6">
+      <div className="border-b border-gray-200 pb-4">
         <h3 className="text-xl font-semibold text-gray-900 mb-4">Before event</h3>
+        <h3 className="text-xl font-semibold text-gray-900 mb-3">Before event</h3>
         
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-base font-medium text-gray-700 mb-2">Buffer time</label>
             <select 
@@ -106,10 +107,11 @@ export const EventLimits = () => {
       </div>
 
       {/* After Event */}
-      <div className="border-b border-gray-200 pb-6">
+      <div className="border-b border-gray-200 pb-4">
         <h3 className="text-xl font-semibold text-gray-900 mb-4">After event</h3>
+        <h3 className="text-xl font-semibold text-gray-900 mb-3">After event</h3>
         
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-base font-medium text-gray-700 mb-2">Buffer time</label>
             <select 
@@ -139,8 +141,9 @@ export const EventLimits = () => {
       </div>
 
       {/* Limit Booking Frequency */}
-      <div className="border-b border-gray-200 pb-6">
+      <div className="border-b border-gray-200 pb-4">
         <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           <div>
             <h3 className="text-xl font-semibold text-gray-900">Limit booking frequency</h3>
             <p className="text-sm text-gray-600">Limit how many times this event can be booked</p>
@@ -152,7 +155,7 @@ export const EventLimits = () => {
         </div>
         
         {settings.limitBookingFrequency.enabled && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {settings.limitBookingFrequency.limits.map((limit, index) => (
               <div key={index} className="flex items-center space-x-2">
                 <input
@@ -192,7 +195,7 @@ export const EventLimits = () => {
       </div>
 
       {/* Show First Slot Only */}
-      <div className="border-b border-gray-200 pb-6">
+      <div className="border-b border-gray-200 pb-4">
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <h3 className="text-xl font-semibold text-gray-900 mb-2">Only show the first slot of each day as available</h3>
@@ -208,8 +211,9 @@ export const EventLimits = () => {
       </div>
 
       {/* Limit Total Booking Duration */}
-      <div className="border-b border-gray-200 pb-6">
+      <div className="border-b border-gray-200 pb-4">
         <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           <div>
             <h3 className="text-xl font-semibold text-gray-900">Limit total booking duration</h3>
             <p className="text-sm text-gray-600">Limit total amount of time that this event can be booked</p>
@@ -221,7 +225,7 @@ export const EventLimits = () => {
         </div>
         
         {settings.limitTotalBookingDuration.enabled && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {settings.limitTotalBookingDuration.limits.map((limit, index) => (
               <div key={index} className="flex items-center space-x-2">
                 <input
@@ -272,8 +276,9 @@ export const EventLimits = () => {
       </div>
 
       {/* Limit Future Bookings */}
-      <div className="border-b border-gray-200 pb-6">
+      <div className="border-b border-gray-200 pb-4">
         <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           <div>
             <h3 className="text-xl font-semibold text-gray-900">Limit future bookings</h3>
             <p className="text-sm text-gray-600">Limit how far in the future this event can be booked</p>
@@ -285,7 +290,7 @@ export const EventLimits = () => {
         </div>
         
         {settings.limitFutureBookings.enabled && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div className="flex items-center space-x-2">
               <input
                 type="number"
@@ -333,6 +338,7 @@ export const EventLimits = () => {
       {/* Offset Start Times */}
       <div>
         <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           <div>
             <h3 className="text-xl font-semibold text-gray-900">Offset start times</h3>
             <p className="text-sm text-gray-600">Offset timeslots shown to bookers by a specified number of minutes</p>
@@ -344,7 +350,7 @@ export const EventLimits = () => {
         </div>
         
         {settings.offsetStartTimes.enabled && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div className="flex items-center space-x-2">
               <span className="text-sm text-gray-600">Offset by</span>
               <input
