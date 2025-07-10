@@ -54,13 +54,13 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
   ];
 
   const durationSuggestions = [
-    { value: '30', label: '30 mins', unit: 'minutes' },
-    { value: '45', label: '45 mins', unit: 'minutes' },
-    { value: '60', label: '60 mins', unit: 'minutes' },
-    { value: '90', label: '90 mins', unit: 'minutes' },
-    { value: '2', label: '2 hrs', unit: 'hours' },
-    { value: '2.5', label: '2.5 hrs', unit: 'hours' },
-    { value: '3', label: '3 hrs', unit: 'hours' }
+    { value: '30', label: '30 mins', unit: 'minutes' as const },
+    { value: '45', label: '45 mins', unit: 'minutes' as const },
+    { value: '60', label: '60 mins', unit: 'minutes' as const },
+    { value: '90', label: '90 mins', unit: 'minutes' as const },
+    { value: '2', label: '2 hrs', unit: 'hours' as const },
+    { value: '2.5', label: '2.5 hrs', unit: 'hours' as const },
+    { value: '3', label: '3 hrs', unit: 'hours' as const }
   ];
 
   if (!isOpen) return null;

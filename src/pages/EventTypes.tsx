@@ -1,9 +1,9 @@
-
 import React, { useState, useRef } from 'react';
-import { Plus, MoreHorizontal, ExternalLink, Copy, ArrowUp, ArrowDown, ChevronLeft, ChevronRight, Search, Eye, Toggle, Edit, Copy as CopyIcon, Code, Trash2, Check } from 'lucide-react';
+import { Plus, MoreHorizontal, ExternalLink, Copy, ArrowUp, ArrowDown, ChevronLeft, ChevronRight, Search, Eye, Edit, Copy as CopyIcon, Code, Trash2, Check } from 'lucide-react';
 import { CreateEventModal } from '../components/CreateEventModal';
 import { useNavigate } from 'react-router-dom';
 import { mockTeams } from '../data/mockData';
+import { Switch } from '../components/ui/switch';
 
 export const EventTypes = () => {
   const [selectedTeam, setSelectedTeam] = useState('personal');
@@ -12,7 +12,9 @@ export const EventTypes = () => {
   const [hoveredEvent, setHoveredEvent] = useState<string | null>(null);
   const [showMoreOptions, setShowMoreOptions] = useState<string | null>(null);
   const [copiedLink, setCopiedLink] = useState<string | null>(null);
+  const [copiedPublicLink, setCopiedPublicLink] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -32,6 +34,13 @@ export const EventTypes = () => {
     setTimeout(() => setCopiedLink(null), 2000);
   };
 
+  const handleCopyPublicLink = () => {
+    const publicUrl = selectedTeam === 'personal' ? 'https://cal.id/sanskar' : `https://cal.id/${currentTeam.url}`;
+    navigator.clipboard.writeText(publicUrl);
+    setCopiedPublicLink(true);
+    setTimeout(() => setCopiedPublicLink(false), 2000);
+  };
+
   const scrollTeams = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
       const scrollAmount = 200;
@@ -42,18 +51,16 @@ export const EventTypes = () => {
     }
   };
 
-  return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Event Types</h1>
-          <p className="text-muted-foreground mt-1">Create events to share for people to book on your calendar.</p>
-        </div>
-      </div>
+  const handleArrowClick = (eventId: string, direction: 'up' | 'down') => {
+    setDraggedItem(eventId);
+    // Keep the arrows visible when clicked
+    setTimeout(() => setDraggedItem(null), 1000);
+  };
 
+  return (
+    <div className="p-6 space-y-4">
       {/* Team Selector with Horizontal Scroll */}
-      <div className="flex items-center space-x-4 relative">
+      <div className="flex items-center space-x-4 relative bg-background/80 backdrop-blur-sm sticky top-0 z-10 py-4 -mx-6 px-6">
         <div className="flex items-center bg-muted rounded-lg p-1">
           <button
             onClick={() => setSelectedTeam('personal')}
@@ -115,17 +122,46 @@ export const EventTypes = () => {
         </div>
       </div>
 
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">Event Types</h1>
+          <p className="text-muted-foreground mt-1">Create events to share for people to book on your calendar.</p>
+        </div>
+      </div>
+
       {/* Search Bar and New Button */}
       <div className="flex items-center justify-between space-x-4">
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search events..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-background"
-          />
+        <div className="flex items-center space-x-3">
+          <div className="relative max-w-xs">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search events..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-background"
+            />
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <div className="relative">
+              <button
+                onClick={handleCopyPublicLink}
+                className="flex items-center space-x-2 px-3 py-2 bg-muted text-muted-foreground text-sm rounded-lg hover:bg-muted/80 transition-colors"
+              >
+                <span>
+                  {selectedTeam === 'personal' ? 'cal.id/sanskar' : `cal.id/${currentTeam.url}`}
+                </span>
+                <Copy className="h-3 w-3" />
+              </button>
+              {copiedPublicLink && (
+                <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-foreground text-background text-xs rounded animate-fade-in whitespace-nowrap">
+                  Copied!
+                </div>
+              )}
+            </div>
+          </div>
         </div>
         
         <div className="relative">
@@ -162,21 +198,31 @@ export const EventTypes = () => {
             key={event.id}
             className="relative group animate-fade-in"
             onMouseEnter={() => setHoveredEvent(event.id)}
-            onMouseLeave={() => setHoveredEvent(null)}
+            onMouseLeave={() => {
+              if (draggedItem !== event.id) {
+                setHoveredEvent(null);
+              }
+            }}
           >
             {/* Move buttons */}
-            {hoveredEvent === event.id && (
+            {(hoveredEvent === event.id || draggedItem === event.id) && (
               <div className="absolute -left-6 top-1/2 transform -translate-y-1/2 flex flex-col space-y-1 z-10">
-                <button className="p-1 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all">
+                <button 
+                  onClick={() => handleArrowClick(event.id, 'up')}
+                  className="p-1 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all"
+                >
                   <ArrowUp className="h-3 w-3 text-muted-foreground" />
                 </button>
-                <button className="p-1 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all">
+                <button 
+                  onClick={() => handleArrowClick(event.id, 'down')}
+                  className="p-1 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all"
+                >
                   <ArrowDown className="h-3 w-3 text-muted-foreground" />
                 </button>
               </div>
             )}
 
-            <div className="bg-card border border-border rounded-lg p-4 hover:border-border/60 transition-all hover-lift">
+            <div className="bg-card border border-border rounded-lg p-4 hover:border-border/60 transition-all hover:shadow-sm">
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center mb-2 space-x-2">
@@ -217,7 +263,7 @@ export const EventTypes = () => {
                 </div>
                 
                 <div className="flex items-center space-x-2 ml-4">
-                  <div className={`w-3 h-3 rounded-full ${event.isActive ? 'bg-green-500' : 'bg-muted-foreground'}`} />
+                  <Switch checked={event.isActive} />
                   <button className="p-1.5 hover:bg-muted rounded-md transition-colors">
                     <Eye className="h-4 w-4 text-muted-foreground" />
                   </button>
@@ -232,7 +278,10 @@ export const EventTypes = () => {
                     {showMoreOptions === event.id && (
                       <div className="absolute right-0 top-full mt-1 w-40 bg-popover border border-border rounded-lg shadow-lg animate-scale-in z-10">
                         <div className="py-1">
-                          <button className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors">
+                          <button 
+                            onClick={() => handleEventClick(event.id)}
+                            className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors"
+                          >
                             <Edit className="h-4 w-4 mr-2" />
                             Edit
                           </button>
