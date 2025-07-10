@@ -58,6 +58,14 @@ export const EditEvent = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Page Header - Same as front page but not sticky */}
+      <div className="bg-background border-b border-border px-8 py-6">
+        <div className="w-full">
+          <h1 className="text-xl font-semibold text-foreground">Event Types</h1>
+          <p className="text-sm text-muted-foreground mt-1">Create events to share for people to book on your calendar.</p>
+        </div>
+      </div>
+
       {/* Event Header */}
       <div className="bg-card border-b border-border px-8 py-6">
         <div className="flex items-center justify-between w-full">

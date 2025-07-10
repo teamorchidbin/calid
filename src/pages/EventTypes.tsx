@@ -1,410 +1,302 @@
-
-import React, { useState, useRef, useEffect } from 'react';
-import { Plus, MoreHorizontal, Eye, Edit, Copy as CopyIcon, Code, Trash2, ArrowUp, ArrowDown, Search, Copy } from 'lucide-react';
-import { CreateEventModal } from '../components/CreateEventModal';
+import React, { useState } from 'react';
+import { Plus, MoreHorizontal, Copy, Trash2 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { CreateEvent } from '../components/CreateEvent';
 import { useNavigate } from 'react-router-dom';
-import { mockTeams } from '../data/mockData';
-import { Switch } from '../components/ui/switch';
+
+interface Team {
+  id: string;
+  name: string;
+  description: string;
+  eventTypes: EventType[];
+}
+
+interface EventType {
+  id: string;
+  title: string;
+  description: string;
+  url: string;
+  durations: number[];
+  bookingsToday: number;
+  isActive: boolean;
+}
 
 export const EventTypes = () => {
-  const [selectedTeam, setSelectedTeam] = useState('personal');
+  const [teams, setTeams] = useState<Team[]>([
+    {
+      id: 'team-1',
+      name: 'Product & Design',
+      description: 'The team working on the product and design.',
+      eventTypes: [
+        {
+          id: 'event-1',
+          title: 'Product Hunt Chats',
+          description: 'The essence of Product Hunt reflects in communities- Select a time suitable for you, and let\'s talk products!',
+          url: 'product-hunt-chats',
+          durations: [15, 30, 45],
+          bookingsToday: 3,
+          isActive: true,
+        },
+        {
+          id: 'event-2',
+          title: 'Discovery Call',
+          description: 'A 30 minute call to discover if we are a good fit for each other.',
+          url: 'discovery-call',
+          durations: [30],
+          bookingsToday: 1,
+          isActive: false,
+        },
+      ],
+    },
+  ]);
+  const [selectedTeamId, setSelectedTeamId] = useState('team-1');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [showNewDropdown, setShowNewDropdown] = useState(false);
-  const [hoveredEvent, setHoveredEvent] = useState<string | null>(null);
-  const [showMoreOptions, setShowMoreOptions] = useState<string | null>(null);
-  const [copiedLink, setCopiedLink] = useState<string | null>(null);
-  const [copiedPublicLink, setCopiedPublicLink] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [eventStates, setEventStates] = useState<{[key: string]: boolean}>({});
-  const [teamEvents, setTeamEvents] = useState(mockTeams);
   const navigate = useNavigate();
 
-  const currentTeam = teamEvents.find(t => t.id === selectedTeam) || teamEvents[0];
-  const filteredEvents = currentTeam.eventTypes.filter(event =>
-    event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    event.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const selectedTeam = teams.find(team => team.id === selectedTeamId);
+  const eventTypes = selectedTeam ? selectedTeam.eventTypes : [];
 
-  // Initialize event states
-  useEffect(() => {
-    const initialStates: {[key: string]: boolean} = {};
-    teamEvents.forEach(team => {
-      team.eventTypes.forEach(event => {
-        initialStates[event.id] = event.isActive;
-      });
-    });
-    setEventStates(initialStates);
-  }, [teamEvents]);
-
-  const handleEventClick = (eventId: string) => {
-    navigate(`/event/${eventId}/setup`);
+  const handleTeamChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedTeamId(event.target.value);
   };
 
   const handleCreateEvent = (eventData: any) => {
     console.log('Creating event with data:', eventData);
     
-    const newEventId = `event-${Date.now()}`;
     const newEvent = {
-      id: newEventId,
-      title: eventData.title || 'New Event',
-      description: eventData.description || 'A new event',
-      url: `/${currentTeam.url}/${eventData.url || 'new-event'}`,
-      durations: [eventData.duration || '30'],
+      id: Date.now().toString(),
+      title: eventData.title,
+      description: eventData.description,
+      url: eventData.url,
+      durations: eventData.durations || [15],
+      bookingsToday: 0,
       isActive: true
     };
 
     console.log('New event object:', newEvent);
-
-    // Update team events state
-    setTeamEvents(prevTeams => {
-      const updatedTeams = prevTeams.map(team => 
-        team.id === selectedTeam 
-          ? { ...team, eventTypes: [...team.eventTypes, newEvent] }
-          : team
-      );
+    
+    setTeams(prevTeams => {
+      const updatedTeams = prevTeams.map(team => {
+        if (team.id === selectedTeamId) {
+          const updatedTeam = {
+            ...team,
+            eventTypes: [...team.eventTypes, newEvent]
+          };
+          console.log('Updated team:', updatedTeam);
+          return updatedTeam;
+        }
+        return team;
+      });
       console.log('Updated teams:', updatedTeams);
       return updatedTeams;
     });
 
-    // Initialize event state
-    setEventStates(prev => ({
-      ...prev,
-      [newEventId]: true
-    }));
-
-    // Close modal and navigate
     setIsCreateModalOpen(false);
-    console.log('Navigating to event:', newEventId);
-    navigate(`/event/${newEventId}/setup`);
+    console.log('Navigating to:', `/event/${newEvent.id}/setup`);
+    navigate(`/event/${newEvent.id}/setup`);
   };
 
-  const handleCopyLink = (eventId: string, url: string) => {
-    navigator.clipboard.writeText(`https://cal.id${url}`);
-    setCopiedLink(eventId);
-    setTimeout(() => setCopiedLink(null), 1500);
+  const handleEventTypeToggle = (eventId: string) => {
+    setTeams(prevTeams => {
+      return prevTeams.map(team => {
+        if (team.id === selectedTeamId) {
+          return {
+            ...team,
+            eventTypes: team.eventTypes.map(eventType => {
+              if (eventType.id === eventId) {
+                return { ...eventType, isActive: !eventType.isActive };
+              }
+              return eventType;
+            })
+          };
+        }
+        return team;
+      });
+    });
   };
 
-  const handleCopyPublicLink = () => {
-    const publicUrl = selectedTeam === 'personal' ? 'https://cal.id/sanskar' : `https://cal.id/${currentTeam.url}`;
-    navigator.clipboard.writeText(publicUrl);
-    setCopiedPublicLink(true);
-    setTimeout(() => setCopiedPublicLink(false), 1500);
+  const handleEventTypeDuplicate = (eventId: string) => {
+    setTeams(prevTeams => {
+      return prevTeams.map(team => {
+        if (team.id === selectedTeamId) {
+          const eventToDuplicate = team.eventTypes.find(eventType => eventType.id === eventId);
+          if (eventToDuplicate) {
+            const duplicatedEvent = {
+              ...eventToDuplicate,
+              id: Date.now().toString(),
+              title: `${eventToDuplicate.title} (Copy)`,
+              url: `${eventToDuplicate.url}-copy`,
+            };
+            return {
+              ...team,
+              eventTypes: [...team.eventTypes, duplicatedEvent],
+            };
+          }
+        }
+        return team;
+      });
+    });
   };
 
-  const handleToggleEvent = (eventId: string, checked: boolean) => {
-    setEventStates(prev => ({
-      ...prev,
-      [eventId]: checked
-    }));
-  };
-
-  const handleArrowClick = (eventId: string, direction: 'up' | 'down') => {
-    const eventIndex = filteredEvents.findIndex(e => e.id === eventId);
-    if (direction === 'up' && eventIndex > 0) {
-      const newEvents = [...filteredEvents];
-      [newEvents[eventIndex], newEvents[eventIndex - 1]] = [newEvents[eventIndex - 1], newEvents[eventIndex]];
-      
-      setTeamEvents(prevTeams => 
-        prevTeams.map(team => 
-          team.id === selectedTeam 
-            ? { ...team, eventTypes: newEvents }
-            : team
-        )
-      );
-    } else if (direction === 'down' && eventIndex < filteredEvents.length - 1) {
-      const newEvents = [...filteredEvents];
-      [newEvents[eventIndex], newEvents[eventIndex + 1]] = [newEvents[eventIndex + 1], newEvents[eventIndex]];
-      
-      setTeamEvents(prevTeams => 
-        prevTeams.map(team => 
-          team.id === selectedTeam 
-            ? { ...team, eventTypes: newEvents }
-            : team
-        )
-      );
-    }
-  };
-
-  const handleMenuAction = (action: string, eventId: string) => {
-    setShowMoreOptions(null);
-    switch (action) {
-      case 'edit':
-        handleEventClick(eventId);
-        break;
-      case 'duplicate':
-        console.log('Duplicating event', eventId);
-        break;
-      case 'embed':
-        console.log('Embed event', eventId);
-        break;
-      case 'delete':
-        setTeamEvents(prevTeams => 
-          prevTeams.map(team => 
-            team.id === selectedTeam 
-              ? { ...team, eventTypes: team.eventTypes.filter(e => e.id !== eventId) }
-              : team
-          )
-        );
-        break;
-    }
+  const handleEventTypeDelete = (eventId: string) => {
+    setTeams(prevTeams => {
+      return prevTeams.map(team => {
+        if (team.id === selectedTeamId) {
+          return {
+            ...team,
+            eventTypes: team.eventTypes.filter(eventType => eventType.id !== eventId),
+          };
+        }
+        return team;
+      });
+    });
   };
 
   return (
-    <div className="px-8 pt-4 pb-8 space-y-6 w-full max-w-full">
-      {/* Team Selector */}
-      <div className="flex items-center justify-between space-x-4">
-        <div className="flex items-center space-x-4 flex-1 min-w-0">
-          <div className="flex items-center bg-muted/50 rounded-lg p-1 flex-shrink-0">
-            <button
-              onClick={() => setSelectedTeam('personal')}
-              className={`flex items-center px-4 py-2 text-sm font-medium rounded-md transition-all whitespace-nowrap ${
-                selectedTeam === 'personal'
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
-                selectedTeam === 'personal' ? 'bg-primary text-primary-foreground' : 'bg-muted-foreground/20'
-              }`}>
-                {teamEvents[0].avatar}
-              </div>
-              <span className="truncate">Sanskar Yadav</span>
-            </button>
-          </div>
-          
-          <div className="w-px h-6 bg-border flex-shrink-0"></div>
-          
-          <div className="flex space-x-2 flex-1 overflow-x-auto scrollbar-none">
-            {teamEvents.slice(1).map((team) => (
-              <button
-                key={team.id}
-                onClick={() => setSelectedTeam(team.id)}
-                className={`flex items-center px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-all flex-shrink-0 min-w-fit ${
-                  selectedTeam === team.id
-                    ? 'bg-primary text-primary-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                }`}
-              >
-                <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
-                  selectedTeam === team.id ? 'bg-primary-foreground text-primary' : 'bg-muted-foreground/20'
-                }`}>
-                  {team.avatar}
-                </div>
-                <span className="truncate">{team.name}</span>
-              </button>
-            ))}
-          </div>
+    <div className="p-8">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-semibold">Event Types</h1>
+          <p className="text-muted-foreground">Create event types to share for people to book on your calendar.</p>
         </div>
+        <Button onClick={() => setIsCreateModalOpen(true)}>
+          <Plus className="w-4 h-4 mr-2" />
+          New Event Type
+        </Button>
       </div>
 
-      {/* Search Bar and New Button */}
-      <div className="flex items-center justify-between space-x-4">
-        <div className="flex items-center space-x-4 flex-1">
-          <div className="relative w-80">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search events..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-sm"
-            />
-          </div>
-          
-          <div className="relative">
-            <button
-              onClick={handleCopyPublicLink}
-              className="flex items-center space-x-2 px-4 py-2 bg-muted/70 text-muted-foreground text-sm rounded-md hover:bg-muted transition-colors"
-            >
-              <span className="text-sm">
-                {selectedTeam === 'personal' ? 'cal.id/sanskar' : `cal.id/${currentTeam.url}`}
-              </span>
-              <Copy className="h-4 w-4" />
-            </button>
-            {copiedPublicLink && (
-              <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-foreground text-background text-xs rounded animate-fade-in whitespace-nowrap">
-                Copied
-              </div>
-            )}
-          </div>
-        </div>
-        
-        <div className="relative">
-          <button
-            onClick={() => setShowNewDropdown(!showNewDropdown)}
-            className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            New
-          </button>
-          
-          {showNewDropdown && (
-            <div className="absolute right-0 top-full mt-1 w-48 bg-popover border border-border rounded-lg shadow-lg animate-scale-in z-10">
-              <div className="py-1">
-                {teamEvents.map((team) => (
-                  <button
-                    key={team.id}
-                    onClick={() => {
-                      console.log('Selected team for new event:', team.id);
-                      setSelectedTeam(team.id);
-                      setIsCreateModalOpen(true);
-                      setShowNewDropdown(false);
-                    }}
-                    className="w-full text-left px-3 py-2 text-sm hover:bg-muted transition-colors flex items-center"
-                  >
-                    <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium mr-2">
-                      {team.avatar}
-                    </div>
-                    {team.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+      <div className="mb-4">
+        <Label htmlFor="team">Team</Label>
+        <select id="team" value={selectedTeamId} onChange={handleTeamChange} className="w-full px-4 py-2 border rounded-md bg-background">
+          {teams.map(team => (
+            <option key={team.id} value={team.id}>{team.name}</option>
+          ))}
+        </select>
       </div>
 
-      {/* Event Types List */}
-      <div className="space-y-4">
-        {filteredEvents.map((event) => {
-          const isEventActive = eventStates[event.id] ?? event.isActive;
-          return (
-            <div
-              key={event.id}
-              className="relative group animate-fade-in"
-              onMouseEnter={() => setHoveredEvent(event.id)}
-              onMouseLeave={() => setHoveredEvent(null)}
-            >
-              {/* Move buttons */}
-              {hoveredEvent === event.id && (
-                <div className="absolute -left-12 top-1/2 transform -translate-y-1/2 flex flex-col space-y-1 z-10 animate-scale-in">
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleArrowClick(event.id, 'up');
-                    }}
-                    className="p-2 bg-background border border-border rounded-lg hover:bg-muted shadow-md transition-all transform hover:scale-105"
-                  >
-                    <ArrowUp className="h-4 w-4 text-muted-foreground" />
-                  </button>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleArrowClick(event.id, 'down');
-                    }}
-                    className="p-2 bg-background border border-border rounded-lg hover:bg-muted shadow-md transition-all transform hover:scale-105"
-                  >
-                    <ArrowDown className="h-4 w-4 text-muted-foreground" />
-                  </button>
-                </div>
-              )}
+      <Table>
+        <TableCaption>A list of your event types.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[400px]">Event Type</TableHead>
+            <TableHead>Bookings Today</TableHead>
+            <TableHead>Active</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {eventTypes.map((eventType) => (
+            <TableRow key={eventType.id}>
+              <TableCell className="font-medium">{eventType.title}</TableCell>
+              <TableCell>{eventType.bookingsToday}</TableCell>
+              <TableCell>
+                <Switch checked={eventType.isActive} onCheckedChange={() => handleEventTypeToggle(eventType.id)} id={`active-${eventType.id}`} />
+                <Label htmlFor={`active-${eventType.id}`} className="sr-only">Active</Label>
+              </TableCell>
+              <TableCell className="text-right">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                      <span className="sr-only">Open menu</span>
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuItem onClick={() => navigate(`/event/${eventType.id}/setup`)}>
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleEventTypeDuplicate(eventType.id)}>
+                      <Copy className="w-4 h-4 mr-2" />
+                      Duplicate
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <DropdownMenuItem className="text-destructive focus:bg-destructive/50">
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will permanently delete your event type
+                              and remove your data from our servers.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleEventTypeDelete(eventType.id)}>Delete</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
 
-              <div 
-                onClick={() => handleEventClick(event.id)}
-                className={`bg-card border border-border rounded-lg p-6 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer ${
-                  !isEventActive ? 'opacity-50' : ''
-                }`}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center mb-3 space-x-3">
-                      <h3 className="text-lg font-semibold text-foreground">
-                        {event.title}
-                      </h3>
-                      <div className="relative">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCopyLink(event.id, event.url);
-                          }}
-                          className="flex items-center space-x-2 px-3 py-1 bg-muted/70 text-muted-foreground text-sm rounded hover:bg-muted transition-colors"
-                        >
-                          <Copy className="h-3 w-3" />
-                          <span className="text-sm">Copy</span>
-                        </button>
-                        {copiedLink === event.id && (
-                          <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-foreground text-background text-xs rounded animate-fade-in whitespace-nowrap">
-                            Copied
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{event.description}</p>
-                    <div className="flex items-center">
-                      {event.durations?.map((duration) => (
-                        <span key={duration} className="inline-flex items-center px-3 py-1 bg-muted text-foreground text-sm rounded mr-2">
-                          {duration}m
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-3 ml-6" onClick={(e) => e.stopPropagation()}>
-                    <Switch 
-                      checked={isEventActive} 
-                      onCheckedChange={(checked) => handleToggleEvent(event.id, checked)}
-                    />
-                    <button className="p-2 hover:bg-muted rounded-md transition-colors">
-                      <Eye className="h-4 w-4 text-muted-foreground" />
-                    </button>
-                    <div className="relative">
-                      <button
-                        onClick={() => setShowMoreOptions(showMoreOptions === event.id ? null : event.id)}
-                        className="p-2 hover:bg-muted rounded-md transition-colors"
-                      >
-                        <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-                      </button>
-                      
-                      {showMoreOptions === event.id && (
-                        <div className="absolute right-0 top-full mt-1 w-40 bg-popover border border-border rounded-lg shadow-lg animate-scale-in z-10">
-                          <div className="py-1">
-                            <button 
-                              onClick={() => handleMenuAction('edit', event.id)}
-                              className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors"
-                            >
-                              <Edit className="h-4 w-4 mr-2" />
-                              Edit
-                            </button>
-                            <button 
-                              onClick={() => handleMenuAction('duplicate', event.id)}
-                              className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors"
-                            >
-                              <CopyIcon className="h-4 w-4 mr-2" />
-                              Duplicate
-                            </button>
-                            <button 
-                              onClick={() => handleMenuAction('embed', event.id)}
-                              className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors"
-                            >
-                              <Code className="h-4 w-4 mr-2" />
-                              Embed
-                            </button>
-                            <button 
-                              onClick={() => handleMenuAction('delete', event.id)}
-                              className="flex items-center w-full px-3 py-2 text-sm hover:bg-muted transition-colors text-destructive"
-                            >
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <CreateEventModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        teams={teamEvents}
-        selectedTeam={selectedTeam}
-        onCreateEvent={handleCreateEvent}
-      />
+      <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Create Event Type</DialogTitle>
+            <DialogDescription>
+              Create a new event type to share for people to book on your calendar.
+            </DialogDescription>
+          </DialogHeader>
+          <CreateEvent onCreate={handleCreateEvent} />
+          <DialogFooter>
+            <Button type="button" variant="secondary" onClick={() => setIsCreateModalOpen(false)}>Cancel</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
