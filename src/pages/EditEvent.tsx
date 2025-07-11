@@ -128,3 +128,4 @@ export function EventSettings() {
       </div>
     </div>
   );
+}
