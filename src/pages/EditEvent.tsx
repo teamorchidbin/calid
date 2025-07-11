@@ -5,7 +5,6 @@ import { ArrowLeft, Copy, Eye } from 'lucide-react';
 import { EventSetup } from '../components/EventSetup';
 import { EventAvailability } from '../components/EventAvailability';
 import { EventLimits } from '../components/EventLimits';
-import { EventBooking } from '../components/EventBooking';
 import { EventWorkflows } from '../components/EventWorkflows';
 import { EventWebhooks } from '../components/EventWebhooks';
 import { EventAdvanced } from '../components/EventAdvanced';
@@ -35,7 +34,6 @@ export function EventSettings() {
     { id: 'setup', label: 'Event Setup', icon: '⚙️', component: EventSetup },
     { id: 'availability', label: 'Availability', icon: '🕒', component: EventAvailability },
     { id: 'limits', label: 'Limits', icon: '⏱️', component: EventLimits },
-    { id: 'booking', label: 'Booking', icon: '📅', component: EventBooking },
     { id: 'workflows', label: 'Workflows', icon: '🔄', component: EventWorkflows },
     { id: 'webhooks', label: 'Webhooks', icon: '🔗', component: EventWebhooks },
     { id: 'advanced', label: 'Advanced', icon: '⚡', component: EventAdvanced },
@@ -100,7 +98,7 @@ export function EventSettings() {
         <div className="flex-1 mt-16 ml-60">
           <div className="p-6">
             <Tabs value={tab || 'setup'} className="w-full">
-              <TabsList className="grid w-full grid-cols-8 mb-6">
+              <TabsList className="grid w-full grid-cols-7 mb-4">
                 {tabs.map((tabItem) => (
                   <TabsTrigger 
                     key={tabItem.id} 
