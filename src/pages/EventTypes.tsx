@@ -36,13 +36,14 @@ export const EventTypes = () => {
   }, [teamEvents]);
 
   const handleEventClick = (eventId: string) => {
+    console.log('Navigating to event:', eventId);
     navigate(`/event/${eventId}/setup`);
   };
 
   const handleCreateEvent = (eventData: any) => {
     console.log('Creating event with data:', eventData);
     
-    const newEventId = `event-${Date.now()}`;
+    const newEventId = `${Date.now()}`;
     const newEvent = {
       id: newEventId,
       title: eventData.title || 'New Event',
@@ -75,10 +76,9 @@ export const EventTypes = () => {
     // Close modal and navigate to the NEW event
     setIsCreateModalOpen(false);
     console.log('Navigating to new event:', newEventId);
-    // Use setTimeout to ensure state update completes first
-    setTimeout(() => {
-      navigate(`/event/${newEventId}/setup`);
-    }, 100);
+    
+    // Navigate immediately to the new event
+    navigate(`/event/${newEventId}/setup`);
   };
 
   const handleCopyLink = (eventId: string, url: string) => {
@@ -288,7 +288,7 @@ export const EventTypes = () => {
                       e.stopPropagation();
                       handleArrowClick(event.id, 'up');
                     }}
-                    className="p-1.5 bg-background border border-border rounded-md hover:bg-muted shadow-md transition-all transform hover:scale-105"
+                    className="p-1 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all"
                   >
                     <ArrowUp className="h-3 w-3 text-muted-foreground" />
                   </button>
@@ -297,7 +297,7 @@ export const EventTypes = () => {
                       e.stopPropagation();
                       handleArrowClick(event.id, 'down');
                     }}
-                    className="p-1.5 bg-background border border-border rounded-md hover:bg-muted shadow-md transition-all transform hover:scale-105"
+                    className="p-1 bg-background border border-border rounded hover:bg-muted shadow-sm transition-all"
                   >
                     <ArrowDown className="h-3 w-3 text-muted-foreground" />
                   </button>
@@ -306,9 +306,6 @@ export const EventTypes = () => {
 
               <div 
                 onClick={() => handleEventClick(event.id)}
-                className={`bg-card border border-border rounded-lg p-6 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer ${
-                  !isEventActive ? 'opacity-50' : ''
-                }`}
                 className={`bg-card border border-border rounded-lg p-4 hover:border-border/60 transition-all hover:shadow-sm cursor-pointer ${
                   !isEventActive ? 'opacity-50' : ''
                 }`}

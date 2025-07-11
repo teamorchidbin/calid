@@ -15,11 +15,21 @@ import { useState } from 'react';
 export function EventSettings() {
   const { eventId, tab } = useParams();
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const navigate = useNavigate();
   
   // Find the current event
   const currentEvent = mockTeams
     .flatMap(team => team.eventTypes)
     .find(event => event.id === eventId);
+  
+  console.log('EditEvent - eventId:', eventId, 'currentEvent:', currentEvent);
+  
+  // If event not found, redirect to event types
+  if (!currentEvent) {
+    console.log('Event not found, redirecting to event types');
+    navigate('/');
+    return null;
+  }
   
   const tabs = [
     { id: 'setup', label: 'Event Setup', icon: '⚙️', component: EventSetup },
@@ -43,18 +53,18 @@ export function EventSettings() {
           <div className="h-full px-6 flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button 
-                onClick={() => window.history.back()}
+                onClick={() => navigate('/')}
                 className="p-2 hover:bg-muted rounded-lg transition-colors"
               >
                 <ArrowLeft className="h-5 w-5 text-muted-foreground" />
               </button>
               <div className="flex items-center space-x-3">
                 <h1 className="text-lg font-semibold text-foreground">
-                  {currentEvent?.title || 'Event'}
+                  {currentEvent.title}
                 </h1>
                 <div className="flex items-center space-x-2">
                   <span className="text-sm text-muted-foreground">
-                    cal.id/sanskar/{currentEvent?.url?.split('/').pop() || 'event'}
+                    cal.id/sanskar/{currentEvent.url?.split('/').pop() || 'event'}
                   </span>
                   <button className="p-1 hover:bg-muted rounded transition-colors">
                     <Copy className="h-4 w-4 text-muted-foreground" />
@@ -86,52 +96,8 @@ export function EventSettings() {
           </div>
         </div>
 
-        {/* Sidebar */}
-        <div className="w-60 bg-card border-r border-border h-screen sticky top-0 z-30">
-          <div className="p-4">
-            <div className="flex items-center space-x-3 mb-6">
-              <img 
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face&auto=format" 
-                alt="Profile" 
-                className="w-8 h-8 rounded-full"
-              />
-              <div>
-                <div className="font-medium text-sm">Sanskar Yadav</div>
-                <div className="text-xs text-muted-foreground">Free Plan</div>
-              </div>
-            </div>
-            
-            <nav className="space-y-1">
-              <a href="/dashboard" className="flex items-center space-x-3 px-3 py-2 text-sm rounded-lg hover:bg-muted transition-colors">
-                <span>📊</span>
-                <span>Dashboard</span>
-              </a>
-              <a href="/bookings" className="flex items-center space-x-3 px-3 py-2 text-sm rounded-lg hover:bg-muted transition-colors">
-                <span>📅</span>
-                <span>Bookings</span>
-              </a>
-              <a href="/availability" className="flex items-center space-x-3 px-3 py-2 text-sm rounded-lg hover:bg-muted transition-colors">
-                <span>🕒</span>
-                <span>Availability</span>
-              </a>
-              <a href="/event-types" className="flex items-center space-x-3 px-3 py-2 text-sm rounded-lg bg-muted text-foreground">
-                <span>⚙️</span>
-                <span>Event Types</span>
-              </a>
-              <a href="/workflows" className="flex items-center space-x-3 px-3 py-2 text-sm rounded-lg hover:bg-muted transition-colors">
-                <span>🔄</span>
-                <span>Workflows</span>
-              </a>
-              <a href="/apps" className="flex items-center space-x-3 px-3 py-2 text-sm rounded-lg hover:bg-muted transition-colors">
-                <span>🧩</span>
-                <span>Apps</span>
-              </a>
-            </nav>
-          </div>
-        </div>
-
         {/* Main Content */}
-        <div className="flex-1 mt-16">
+        <div className="flex-1 mt-16 ml-60">
           <div className="p-6">
             <Tabs value={tab || 'setup'} className="w-full">
               <TabsList className="grid w-full grid-cols-8 mb-6">
@@ -162,4 +128,3 @@ export function EventSettings() {
       </div>
     </div>
   );
-}

@@ -62,6 +62,9 @@ export const CreateEventModal = ({ isOpen, onClose, teams, selectedTeam: initial
       description: '',
       duration: '30'
     });
+    
+    // Reset selected team
+    setSelectedTeam(initialTeam || '');
   };
 
   const handleDurationSelect = (suggestion: typeof durationSuggestions[0]) => {
